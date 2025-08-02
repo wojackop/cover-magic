@@ -1,13 +1,3 @@
-<!--
- * @Author: baiwumm me@baiwumm.com
- * @Date: 2025-08-01 21:07:16
- * @LastEditors: baiwumm me@baiwumm.com
- * @LastEditTime: 2025-08-03 01:23:49
- * @FilePath: \vue3-mini-cover\src\App.vue
- * @Description: 
- * 
- * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
--->
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
     <!-- 顶部标题栏 -->
@@ -53,83 +43,15 @@
 
         <!-- 图标设置 -->
         <n-grid-item>
-          <n-card size="large" hoverable class="h-full">
-            <template #header>
-              <div class="flex items-center gap-2">
-                <Icon icon="material-symbols:star" class="text-xl text-yellow-600" />
-                <span class="font-semibold">图标设置</span>
-              </div>
-            </template>
-            <n-space vertical size="large">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:code" class="text-lg" />
-                  图标代码
-                </label>
-                <n-input v-model:value="iconCode" placeholder="如: fluent-emoji-flat:four-leaf-clover" @input="loadIcon">
-                  <template #prefix>
-                    <Icon icon="material-symbols:search" />
-                  </template>
-                  <template #suffix>
-                    <Icon :icon="iconCode" />
-                  </template>
-                </n-input>
-              </div>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:photo-size-select-large" class="text-lg" />
-                    大小
-                  </label>
-                  <n-slider v-model:value="iconSize" :min="20" :max="200" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ iconSize }}px</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:shadow" class="text-lg" />
-                    阴影大小
-                  </label>
-                  <n-slider v-model:value="iconShadowSize" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ iconShadowSize }}px</span>
-                </n-grid-item>
-              </n-grid>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:palette" class="text-lg" />
-                  阴影颜色
-                </label>
-                <n-color-picker 
-                  v-model:value="iconShadowColor" 
-                  @update:value="updateCanvas"
-                  :swatches="colorSwatches"
-                  :show-alpha="false"
-                />
-              </div>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-horiz" class="text-lg" />
-                    水平位置
-                  </label>
-                  <n-slider v-model:value="iconX" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ iconX }}%</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-vert" class="text-lg" />
-                    垂直位置
-                  </label>
-                  <n-slider v-model:value="iconY" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ iconY }}%</span>
-                </n-grid-item>
-              </n-grid>
-            </n-space>
-          </n-card>
+          <IconPanel
+            :icon="icon"
+            @update:icon="(newIcon) => { 
+              Object.assign(icon, newIcon); 
+              updateCanvas();
+            }"
+            @icon-load="loadIcon"
+            @canvas-update="updateCanvas"
+          />
         </n-grid-item>
 
         <!-- 标题设置 -->
@@ -458,6 +380,7 @@ import {
   NGridItem
 } from 'naive-ui'
 import BackgroundPanel from './components/BackgroundPanel.vue'
+import IconPanel from './components/IconPanel.vue'
 import { colorSwatches,fontOptions } from '@/lib/constant'
 
 // 背景设置
@@ -470,14 +393,19 @@ const background = reactive({
   blur: 0                              // 背景模糊度：应用于图片背景的模糊效果，单位为像素
 })
 
-// 图标设置
-const iconCode = ref('fluent-emoji-flat:four-leaf-clover')
-const iconSize = ref(100)
-const iconShadowSize = ref(100)
-const iconShadowColor = ref('#ffffff')
-const iconX = ref(50)
-const iconY = ref(50)
-const iconSvg = ref<string>('')
+// 图标设置 - 用于控制封面中心图标的各项属性
+const icon = reactive({
+  code: 'fluent-emoji-flat:four-leaf-clover', // 图标代码：使用Iconify图标库的标识符，指定要显示的图标
+  size: 100,                            // 图标大小：控制图标的显示尺寸，单位为像素
+  shadowSize: 100,                      // 阴影大小：控制图标阴影的模糊半径，值越大阴影越模糊扩散
+  shadowColor: '#ffffff',               // 阴影颜色：指定图标阴影的颜色，默认为白色
+  position: {                           // 图标位置：控制图标在画布中的位置
+    x: 50,                              // 水平位置：以百分比表示，50表示水平居中
+    y: 50                               // 垂直位置：以百分比表示，50表示垂直居中
+  }
+})
+// 图标SVG内容 - 存储从Iconify API获取的SVG代码
+const iconSvg = ref<string>('')         // 存储图标的SVG源代码，用于在Canvas中渲染图标
 
 // 标题设置
 const titleText = ref('谜叶  象限')
@@ -646,7 +574,7 @@ const waitForFont = async (maxWait = 3000) => {
 
 // 加载图标
 const loadIcon = async () => {
-  if (!iconCode.value) {
+  if (!icon.code) {
     iconSvg.value = ''
     iconImageCache = null // 清除缓存
     updateCanvas()
@@ -655,7 +583,7 @@ const loadIcon = async () => {
 
   try {
     // 从 Iconify API 获取 SVG
-    const response = await fetch(`https://api.iconify.design/${iconCode.value}.svg`)
+    const response = await fetch(`https://api.iconify.design/${icon.code}.svg`)
     if (response.ok) {
       iconSvg.value = await response.text()
       iconImageCache = null // 清除旧缓存
@@ -694,9 +622,9 @@ const handleImageUpload = (options: any) => {
 
 // 绘制阴影
 const drawShadow = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
-  if (iconShadowSize.value > 0) {
-    ctx.shadowColor = iconShadowColor.value
-    ctx.shadowBlur = iconShadowSize.value
+  if (icon.shadowSize > 0) {
+    ctx.shadowColor = icon.shadowColor
+    ctx.shadowBlur = icon.shadowSize
     ctx.shadowOffsetX = 0
     ctx.shadowOffsetY = 0
   }
@@ -779,43 +707,221 @@ const drawIcon = async (ctx: CanvasRenderingContext2D, x: number, y: number, siz
   })
 }
 
-// 防抖更新画布
-const debouncedUpdateCanvas = () => {
-  if (updateTimer) {
-    clearTimeout(updateTimer)
-  }
-
-  updateTimer = setTimeout(() => {
-    updateCanvasImmediate()
-  }, 16) // 约60fps的更新频率
+// 存储动画状态
+interface AnimationState {
+  value: number;
+  target: number;
+  velocity: number;
 }
 
-// 立即更新画布（内部使用）
-const updateCanvasImmediate = async () => {
-  if (isUpdating) return
-  isUpdating = true
+// 创建动画状态对象
+const createAnimationState = (initialValue: number = 0): AnimationState => ({
+  value: initialValue,
+  target: initialValue,
+  velocity: 0
+});
 
-  await nextTick()
+// 存储所有需要动画的属性状态
+const animationStates = reactive({
+  titleSize: createAnimationState(),
+  titleX: createAnimationState(),
+  titleY: createAnimationState(),
+  watermarkSize: createAnimationState(),
+  watermarkX: createAnimationState(),
+  watermarkY: createAnimationState(),
+  iconSize: createAnimationState(),
+  iconX: createAnimationState(),
+  iconY: createAnimationState(),
+  watermarkOpacity: createAnimationState(),
+  backgroundBlur: createAnimationState()
+});
 
-  const canvas = previewCanvas.value
+// 弹簧动画参数
+const SPRING_STIFFNESS = 200; // 弹簧刚度
+const SPRING_DAMPING = 20;   // 阻尼系数
+const SPRING_MASS = 1;       // 质量
+const SPRING_PRECISION = 0.01; // 精度阈值
+
+// 动画帧率
+const FPS = 120;
+
+// 是否正在执行动画循环
+let animationLoopRunning = false;
+
+// 弹簧动画更新函数 - 使用物理模型实现更自然的动画
+const updateSpringAnimation = (state: AnimationState, dt: number): boolean => {
+  // 计算弹簧力
+  const displacement = state.target - state.value;
+  
+  // 如果位移很小，直接到达目标位置
+  if (Math.abs(displacement) < SPRING_PRECISION && Math.abs(state.velocity) < SPRING_PRECISION) {
+    state.value = state.target;
+    state.velocity = 0;
+    return false; // 动画完成
+  }
+  
+  // 计算弹簧力 (F = -kx)
+  const springForce = SPRING_STIFFNESS * displacement;
+  
+  // 计算阻尼力 (F = -cv)
+  const dampingForce = -SPRING_DAMPING * state.velocity;
+  
+  // 合力
+  const force = springForce + dampingForce;
+  
+  // 加速度 (F = ma, a = F/m)
+  const acceleration = force / SPRING_MASS;
+  
+  // 更新速度 (v = v0 + at)
+  state.velocity += acceleration * dt;
+  
+  // 更新位置 (x = x0 + vt)
+  state.value += state.velocity * dt;
+  
+  return true; // 动画继续
+}
+
+// 更新动画目标值
+const updateAnimationTargets = () => {
+  // 更新标题相关动画目标
+  animationStates.titleSize.target = titleSize.value;
+  animationStates.titleX.target = titleX.value;
+  animationStates.titleY.target = titleY.value;
+  
+  // 更新水印相关动画目标
+  animationStates.watermarkSize.target = watermarkSize.value;
+  animationStates.watermarkX.target = watermarkX.value;
+  animationStates.watermarkY.target = watermarkY.value;
+  animationStates.watermarkOpacity.target = watermarkOpacity.value;
+  
+  // 更新图标相关动画目标
+  animationStates.iconSize.target = icon.size;
+  animationStates.iconX.target = icon.position.x;
+  animationStates.iconY.target = icon.position.y;
+  
+  // 更新背景模糊动画目标
+  animationStates.backgroundBlur.target = background.blur;
+  
+  // 如果是首次更新，直接设置当前值等于目标值
+  if (animationStates.titleSize.value === 0) {
+    Object.keys(animationStates).forEach(key => {
+      const state = animationStates[key as keyof typeof animationStates];
+      state.value = state.target;
+    });
+  }
+  
+  // 启动动画循环（如果尚未运行）
+  startAnimationLoop();
+};
+
+// 启动动画循环
+const startAnimationLoop = () => {
+  if (animationLoopRunning) return;
+  
+  animationLoopRunning = true;
+  let lastTime = performance.now();
+  
+  const animationLoop = async () => {
+    const currentTime = performance.now();
+    const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1); // 秒为单位，限制最大时间步长
+    lastTime = currentTime;
+    
+    // 更新所有动画状态
+    let anyActive = false;
+    Object.keys(animationStates).forEach(key => {
+      const state = animationStates[key as keyof typeof animationStates];
+      if (updateSpringAnimation(state, deltaTime)) {
+        anyActive = true;
+      }
+    });
+    
+    // 渲染当前帧
+    await renderCurrentFrame();
+    
+    // 如果还有活动的动画，继续循环
+    if (anyActive) {
+      requestAnimationFrame(animationLoop);
+    } else {
+      animationLoopRunning = false;
+    }
+  };
+  
+  // 开始动画循环
+  requestAnimationFrame(animationLoop);
+};
+
+// 防抖更新画布 - 只更新目标值，不直接渲染
+const debouncedUpdateCanvas = () => {
+  if (updateTimer) {
+    clearTimeout(updateTimer);
+  }
+  
+  updateTimer = setTimeout(() => {
+    updateAnimationTargets();
+  }, 5); // 使用更短的延迟，提高响应性
+};
+
+// 渲染当前帧
+const renderCurrentFrame = async () => {
+  if (isUpdating) return;
+  isUpdating = true;
+  
+  await nextTick();
+  
+  const canvas = previewCanvas.value;
   if (!canvas) {
-    isUpdating = false
-    return
+    isUpdating = false;
+    return;
   }
-
-  const ctx = canvas.getContext('2d')
+  
+  const ctx = canvas.getContext('2d');
   if (!ctx) {
-    isUpdating = false
-    return
+    isUpdating = false;
+    return;
   }
-
+  
   // 等待字体加载完成
-  await waitForFont()
-
+  await waitForFont();
+  
   // 使用requestAnimationFrame确保平滑渲染
   requestAnimationFrame(async () => {
-    // 清空画布
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // 获取当前动画值
+    const currentTitleSize = animationStates.titleSize.value;
+    const currentTitleX = animationStates.titleX.value;
+    const currentTitleY = animationStates.titleY.value;
+    const currentWatermarkSize = animationStates.watermarkSize.value;
+    const currentWatermarkX = animationStates.watermarkX.value;
+    const currentWatermarkY = animationStates.watermarkY.value;
+    const currentIconSize = animationStates.iconSize.value;
+    const currentIconX = animationStates.iconX.value;
+    const currentIconY = animationStates.iconY.value;
+    
+    // 渲染当前帧
+    await renderFrame(
+      currentTitleSize, currentTitleX, currentTitleY,
+      currentWatermarkSize, currentWatermarkX, currentWatermarkY,
+      currentIconSize, currentIconX, currentIconY
+    );
+    
+    isUpdating = false;
+  });
+};
+
+// 渲染单个帧
+const renderFrame = async (
+  currentTitleSize: number, currentTitleX: number, currentTitleY: number,
+  currentWatermarkSize: number, currentWatermarkX: number, currentWatermarkY: number,
+  currentIconSize: number, currentIconX: number, currentIconY: number
+) => {
+  const canvas = previewCanvas.value
+  if (!canvas) return
+  
+  const ctx = canvas.getContext('2d', { alpha: false })
+  if (!ctx) return
+  
+  // 清空画布 - 使用填充而不是clearRect以减少闪烁
+  ctx.fillStyle = '#ffffff'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   // 绘制背景
   if (background.type === 'color') {
@@ -837,17 +943,17 @@ const updateCanvasImmediate = async () => {
     ctx.filter = 'none'
   }
 
-    // 绘制图标
+  // 绘制图标
     if (iconSvg.value) {
-      const iconPosX = (iconX.value / 100) * canvas.width
-      const iconPosY = (iconY.value / 100) * canvas.height
-      await drawIcon(ctx, iconPosX, iconPosY, iconSize.value)
+      const iconPosX = (currentIconX / 100) * canvas.width
+      const iconPosY = (currentIconY / 100) * canvas.height
+      await drawIcon(ctx, iconPosX, iconPosY, currentIconSize)
     }
 
     // 绘制标题
     if (titleText.value) {
-      const titlePosX = (titleX.value / 100) * canvas.width
-      const titlePosY = (titleY.value / 100) * canvas.height
+      const titlePosX = (currentTitleX / 100) * canvas.width
+      const titlePosY = (currentTitleY / 100) * canvas.height
 
       ctx.save()
       ctx.fillStyle = titleColor.value
@@ -925,8 +1031,8 @@ const updateCanvasImmediate = async () => {
 
     // 绘制水印 - 确保可见
     if (watermarkText.value.trim()) {
-      const watermarkPosX = (watermarkX.value / 100) * canvas.width
-      const watermarkPosY = (watermarkY.value / 100) * canvas.height
+      const watermarkPosX = (currentWatermarkX / 100) * canvas.width
+      const watermarkPosY = (currentWatermarkY / 100) * canvas.height
 
       ctx.save()
       ctx.fillStyle = watermarkColor.value
@@ -974,7 +1080,7 @@ const updateCanvasImmediate = async () => {
           fontFamily = `"${watermarkFont.value}", Arial, sans-serif`
       }
       
-      ctx.font = `${fontWeight} ${watermarkSize.value}px ${fontFamily}`
+      ctx.font = `${fontWeight} ${currentWatermarkSize}px ${fontFamily}`
       
       // 如果需要斜体，使用变换
       if (watermarkItalic.value) {
@@ -1003,8 +1109,6 @@ const updateCanvasImmediate = async () => {
       ctx.restore()
     }
 
-    isUpdating = false
-  })
 }
 
 // 对外暴露的更新函数
@@ -1109,9 +1213,9 @@ const exportImage = async () => {
 
   // 绘制图标
   if (iconSvg.value) {
-    const iconPosX = (iconX.value / 100) * canvas.width
-    const iconPosY = (iconY.value / 100) * canvas.height
-    const scaledIconSize = (iconSize.value / 800) * canvas.width // 根据画布大小缩放
+    const iconPosX = (icon.position.x / 100) * canvas.width
+    const iconPosY = (icon.position.y / 100) * canvas.height
+    const scaledIconSize = (icon.size / 800) * canvas.width // 根据画布大小缩放
     await drawIconToCanvas(ctx, iconPosX, iconPosY, scaledIconSize)
   }
 
@@ -1334,9 +1438,9 @@ const drawIconToCanvas = async (ctx: CanvasRenderingContext2D, x: number, y: num
 
     img.onload = () => {
       // 设置阴影
-      if (iconShadowSize.value > 0) {
-        const scaledShadowSize = (iconShadowSize.value / 800) * ctx.canvas.width
-        ctx.shadowColor = iconShadowColor.value
+      if (icon.shadowSize > 0) {
+        const scaledShadowSize = (icon.shadowSize / 800) * ctx.canvas.width
+        ctx.shadowColor = icon.shadowColor
         ctx.shadowBlur = scaledShadowSize
         ctx.shadowOffsetX = 0
         ctx.shadowOffsetY = 0
@@ -1392,8 +1496,33 @@ watch(useRandomFileName, (newValue) => {
   }
 })
 
+// 初始化动画状态
+const initAnimationStates = () => {
+  // 初始化标题相关动画状态
+  animationStates.titleSize.value = animationStates.titleSize.target = titleSize.value;
+  animationStates.titleX.value = animationStates.titleX.target = titleX.value;
+  animationStates.titleY.value = animationStates.titleY.target = titleY.value;
+  
+  // 初始化水印相关动画状态
+  animationStates.watermarkSize.value = animationStates.watermarkSize.target = watermarkSize.value;
+  animationStates.watermarkX.value = animationStates.watermarkX.target = watermarkX.value;
+  animationStates.watermarkY.value = animationStates.watermarkY.target = watermarkY.value;
+  animationStates.watermarkOpacity.value = animationStates.watermarkOpacity.target = watermarkOpacity.value;
+  
+  // 初始化图标相关动画状态
+  animationStates.iconSize.value = animationStates.iconSize.target = icon.size;
+  animationStates.iconX.value = animationStates.iconX.target = icon.position.x;
+  animationStates.iconY.value = animationStates.iconY.target = icon.position.y;
+  
+  // 初始化背景模糊动画状态
+  animationStates.backgroundBlur.value = animationStates.backgroundBlur.target = background.blur;
+};
+
 // 组件挂载时初始化
 onMounted(async () => {
+  // 初始化动画状态
+  initAnimationStates();
+  
   // 先加载图标
   await loadIcon()
   
@@ -1401,13 +1530,13 @@ onMounted(async () => {
   await waitForFont()
   
   // 初始渲染
-  updateCanvas()
+  renderCurrentFrame();
   
   // 如果字体仍未加载完成，设置一个延迟重试
   if (!fontLoaded) {
     setTimeout(async () => {
       await checkFontLoaded()
-      updateCanvas()
+      renderCurrentFrame();
     }, 1000)
   }
   
