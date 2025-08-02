@@ -417,6 +417,64 @@
                 ]" />
               </div>
 
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                  <Icon icon="material-symbols:drive-file-rename-outline" class="text-lg" />
+                  文件名设置
+                </label>
+                <n-space vertical size="small">
+                  <n-checkbox v-model:checked="useRandomFileName">
+                    使用随机文件名
+                  </n-checkbox>
+                  
+                  <div v-if="!useRandomFileName">
+                    <n-input 
+                      v-model:value="exportFileName" 
+                      placeholder="输入文件名 (4-60个字符)" 
+                      :maxlength="60"
+                      show-count
+                    />
+                  </div>
+                  
+                  <div v-if="useRandomFileName">
+                    <n-space vertical size="small">
+                      <div>
+                        <label class="text-xs text-gray-600 mb-1 block">随机名称长度</label>
+                        <n-slider 
+                          v-model:value="randomFileNameLength" 
+                          :min="4" 
+                          :max="60" 
+                          :step="1" 
+                        />
+                        <span class="text-xs text-gray-500">{{ randomFileNameLength }}个字符</span>
+                      </div>
+                      
+                      <div>
+                        <label class="text-xs text-gray-600 mb-1 block">包含字符类型</label>
+                        <n-space>
+                          <n-checkbox v-model:checked="randomFileNameOptions.includeNumbers" size="small">
+                            数字
+                          </n-checkbox>
+                          <n-checkbox v-model:checked="randomFileNameOptions.includeLowercase" size="small">
+                            小写
+                          </n-checkbox>
+                          <n-checkbox v-model:checked="randomFileNameOptions.includeUppercase" size="small">
+                            大写
+                          </n-checkbox>
+                        </n-space>
+                      </div>
+                      
+                      <n-button size="small" @click="generateAndCacheRandomFileName()" secondary>
+                        <template #icon>
+                          <Icon icon="material-symbols:refresh" />
+                        </template>
+                        预览随机名称: {{ currentRandomFileName || generateAndCacheRandomFileName() }}
+                      </n-button>
+                    </n-space>
+                  </div>
+                </n-space>
+              </div>
+
               <n-button @click="exportImage" type="primary" size="large" block strong>
                 <template #icon>
                   <Icon icon="material-symbols:rocket-launch" />
@@ -432,7 +490,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import { 
   NButton, 
@@ -483,29 +541,116 @@ const fontOptions = [
   { label: '衬线字体', value: 'serif' }
 ]
 
-const titleFont = ref('Maple Mono CN')
-const titleSize = ref(80)
-const titleColor = ref('#ffffff')
-const titleX = ref(50)
-const titleY = ref(50)
-const titleBold = ref(true)
-const titleItalic = ref(true)
+// 标题样式配置
+const titleStyle = reactive({
+  font: 'Maple Mono CN',
+  size: 80,
+  color: '#ffffff',
+  position: {
+    x: 50,
+    y: 50
+  },
+  effects: {
+    bold: true,
+    italic: true
+  }
+})
+
+// 为了保持向后兼容，创建计算属性
+const titleFont = computed({
+  get: () => titleStyle.font,
+  set: (value) => titleStyle.font = value
+})
+const titleSize = computed({
+  get: () => titleStyle.size,
+  set: (value) => titleStyle.size = value
+})
+const titleColor = computed({
+  get: () => titleStyle.color,
+  set: (value) => titleStyle.color = value
+})
+const titleX = computed({
+  get: () => titleStyle.position.x,
+  set: (value) => titleStyle.position.x = value
+})
+const titleY = computed({
+  get: () => titleStyle.position.y,
+  set: (value) => titleStyle.position.y = value
+})
+const titleBold = computed({
+  get: () => titleStyle.effects.bold,
+  set: (value) => titleStyle.effects.bold = value
+})
+const titleItalic = computed({
+  get: () => titleStyle.effects.italic,
+  set: (value) => titleStyle.effects.italic = value
+})
 
 // 水印设置
 const watermarkText = ref('@baiwumm')
-const watermarkFont = ref('Maple Mono CN')
-const watermarkSize = ref(24)
-const watermarkColor = ref('#ffffff')
-const watermarkOpacity = ref(80)
-const watermarkX = ref(90)
-const watermarkY = ref(95)
-const watermarkItalic = ref(true)
-const watermarkBold = ref(true)
+
+// 水印样式配置
+const watermarkStyle = reactive({
+  font: 'Maple Mono CN',
+  size: 24,
+  color: '#ffffff',
+  opacity: 80,
+  position: {
+    x: 90,
+    y: 95
+  },
+  effects: {
+    bold: true,
+    italic: true
+  }
+})
+
+// 为了保持向后兼容，创建计算属性
+const watermarkFont = computed({
+  get: () => watermarkStyle.font,
+  set: (value) => watermarkStyle.font = value
+})
+const watermarkSize = computed({
+  get: () => watermarkStyle.size,
+  set: (value) => watermarkStyle.size = value
+})
+const watermarkColor = computed({
+  get: () => watermarkStyle.color,
+  set: (value) => watermarkStyle.color = value
+})
+const watermarkOpacity = computed({
+  get: () => watermarkStyle.opacity,
+  set: (value) => watermarkStyle.opacity = value
+})
+const watermarkX = computed({
+  get: () => watermarkStyle.position.x,
+  set: (value) => watermarkStyle.position.x = value
+})
+const watermarkY = computed({
+  get: () => watermarkStyle.position.y,
+  set: (value) => watermarkStyle.position.y = value
+})
+const watermarkBold = computed({
+  get: () => watermarkStyle.effects.bold,
+  set: (value) => watermarkStyle.effects.bold = value
+})
+const watermarkItalic = computed({
+  get: () => watermarkStyle.effects.italic,
+  set: (value) => watermarkStyle.effects.italic = value
+})
 
 // 导出设置
 const exportWidth = ref(1920)
 const exportHeight = ref(1080)
 const exportFormat = ref('webp')
+const exportFileName = ref('封面设计')
+const useRandomFileName = ref(false)
+const randomFileNameLength = ref(8)
+const randomFileNameOptions = reactive({
+  includeNumbers: true,
+  includeLowercase: true,
+  includeUppercase: true
+})
 
 // 画布引用和缓存变量
 const previewCanvas = ref<HTMLCanvasElement>()
@@ -822,31 +967,30 @@ const updateCanvasImmediate = async () => {
       }
       
       ctx.font = `${fontWeight} ${titleSize.value}px ${fontFamily}`
-      console.log('标题字体:', ctx.font)
       
-    // 如果需要斜体，使用变换
-    if (titleItalic.value) {
-      ctx.translate(titlePosX, titlePosY)
-      ctx.transform(1, 0, -0.2, 1, 0, 0)
-      
-      // 特殊处理 Maple Mono CN 的加粗效果
-      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
-        // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleColor.value
-        ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-        ctx.strokeText(titleText.value, 0, 0)
+      // 如果需要斜体，使用变换
+      if (titleItalic.value) {
+        ctx.translate(titlePosX, titlePosY)
+        ctx.transform(1, 0, -0.2, 1, 0, 0)
+        
+        // 特殊处理 Maple Mono CN 的加粗效果
+        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+          // 使用描边模拟加粗效果
+          ctx.strokeStyle = titleColor.value
+          ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(titleText.value, 0, 0)
+        }
+        ctx.fillText(titleText.value, 0, 0)
+      } else {
+        // 特殊处理 Maple Mono CN 的加粗效果
+        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+          // 使用描边模拟加粗效果
+          ctx.strokeStyle = titleColor.value
+          ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(titleText.value, titlePosX, titlePosY)
+        }
+        ctx.fillText(titleText.value, titlePosX, titlePosY)
       }
-      ctx.fillText(titleText.value, 0, 0)
-    } else {
-      // 特殊处理 Maple Mono CN 的加粗效果
-      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
-        // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleColor.value
-        ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-        ctx.strokeText(titleText.value, titlePosX, titlePosY)
-      }
-      ctx.fillText(titleText.value, titlePosX, titlePosY)
-    }
       
       ctx.restore()
     }
@@ -903,31 +1047,30 @@ const updateCanvasImmediate = async () => {
       }
       
       ctx.font = `${fontWeight} ${watermarkSize.value}px ${fontFamily}`
-      console.log('水印字体:', ctx.font)
       
-    // 如果需要斜体，使用变换
-    if (watermarkItalic.value) {
-      ctx.translate(watermarkPosX, watermarkPosY)
-      ctx.transform(1, 0, -0.2, 1, 0, 0)
-      
-      // 特殊处理 Maple Mono CN 的加粗效果
-      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
-        // 使用描边模拟加粗效果
-        ctx.strokeStyle = watermarkColor.value
-        ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-        ctx.strokeText(watermarkText.value, 0, 0)
+      // 如果需要斜体，使用变换
+      if (watermarkItalic.value) {
+        ctx.translate(watermarkPosX, watermarkPosY)
+        ctx.transform(1, 0, -0.2, 1, 0, 0)
+        
+        // 特殊处理 Maple Mono CN 的加粗效果
+        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+          // 使用描边模拟加粗效果
+          ctx.strokeStyle = watermarkColor.value
+          ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(watermarkText.value, 0, 0)
+        }
+        ctx.fillText(watermarkText.value, 0, 0)
+      } else {
+        // 特殊处理 Maple Mono CN 的加粗效果
+        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+          // 使用描边模拟加粗效果
+          ctx.strokeStyle = watermarkColor.value
+          ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
+        }
+        ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
       }
-      ctx.fillText(watermarkText.value, 0, 0)
-    } else {
-      // 特殊处理 Maple Mono CN 的加粗效果
-      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
-        // 使用描边模拟加粗效果
-        ctx.strokeStyle = watermarkColor.value
-        ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-        ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
-      }
-      ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
-    }
       
       ctx.restore()
     }
@@ -938,6 +1081,66 @@ const updateCanvasImmediate = async () => {
 
 // 对外暴露的更新函数
 const updateCanvas = debouncedUpdateCanvas
+
+// 生成随机文件名
+const generateRandomFileName = () => {
+  const numbers = '0123456789'
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz'
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  
+  let chars = ''
+  if (randomFileNameOptions.includeNumbers) chars += numbers
+  if (randomFileNameOptions.includeLowercase) chars += lowercase
+  if (randomFileNameOptions.includeUppercase) chars += uppercase
+  
+  if (chars === '') {
+    chars = numbers + lowercase // 默认包含数字和小写字母
+  }
+  
+  let result = ''
+  const length = Math.max(4, Math.min(60, randomFileNameLength.value))
+  
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  
+  return result
+}
+
+// 存储当前预览的随机文件名
+const currentRandomFileName = ref('')
+
+// 生成并缓存随机文件名
+const generateAndCacheRandomFileName = () => {
+  currentRandomFileName.value = generateRandomFileName()
+  return currentRandomFileName.value
+}
+
+// 获取最终的文件名
+const getFinalFileName = () => {
+  if (useRandomFileName.value) {
+    // 如果还没有生成过随机文件名，或者设置发生了变化，重新生成
+    if (!currentRandomFileName.value) {
+      return generateAndCacheRandomFileName()
+    }
+    return currentRandomFileName.value
+  }
+  
+  const customName = exportFileName.value.trim()
+  if (customName === '') {
+    return '封面设计'
+  }
+  
+  // 限制文件名长度在4-60个字符之间
+  if (customName.length < 4) {
+    return customName + '_封面'
+  }
+  if (customName.length > 60) {
+    return customName.substring(0, 60)
+  }
+  
+  return customName
+}
 
 // 导出图片
 const exportImage = async () => {
@@ -1023,29 +1226,29 @@ const exportImage = async () => {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     
-      // 如果需要斜体，使用变换
-      if (titleItalic.value) {
-        ctx.translate(titlePosX, titlePosY)
-        ctx.transform(1, 0, -0.2, 1, 0, 0)
-        
-        // 特殊处理 Maple Mono CN 的加粗效果
-        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
-          // 使用描边模拟加粗效果
-          ctx.strokeStyle = titleColor.value
-          ctx.lineWidth = 0.8
-          ctx.strokeText(titleText.value, 0, 0)
-        }
-        ctx.fillText(titleText.value, 0, 0)
-      } else {
-        // 特殊处理 Maple Mono CN 的加粗效果
-        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
-          // 使用描边模拟加粗效果
-          ctx.strokeStyle = titleColor.value
-          ctx.lineWidth = 0.8
-          ctx.strokeText(titleText.value, titlePosX, titlePosY)
-        }
-        ctx.fillText(titleText.value, titlePosX, titlePosY)
+    // 如果需要斜体，使用变换
+    if (titleItalic.value) {
+      ctx.translate(titlePosX, titlePosY)
+      ctx.transform(1, 0, -0.2, 1, 0, 0)
+      
+      // 特殊处理 Maple Mono CN 的加粗效果
+      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+        // 使用描边模拟加粗效果
+        ctx.strokeStyle = titleColor.value
+        ctx.lineWidth = 0.8
+        ctx.strokeText(titleText.value, 0, 0)
       }
+      ctx.fillText(titleText.value, 0, 0)
+    } else {
+      // 特殊处理 Maple Mono CN 的加粗效果
+      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+        // 使用描边模拟加粗效果
+        ctx.strokeStyle = titleColor.value
+        ctx.lineWidth = 0.8
+        ctx.strokeText(titleText.value, titlePosX, titlePosY)
+      }
+      ctx.fillText(titleText.value, titlePosX, titlePosY)
+    }
     
     // 恢复状态
     ctx.restore()
@@ -1105,29 +1308,29 @@ const exportImage = async () => {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     
-      // 如果需要斜体，使用变换
-      if (watermarkItalic.value) {
-        ctx.translate(watermarkPosX, watermarkPosY)
-        ctx.transform(1, 0, -0.2, 1, 0, 0)
-        
-        // 特殊处理 Maple Mono CN 的加粗效果
-        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
-          // 使用描边模拟加粗效果
-          ctx.strokeStyle = watermarkColor.value
-          ctx.lineWidth = 0.5
-          ctx.strokeText(watermarkText.value, 0, 0)
-        }
-        ctx.fillText(watermarkText.value, 0, 0)
-      } else {
-        // 特殊处理 Maple Mono CN 的加粗效果
-        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
-          // 使用描边模拟加粗效果
-          ctx.strokeStyle = watermarkColor.value
-          ctx.lineWidth = 0.5
-          ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
-        }
-        ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
+    // 如果需要斜体，使用变换
+    if (watermarkItalic.value) {
+      ctx.translate(watermarkPosX, watermarkPosY)
+      ctx.transform(1, 0, -0.2, 1, 0, 0)
+      
+      // 特殊处理 Maple Mono CN 的加粗效果
+      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+        // 使用描边模拟加粗效果
+        ctx.strokeStyle = watermarkColor.value
+        ctx.lineWidth = 0.5
+        ctx.strokeText(watermarkText.value, 0, 0)
       }
+      ctx.fillText(watermarkText.value, 0, 0)
+    } else {
+      // 特殊处理 Maple Mono CN 的加粗效果
+      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+        // 使用描边模拟加粗效果
+        ctx.strokeStyle = watermarkColor.value
+        ctx.lineWidth = 0.5
+        ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
+      }
+      ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
+    }
     
     ctx.globalAlpha = 1
     
@@ -1141,7 +1344,8 @@ const exportImage = async () => {
   
   // 创建下载链接
   const link = document.createElement('a')
-  link.download = `封面_${Date.now()}.${exportFormat.value === 'jpeg' ? 'jpg' : exportFormat.value}`
+  const finalFileName = getFinalFileName()
+  link.download = `${finalFileName}.${exportFormat.value === 'jpeg' ? 'jpg' : exportFormat.value}`
   link.href = dataURL
   link.click()
 }
@@ -1197,6 +1401,24 @@ const drawIconToCanvas = async (ctx: CanvasRenderingContext2D, x: number, y: num
   })
 }
 
+// 监听随机文件名设置变化，清除缓存
+watch([randomFileNameLength, randomFileNameOptions], () => {
+  if (useRandomFileName.value) {
+    currentRandomFileName.value = '' // 清除缓存，强制重新生成
+  }
+}, { deep: true })
+
+// 监听是否使用随机文件名的变化
+watch(useRandomFileName, (newValue) => {
+  if (newValue) {
+    // 切换到随机文件名时，生成一个新的
+    generateAndCacheRandomFileName()
+  } else {
+    // 切换到自定义文件名时，清除随机文件名缓存
+    currentRandomFileName.value = ''
+  }
+})
+
 // 组件挂载时初始化
 onMounted(async () => {
   // 先加载图标
@@ -1214,6 +1436,11 @@ onMounted(async () => {
       await checkFontLoaded()
       updateCanvas()
     }, 1000)
+  }
+  
+  // 如果默认使用随机文件名，初始化生成一个
+  if (useRandomFileName.value) {
+    generateAndCacheRandomFileName()
   }
 })
 </script>
