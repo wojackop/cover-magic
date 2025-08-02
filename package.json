@@ -1,5 +1,5 @@
 {
-  "name": "Vue3-mini-cover",
+  "name": "vue3-mini-cover",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,17 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@iconify/iconify": "^3.1.1",
     "@tailwindcss/vite": "^4.1.11",
     "html2canvas": "^1.4.1",
-    "iconify-icon": "^3.0.0",
     "tailwindcss": "^4.1.11",
     "vue": "^3.5.17"
   },
   "devDependencies": {
+    "@iconify/vue": "^5.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
+    "naive-ui": "^2.42.0",
     "typescript": "~5.8.3",
+    "vfonts": "^0.0.3",
     "vite": "^7.0.4",
     "vue-tsc": "^2.2.12"
   }
