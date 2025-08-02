@@ -69,6 +69,15 @@
                   :swatches="colorSwatches"
                   :show-alpha="false"
                 />
+                
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <Icon icon="material-symbols:opacity" class="text-lg" />
+                    背景透明度
+                  </label>
+                  <n-slider v-model:value="backgroundOpacity" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
+                  <span class="text-sm text-gray-500">{{ backgroundOpacity }}%</span>
+                </div>
               </div>
 
               <div v-if="backgroundType === 'image'">
@@ -511,6 +520,7 @@ import {
 // 背景设置
 const backgroundType = ref<'color' | 'image'>('color')
 const backgroundColor = ref('#000000')
+const backgroundOpacity = ref(100)
 const backgroundImage = ref<string>('')
 const backgroundImageObj = ref<HTMLImageElement | null>(null)
 const blurAmount = ref(0)
@@ -900,7 +910,16 @@ const updateCanvasImmediate = async () => {
 
     // 绘制背景
     if (backgroundType.value === 'color') {
-      ctx.fillStyle = backgroundColor.value
+      // 绘制纯色背景，应用透明度
+      const opacity = backgroundOpacity.value / 100
+      const color = backgroundColor.value
+      
+      // 将十六进制颜色转换为 rgba 格式
+      const r = parseInt(color.slice(1, 3), 16)
+      const g = parseInt(color.slice(3, 5), 16)
+      const b = parseInt(color.slice(5, 7), 16)
+      
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
     } else if (backgroundImageObj.value) {
       // 绘制背景图片
@@ -1155,14 +1174,28 @@ const exportImage = async () => {
   if (!ctx) return
 
   // 绘制背景
-  if (backgroundType.value === 'color') {
-    ctx.fillStyle = backgroundColor.value
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-  } else if (backgroundImageObj.value) {
-    // 绘制背景图片
-    ctx.filter = `blur(${blurAmount.value}px)`
+  if (backgroundType.value === 'image' && backgroundImageObj.value) {
+    // 绘制图片背景
+    ctx.save()
+    
+    if (blurAmount.value > 0) {
+      ctx.filter = `blur(${blurAmount.value}px)`
+    }
+    
     ctx.drawImage(backgroundImageObj.value, 0, 0, canvas.width, canvas.height)
-    ctx.filter = 'none'
+    ctx.restore()
+  } else if (backgroundType.value === 'color') {
+    // 绘制纯色背景，应用透明度
+    const opacity = backgroundOpacity.value / 100
+    const color = backgroundColor.value
+    
+    // 将十六进制颜色转换为 rgba 格式
+    const r = parseInt(color.slice(1, 3), 16)
+    const g = parseInt(color.slice(3, 5), 16)
+    const b = parseInt(color.slice(5, 7), 16)
+    
+    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
   }
 
   // 绘制图标
@@ -1338,9 +1371,40 @@ const exportImage = async () => {
     ctx.restore()
   }
 
-  // 导出图片
-  const mimeType = exportFormat.value === 'jpeg' ? 'image/jpeg' : `image/${exportFormat.value}`
-  const dataURL = canvas.toDataURL(mimeType, 0.9)
+  // 导出图片 - 处理透明度和格式兼容性
+  let mimeType = exportFormat.value === 'jpeg' ? 'image/jpeg' : `image/${exportFormat.value}`
+  let quality = 0.9
+  
+  // 如果是 JPEG 格式且背景有透明度，需要先绘制白色背景
+  if (exportFormat.value === 'jpeg' && backgroundType.value === 'color' && backgroundOpacity.value < 100) {
+    // 创建一个新的画布来处理 JPEG 的透明度问题
+    const tempCanvas = document.createElement('canvas')
+    tempCanvas.width = canvas.width
+    tempCanvas.height = canvas.height
+    const tempCtx = tempCanvas.getContext('2d')
+    
+    if (tempCtx) {
+      // 先绘制白色背景
+      tempCtx.fillStyle = '#ffffff'
+      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height)
+      
+      // 然后绘制原始内容
+      tempCtx.drawImage(canvas, 0, 0)
+      
+      // 使用临时画布导出
+      const dataURL = tempCanvas.toDataURL(mimeType, quality)
+      
+      // 创建下载链接
+      const link = document.createElement('a')
+      const finalFileName = getFinalFileName()
+      link.download = `${finalFileName}.jpg`
+      link.href = dataURL
+      link.click()
+      return
+    }
+  }
+  
+  const dataURL = canvas.toDataURL(mimeType, quality)
   
   // 创建下载链接
   const link = document.createElement('a')
