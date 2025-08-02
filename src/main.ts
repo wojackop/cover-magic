@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import './style.css'
+import '@/assets/css/main.css'
 import App from './App.vue'
 
 // 通用字体
