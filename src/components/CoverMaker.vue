@@ -42,14 +42,14 @@
                 <label class="block text-sm font-medium text-gray-700 mb-3">背景类型</label>
                 <n-space>
                   <n-button strong secondary round :type="backgroundType === 'color' ? 'primary' : 'default'"
-                    @click="backgroundType = 'color'">
+                    @click="backgroundType = 'color'; updateCanvas()">
                     <template #icon>
                       <Icon icon="material-symbols:palette" />
                     </template>
                     纯色
                   </n-button>
                   <n-button strong secondary round :type="backgroundType === 'color' ? 'default' : 'primary'"
-                    @click="backgroundType = 'image'">
+                    @click="backgroundType = 'image'; updateCanvas()">
                     <template #icon>
                       <Icon icon="material-symbols:image" />
                     </template>
