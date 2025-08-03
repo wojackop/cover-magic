@@ -35,3 +35,10 @@ export const fontOptions = [
   { label: '等宽字体', value: 'monospace' },
   { label: '衬线字体', value: 'serif' }
 ]
+
+// 导出格式选项
+export const formatOptions = [
+  { label: 'PNG (无损)', value: 'png' },
+  { label: 'JPEG (有损)', value: 'jpeg' },
+  { label: 'WEBP (高压缩率)', value: 'webp' }
+]

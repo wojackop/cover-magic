@@ -68,213 +68,25 @@
 
         <!-- 水印设置 -->
         <n-grid-item>
-          <n-card size="large" hoverable class="h-full">
-            <template #header>
-              <div class="flex items-center gap-2">
-                <Icon icon="material-symbols:water-drop" class="text-xl text-blue-500" />
-                <span class="font-semibold">水印设置</span>
-              </div>
-            </template>
-            <n-space vertical size="large">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:text-fields" class="text-lg" />
-                  水印文本
-                </label>
-                <n-input v-model:value="watermarkText" placeholder="输入水印..." @input="updateCanvas">
-                  <template #prefix>
-                    <Icon icon="material-symbols:edit" />
-                  </template>
-                </n-input>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:font-download" class="text-lg" />
-                  字体
-                </label>
-                <n-select v-model:value="watermarkFont" @update:value="updateCanvas" :options="fontOptions" />
-              </div>
-
-              <div>
-                <n-space>
-                  <n-checkbox v-model:checked="watermarkBold" @update:checked="updateCanvas">
-                    <span class="flex items-center gap-2">
-                      <Icon icon="material-symbols:format-bold" class="text-lg" />
-                      加粗
-                    </span>
-                  </n-checkbox>
-                  <n-checkbox v-model:checked="watermarkItalic" @update:checked="updateCanvas">
-                    <span class="flex items-center gap-2">
-                      <Icon icon="material-symbols:format-italic" class="text-lg" />
-                      斜体
-                    </span>
-                  </n-checkbox>
-                </n-space>
-              </div>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:format-size" class="text-lg" />
-                    字体大小
-                  </label>
-                  <n-slider v-model:value="watermarkSize" :min="10" :max="40" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ watermarkSize }}px</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:opacity" class="text-lg" />
-                    透明度
-                  </label>
-                  <n-slider v-model:value="watermarkOpacity" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ watermarkOpacity }}%</span>
-                </n-grid-item>
-              </n-grid>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:palette" class="text-lg" />
-                  颜色
-                </label>
-                <n-color-picker 
-                  v-model:value="watermarkColor" 
-                  @update:value="updateCanvas"
-                  :swatches="colorSwatches"
-                  :show-alpha="false"
-                />
-              </div>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-horiz" class="text-lg" />
-                    水平位置
-                  </label>
-                  <n-slider v-model:value="watermarkX" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ watermarkX }}%</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-vert" class="text-lg" />
-                    垂直位置
-                  </label>
-                  <n-slider v-model:value="watermarkY" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ watermarkY }}%</span>
-                </n-grid-item>
-              </n-grid>
-            </n-space>
-          </n-card>
+          <WatermarkPanel
+            :watermarkConfig="watermarkConfig"
+            @update:watermarkConfig="(newWatermarkConfig) => { 
+              Object.assign(watermarkConfig, newWatermarkConfig); 
+              updateCanvas();
+            }"
+            @canvas-update="updateCanvas"
+          />
         </n-grid-item>
 
         <!-- 导出设置 -->
         <n-grid-item>
-          <n-card size="large" hoverable class="h-full">
-            <template #header>
-              <div class="flex items-center gap-2">
-                <Icon icon="material-symbols:download" class="text-xl text-red-600" />
-                <span class="font-semibold">导出设置</span>
-              </div>
-            </template>
-            <n-space vertical size="large">
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:width" class="text-lg" />
-                    宽度
-                  </label>
-                  <n-input-number v-model:value="exportWidth" :min="100" :max="4000" />
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:height" class="text-lg" />
-                    高度
-                  </label>
-                  <n-input-number v-model:value="exportHeight" :min="100" :max="4000" />
-                </n-grid-item>
-              </n-grid>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:image" class="text-lg" />
-                  格式
-                </label>
-                <n-select v-model:value="exportFormat" :options="[
-                  { label: 'PNG', value: 'png' },
-                  { label: 'JPG', value: 'jpeg' },
-                  { label: 'WEBP', value: 'webp' }
-                ]" />
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:drive-file-rename-outline" class="text-lg" />
-                  文件名设置
-                </label>
-                <n-space vertical size="small">
-                  <n-checkbox v-model:checked="useRandomFileName">
-                    使用随机文件名
-                  </n-checkbox>
-                  
-                  <div v-if="!useRandomFileName">
-                    <n-input 
-                      v-model:value="exportFileName" 
-                      placeholder="输入文件名 (4-60个字符)" 
-                      :maxlength="60"
-                      show-count
-                    />
-                  </div>
-                  
-                  <div v-if="useRandomFileName">
-                    <n-space vertical size="small">
-                      <div>
-                        <label class="text-xs text-gray-600 mb-1 block">随机名称长度</label>
-                        <n-slider 
-                          v-model:value="randomFileNameLength" 
-                          :min="4" 
-                          :max="60" 
-                          :step="1" 
-                        />
-                        <span class="text-xs text-gray-500">{{ randomFileNameLength }}个字符</span>
-                      </div>
-                      
-                      <div>
-                        <label class="text-xs text-gray-600 mb-1 block">包含字符类型</label>
-                        <n-space>
-                          <n-checkbox v-model:checked="randomFileNameOptions.includeNumbers" size="small">
-                            数字
-                          </n-checkbox>
-                          <n-checkbox v-model:checked="randomFileNameOptions.includeLowercase" size="small">
-                            小写
-                          </n-checkbox>
-                          <n-checkbox v-model:checked="randomFileNameOptions.includeUppercase" size="small">
-                            大写
-                          </n-checkbox>
-                        </n-space>
-                      </div>
-                      
-                      <n-button size="small" @click="generateAndCacheRandomFileName()" secondary>
-                        <template #icon>
-                          <Icon icon="material-symbols:refresh" />
-                        </template>
-                        预览随机名称: {{ currentRandomFileName || generateAndCacheRandomFileName() }}
-                      </n-button>
-                    </n-space>
-                  </div>
-                </n-space>
-              </div>
-
-              <n-button @click="exportImage" type="primary" size="large" block strong>
-                <template #icon>
-                  <Icon icon="material-symbols:rocket-launch" />
-                </template>
-                导出图片
-              </n-button>
-            </n-space>
-          </n-card>
+          <ExportPanel
+            :exportConfig="exportConfig"
+            @update:exportConfig="(newExportConfig) => { 
+              Object.assign(exportConfig, newExportConfig); 
+            }"
+            @export-image="exportImage"
+          />
         </n-grid-item>
       </n-grid>
     </div>
@@ -282,13 +94,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import { 
   NButton, 
   NInput, 
   NSlider, 
-  NColorPicker, 
   NSelect, 
   NCheckbox, 
   NInputNumber,
@@ -300,8 +111,9 @@ import {
 import BackgroundPanel from '@/components/BackgroundPanel.vue'
 import IconPanel from '@/components/IconPanel.vue'
 import TitlePanel from '@/components/TitlePanel.vue'
-import { colorSwatches,fontOptions } from '@/lib/constant'
-import type { BackgroundConfig,IconConfig,TitleConfig } from '@/lib/type'
+import WatermarkPanel from '@/components/WatermarkPanel.vue'
+import ExportPanel from '@/components/ExportPanel.vue'
+import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
 
 import { BACKGROUND_TYPE } from '@/lib/enum'
 
@@ -344,70 +156,37 @@ const titleConfig = reactive<TitleConfig>({
   }
 })
 
-// 水印设置
-const watermarkText = ref('@baiwumm')
-
-// 水印样式配置
-const watermarkStyle = reactive({
-  font: 'Maple Mono CN',
-  size: 24,
-  color: '#ffffff',
-  opacity: 80,
-  position: {
-    x: 90,
-    y: 95
+// 水印设置 - 用于控制封面水印的各项属性
+const watermarkConfig = reactive<WatermarkConfig>({
+  text: '@baiwumm',           // 水印文本：显示在封面上的水印内容
+  font: 'Maple Mono CN',      // 字体名称：指定水印文本使用的字体
+  size: 24,                   // 字体大小：控制水印文本的显示尺寸，单位为像素
+  color: '#ffffff',           // 字体颜色：指定水印文本的颜色，默认为白色
+  opacity: 80,                // 不透明度：控制水印的透明度，范围0-100，100表示完全不透明
+  position: {                 // 水印位置：控制水印在画布中的位置
+    x: 90,                    // 水平位置：以百分比表示，90表示靠右
+    y: 95                     // 垂直位置：以百分比表示，95表示靠下
   },
-  effects: {
-    bold: true,
-    italic: true
+  effects: {                  // 文本效果：控制水印文本的样式效果
+    bold: true,               // 粗体：true表示使用粗体，false表示不使用
+    italic: true              // 斜体：true表示使用斜体，false表示不使用
   }
 })
 
-// 为了保持向后兼容，创建计算属性
-const watermarkFont = computed({
-  get: () => watermarkStyle.font,
-  set: (value) => watermarkStyle.font = value
-})
-const watermarkSize = computed({
-  get: () => watermarkStyle.size,
-  set: (value) => watermarkStyle.size = value
-})
-const watermarkColor = computed({
-  get: () => watermarkStyle.color,
-  set: (value) => watermarkStyle.color = value
-})
-const watermarkOpacity = computed({
-  get: () => watermarkStyle.opacity,
-  set: (value) => watermarkStyle.opacity = value
-})
-const watermarkX = computed({
-  get: () => watermarkStyle.position.x,
-  set: (value) => watermarkStyle.position.x = value
-})
-const watermarkY = computed({
-  get: () => watermarkStyle.position.y,
-  set: (value) => watermarkStyle.position.y = value
-})
-const watermarkBold = computed({
-  get: () => watermarkStyle.effects.bold,
-  set: (value) => watermarkStyle.effects.bold = value
-})
-const watermarkItalic = computed({
-  get: () => watermarkStyle.effects.italic,
-  set: (value) => watermarkStyle.effects.italic = value
-})
-
-// 导出设置
-const exportWidth = ref(1920)
-const exportHeight = ref(1080)
-const exportFormat = ref('webp')
-const exportFileName = ref('封面设计')
-const useRandomFileName = ref(false)
-const randomFileNameLength = ref(8)
-const randomFileNameOptions = reactive({
-  includeNumbers: true,
-  includeLowercase: true,
-  includeUppercase: true
+// 导出设置 - 用于控制导出图片的各项属性
+const exportConfig = reactive<ExportConfig>({
+  width: 1920,                 // 导出宽度：导出图片的宽度，单位为像素
+  height: 1080,                // 导出高度：导出图片的高度，单位为像素
+  format: 'webp',              // 导出格式：支持'png'、'jpeg'、'webp'等格式
+  fileName: '封面设计',         // 文件名：导出图片的文件名
+  useRandomFileName: true,    // 是否使用随机文件名：true表示使用随机生成的文件名
+  randomFileNameLength: 32,     // 随机文件名长度：随机生成的文件名的字符数
+  randomFileNameOptions: {     // 随机文件名选项：控制随机文件名包含的字符类型
+    includeNumbers: true,      // 是否包含数字：true表示包含数字
+    includeLowercase: true,    // 是否包含小写字母：true表示包含小写字母
+    includeUppercase: true     // 是否包含大写字母：true表示包含大写字母
+  },
+  currentRandomFileName: ''    // 当前随机文件名：当前生成的随机文件名
 })
 
 // 画布引用和缓存变量
@@ -461,7 +240,7 @@ const waitForFont = async (maxWait = 3000) => {
   return fontLoaded
 }
 
-  // 加载图标
+// 加载图标
 const loadIcon = async () => {
   if (!iconConfig.code) {
     iconConfig.svg = ''
@@ -677,11 +456,11 @@ const updateAnimationTargets = () => {
   animationStates.titleX.target = titleConfig.position.x;
   animationStates.titleY.target = titleConfig.position.y;
   
-  // 更新水印相关动画目标
-  animationStates.watermarkSize.target = watermarkSize.value;
-  animationStates.watermarkX.target = watermarkX.value;
-  animationStates.watermarkY.target = watermarkY.value;
-  animationStates.watermarkOpacity.target = watermarkOpacity.value;
+// 更新水印相关动画目标
+  animationStates.watermarkSize.target = watermarkConfig.size;
+  animationStates.watermarkX.target = watermarkConfig.position.x;
+  animationStates.watermarkY.target = watermarkConfig.position.y;
+  animationStates.watermarkOpacity.target = watermarkConfig.opacity;
   
   // 更新图标相关动画目标
   animationStates.iconSize.target = iconConfig.size;
@@ -909,32 +688,32 @@ const renderFrame = async (
         if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
           // 使用描边模拟加粗效果
           ctx.strokeStyle = titleConfig.color
-          ctx.lineWidth = titleConfig.size * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.lineWidth = titleConfig.size * 2 * 0.01 // 根据字体大小调整描边宽度
           ctx.strokeText(titleConfig.text, titlePosX, titlePosY)
         }
         ctx.fillText(titleConfig.text, titlePosX, titlePosY)
       }
-      
       ctx.restore()
     }
 
-    // 绘制水印 - 确保可见
-    if (watermarkText.value.trim()) {
+    // 绘制水印
+    if (watermarkConfig.text) {
       const watermarkPosX = (currentWatermarkX / 100) * canvas.width
       const watermarkPosY = (currentWatermarkY / 100) * canvas.height
+      const watermarkOpacity = watermarkConfig.opacity / 100
 
       ctx.save()
-      ctx.fillStyle = watermarkColor.value
-      ctx.globalAlpha = watermarkOpacity.value / 100
+      ctx.globalAlpha = watermarkOpacity
+      ctx.fillStyle = watermarkConfig.color
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       
-      // 构建字体字符串 - 只设置加粗，斜体用变换实现
-      let fontWeight = watermarkBold.value ? 'bold' : 'normal'
+      // 构建字体字符串
+      let fontWeight = watermarkConfig.effects.bold ? 'bold' : 'normal'
       
       // 改进字体回退机制
       let fontFamily = ''
-      switch (watermarkFont.value) {
+      switch (watermarkConfig.font) {
         case 'Maple Mono CN':
           fontFamily = '"Maple Mono CN", "Courier New", "Consolas", monospace'
           break
@@ -966,127 +745,65 @@ const renderFrame = async (
           fontFamily = '"Times New Roman", Times, "Songti SC", serif'
           break
         default:
-          fontFamily = `"${watermarkFont.value}", Arial, sans-serif`
+          fontFamily = `"${watermarkConfig.font}", Arial, sans-serif`
       }
       
-      ctx.font = `${fontWeight} ${currentWatermarkSize}px ${fontFamily}`
+      ctx.font = `${fontWeight} ${watermarkConfig.size}px ${fontFamily}`
       
       // 如果需要斜体，使用变换
-      if (watermarkItalic.value) {
+      if (watermarkConfig.effects.italic) {
         ctx.translate(watermarkPosX, watermarkPosY)
         ctx.transform(1, 0, -0.2, 1, 0, 0)
         
         // 特殊处理 Maple Mono CN 的加粗效果
-        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+        if (watermarkConfig.effects.bold && watermarkConfig.font === 'Maple Mono CN') {
           // 使用描边模拟加粗效果
-          ctx.strokeStyle = watermarkColor.value
-          ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-          ctx.strokeText(watermarkText.value, 0, 0)
+          ctx.strokeStyle = watermarkConfig.color
+          ctx.lineWidth = watermarkConfig.size * 0.01 // 根据字体大小调整描边宽度
+          ctx.strokeText(watermarkConfig.text, 0, 0)
         }
-        ctx.fillText(watermarkText.value, 0, 0)
+        ctx.fillText(watermarkConfig.text, 0, 0)
       } else {
         // 特殊处理 Maple Mono CN 的加粗效果
-        if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+        if (watermarkConfig.effects.bold && watermarkConfig.font === 'Maple Mono CN') {
           // 使用描边模拟加粗效果
-          ctx.strokeStyle = watermarkColor.value
-          ctx.lineWidth = watermarkSize.value * 2 * 0.02 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-          ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
+          ctx.strokeStyle = watermarkConfig.color
+          ctx.lineWidth = watermarkConfig.size * 0.01 // 根据字体大小调整描边宽度
+          ctx.strokeText(watermarkConfig.text, watermarkPosX, watermarkPosY)
         }
-        ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
+        ctx.fillText(watermarkConfig.text, watermarkPosX, watermarkPosY)
       }
-      
       ctx.restore()
     }
-
 }
 
-// 对外暴露的更新函数
-const updateCanvas = debouncedUpdateCanvas
-
-// 生成随机文件名
-const generateRandomFileName = () => {
-  const numbers = '0123456789'
-  const lowercase = 'abcdefghijklmnopqrstuvwxyz'
-  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  
-  let chars = ''
-  if (randomFileNameOptions.includeNumbers) chars += numbers
-  if (randomFileNameOptions.includeLowercase) chars += lowercase
-  if (randomFileNameOptions.includeUppercase) chars += uppercase
-  
-  if (chars === '') {
-    chars = numbers + lowercase // 默认包含数字和小写字母
-  }
-  
-  let result = ''
-  const length = Math.max(4, Math.min(60, randomFileNameLength.value))
-  
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  
-  return result
-}
-
-// 存储当前预览的随机文件名
-const currentRandomFileName = ref('')
-
-// 生成并缓存随机文件名
-const generateAndCacheRandomFileName = () => {
-  currentRandomFileName.value = generateRandomFileName()
-  return currentRandomFileName.value
-}
-
-// 获取最终的文件名
-const getFinalFileName = () => {
-  if (useRandomFileName.value) {
-    // 如果还没有生成过随机文件名，或者设置发生了变化，重新生成
-    if (!currentRandomFileName.value) {
-      return generateAndCacheRandomFileName()
-    }
-    return currentRandomFileName.value
-  }
-  
-  const customName = exportFileName.value.trim()
-  if (customName === '') {
-    return '封面设计'
-  }
-  
-  // 限制文件名长度在4-60个字符之间
-  if (customName.length < 4) {
-    return customName + '_封面'
-  }
-  if (customName.length > 60) {
-    return customName.substring(0, 60)
-  }
-  
-  return customName
+// 更新画布 - 公共入口点
+const updateCanvas = () => {
+  debouncedUpdateCanvas()
 }
 
 // 导出图片
 const exportImage = async () => {
-  // 确保字体已加载
+  const canvas = previewCanvas.value
+  if (!canvas) return
+  
+  // 创建一个新的离屏画布，用于导出
+  const exportCanvas = document.createElement('canvas')
+  exportCanvas.width = exportConfig.width
+  exportCanvas.height = exportConfig.height
+  
+  const exportCtx = exportCanvas.getContext('2d', { alpha: false })
+  if (!exportCtx) return
+  
+  // 等待字体加载完成
   await waitForFont()
   
-  const canvas = document.createElement('canvas')
-  canvas.width = exportWidth.value
-  canvas.height = exportHeight.value
-  const ctx = canvas.getContext('2d')
+  // 清空导出画布
+  exportCtx.fillStyle = '#ffffff'
+  exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
   
-  if (!ctx) return
-
   // 绘制背景
-  if (backgroundConfig.type === 'image' && backgroundConfig.imageObj) {
-    // 绘制图片背景
-    ctx.save()
-    
-    if (backgroundConfig.blur > 0) {
-      ctx.filter = `blur(${backgroundConfig.blur}px)`
-    }
-    
-    ctx.drawImage(backgroundConfig.imageObj, 0, 0, canvas.width, canvas.height)
-    ctx.restore()
-  } else if (backgroundConfig.type === 'color') {
+  if (backgroundConfig.type === 'color') {
     // 绘制纯色背景，应用透明度
     const opacity = backgroundConfig.opacity / 100
     const color = backgroundConfig.color
@@ -1096,30 +813,97 @@ const exportImage = async () => {
     const g = parseInt(color.slice(3, 5), 16)
     const b = parseInt(color.slice(5, 7), 16)
     
-    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    exportCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
+    exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
+  } else if (backgroundConfig.imageObj) {
+    // 绘制背景图片
+    exportCtx.filter = `blur(${backgroundConfig.blur}px)`
+    exportCtx.drawImage(backgroundConfig.imageObj, 0, 0, exportCanvas.width, exportCanvas.height)
+    exportCtx.filter = 'none'
   }
-
+  
   // 绘制图标
   if (iconConfig.svg) {
-    const iconPosX = (iconConfig.position.x / 100) * canvas.width
-    const iconPosY = (iconConfig.position.y / 100) * canvas.height
-    const scaledIconSize = (iconConfig.size / 800) * canvas.width // 根据画布大小缩放
-    await drawIconToCanvas(ctx, iconPosX, iconPosY, scaledIconSize)
+    const iconPosX = (iconConfig.position.x / 100) * exportCanvas.width
+    const iconPosY = (iconConfig.position.y / 100) * exportCanvas.height
+    const iconSize = iconConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
+    
+    // 设置阴影
+    if (iconConfig.shadowSize > 0) {
+      exportCtx.shadowColor = iconConfig.shadowColor
+      exportCtx.shadowBlur = iconConfig.shadowSize * (exportCanvas.width / canvas.width) // 按比例缩放
+      exportCtx.shadowOffsetX = 0
+      exportCtx.shadowOffsetY = 0
+    }
+    
+    // 如果缓存的图标存在且可用，直接使用
+    if (iconImageCache) {
+      // 绘制图标，保持宽高比
+      const aspectRatio = iconImageCache.width / iconImageCache.height
+      let drawWidth = iconSize
+      let drawHeight = iconSize
+      
+      if (aspectRatio > 1) {
+        drawHeight = iconSize / aspectRatio
+      } else {
+        drawWidth = iconSize * aspectRatio
+      }
+      
+      exportCtx.drawImage(iconImageCache, iconPosX - drawWidth / 2, iconPosY - drawHeight / 2, drawWidth, drawHeight)
+    } else {
+      // 如果没有缓存，创建新的图标
+      const svgBlob = new Blob([iconConfig.svg], { type: 'image/svg+xml' })
+      const url = URL.createObjectURL(svgBlob)
+      const img = new Image()
+      
+      await new Promise<void>((resolve) => {
+        img.onload = () => {
+          // 绘制图标，保持宽高比
+          const aspectRatio = img.width / img.height
+          let drawWidth = iconSize
+          let drawHeight = iconSize
+          
+          if (aspectRatio > 1) {
+            drawHeight = iconSize / aspectRatio
+          } else {
+            drawWidth = iconSize * aspectRatio
+          }
+          
+          exportCtx.drawImage(img, iconPosX - drawWidth / 2, iconPosY - drawHeight / 2, drawWidth, drawHeight)
+          URL.revokeObjectURL(url)
+          resolve()
+        }
+        
+        img.onerror = () => {
+          URL.revokeObjectURL(url)
+          resolve()
+        }
+        
+        img.src = url
+      })
+    }
+    
+    // 清除阴影
+    exportCtx.shadowColor = 'transparent'
+    exportCtx.shadowBlur = 0
+    exportCtx.shadowOffsetX = 0
+    exportCtx.shadowOffsetY = 0
   }
-
+  
   // 绘制标题
   if (titleConfig.text) {
-    const titlePosX = (titleConfig.position.x / 100) * canvas.width
-    const titlePosY = (titleConfig.position.y / 100) * canvas.height
-    const scaledTitleSize = (titleConfig.size / 800) * canvas.width // 根据画布大小缩放
-
-    // 保存当前状态
-    ctx.save()
+    const titlePosX = (titleConfig.position.x / 100) * exportCanvas.width
+    const titlePosY = (titleConfig.position.y / 100) * exportCanvas.height
+    const titleSize = titleConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
     
-    // 构建字体样式 - 使用相同的字体回退机制
-    const fontWeight = titleConfig.effects.bold ? 'bold' : 'normal'
+    exportCtx.fillStyle = titleConfig.color
+    exportCtx.textAlign = 'center'
+    exportCtx.textBaseline = 'middle'
     
+    // 构建字体字符串
+    let fontWeight = titleConfig.effects.bold ? 'bold' : 'normal'
+    
+    // 改进字体回退机制
     let fontFamily = ''
     switch (titleConfig.font) {
       case 'Maple Mono CN':
@@ -1156,53 +940,54 @@ const exportImage = async () => {
         fontFamily = `"${titleConfig.font}", Arial, sans-serif`
     }
     
-    ctx.font = `${fontWeight} ${scaledTitleSize}px ${fontFamily}`
-    ctx.fillStyle = titleConfig.color
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+    exportCtx.font = `${fontWeight} ${titleSize}px ${fontFamily}`
     
+    exportCtx.save()
     // 如果需要斜体，使用变换
     if (titleConfig.effects.italic) {
-      ctx.translate(titlePosX, titlePosY)
-      ctx.transform(1, 0, -0.2, 1, 0, 0)
+      exportCtx.translate(titlePosX, titlePosY)
+      exportCtx.transform(1, 0, -0.2, 1, 0, 0)
       
       // 特殊处理 Maple Mono CN 的加粗效果
       if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleConfig.color
-        ctx.lineWidth = 0.8
-        ctx.strokeText(titleConfig.text, 0, 0)
+        exportCtx.strokeStyle = titleConfig.color
+        exportCtx.lineWidth = titleSize * 0.01 // 根据字体大小调整描边宽度
+        exportCtx.strokeText(titleConfig.text, 0, 0)
       }
-      ctx.fillText(titleConfig.text, 0, 0)
+      exportCtx.fillText(titleConfig.text, 0, 0)
     } else {
       // 特殊处理 Maple Mono CN 的加粗效果
       if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleConfig.color
-        ctx.lineWidth = 0.8
-        ctx.strokeText(titleConfig.text, titlePosX, titlePosY)
+        exportCtx.strokeStyle = titleConfig.color
+        exportCtx.lineWidth = titleSize * 0.01 // 根据字体大小调整描边宽度
+        exportCtx.strokeText(titleConfig.text, titlePosX, titlePosY)
       }
-      ctx.fillText(titleConfig.text, titlePosX, titlePosY)
+      exportCtx.fillText(titleConfig.text, titlePosX, titlePosY)
     }
-    
-    // 恢复状态
-    ctx.restore()
+    exportCtx.restore()
   }
-
+  
   // 绘制水印
-  if (watermarkText.value) {
-    const watermarkPosX = (watermarkX.value / 100) * canvas.width
-    const watermarkPosY = (watermarkY.value / 100) * canvas.height
-    const scaledWatermarkSize = (watermarkSize.value / 800) * canvas.width // 根据画布大小缩放
-
-    // 保存当前状态
-    ctx.save()
+  if (watermarkConfig.text) {
+    const watermarkPosX = (watermarkConfig.position.x / 100) * exportCanvas.width
+    const watermarkPosY = (watermarkConfig.position.y / 100) * exportCanvas.height
+    const watermarkSize = watermarkConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
+    const watermarkOpacity = watermarkConfig.opacity / 100
     
-    // 构建字体样式 - 使用相同的字体回退机制
-    const fontWeight = watermarkBold.value ? 'bold' : 'normal'
+    exportCtx.save()
+    exportCtx.globalAlpha = watermarkOpacity
+    exportCtx.fillStyle = watermarkConfig.color
+    exportCtx.textAlign = 'center'
+    exportCtx.textBaseline = 'middle'
     
+    // 构建字体字符串
+    let fontWeight = watermarkConfig.effects.bold ? 'bold' : 'normal'
+    
+    // 改进字体回退机制
     let fontFamily = ''
-    switch (watermarkFont.value) {
+    switch (watermarkConfig.font) {
       case 'Maple Mono CN':
         fontFamily = '"Maple Mono CN", "Courier New", "Consolas", monospace'
         break
@@ -1234,210 +1019,67 @@ const exportImage = async () => {
         fontFamily = '"Times New Roman", Times, "Songti SC", serif'
         break
       default:
-        fontFamily = `"${watermarkFont.value}", Arial, sans-serif`
+        fontFamily = `"${watermarkConfig.font}", Arial, sans-serif`
     }
     
-    ctx.font = `${fontWeight} ${scaledWatermarkSize}px ${fontFamily}`
-    ctx.fillStyle = watermarkColor.value
-    ctx.globalAlpha = watermarkOpacity.value / 100
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+    exportCtx.font = `${fontWeight} ${watermarkSize}px ${fontFamily}`
     
     // 如果需要斜体，使用变换
-    if (watermarkItalic.value) {
-      ctx.translate(watermarkPosX, watermarkPosY)
-      ctx.transform(1, 0, -0.2, 1, 0, 0)
+    if (watermarkConfig.effects.italic) {
+      exportCtx.translate(watermarkPosX, watermarkPosY)
+      exportCtx.transform(1, 0, -0.2, 1, 0, 0)
       
       // 特殊处理 Maple Mono CN 的加粗效果
-      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+      if (watermarkConfig.effects.bold && watermarkConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = watermarkColor.value
-        ctx.lineWidth = 0.5
-        ctx.strokeText(watermarkText.value, 0, 0)
+        exportCtx.strokeStyle = watermarkConfig.color
+        exportCtx.lineWidth = watermarkSize * 0.01 // 根据字体大小调整描边宽度
+        exportCtx.strokeText(watermarkConfig.text, 0, 0)
       }
-      ctx.fillText(watermarkText.value, 0, 0)
+      exportCtx.fillText(watermarkConfig.text, 0, 0)
     } else {
       // 特殊处理 Maple Mono CN 的加粗效果
-      if (watermarkBold.value && watermarkFont.value === 'Maple Mono CN') {
+      if (watermarkConfig.effects.bold && watermarkConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = watermarkColor.value
-        ctx.lineWidth = 0.5
-        ctx.strokeText(watermarkText.value, watermarkPosX, watermarkPosY)
+        exportCtx.strokeStyle = watermarkConfig.color
+        exportCtx.lineWidth = watermarkSize * 0.01 // 根据字体大小调整描边宽度
+        exportCtx.strokeText(watermarkConfig.text, watermarkPosX, watermarkPosY)
       }
-      ctx.fillText(watermarkText.value, watermarkPosX, watermarkPosY)
+      exportCtx.fillText(watermarkConfig.text, watermarkPosX, watermarkPosY)
     }
-    
-    ctx.globalAlpha = 1
-    
-    // 恢复状态
-    ctx.restore()
-  }
-
-  // 导出图片 - 处理透明度和格式兼容性
-  let mimeType = exportFormat.value === 'jpeg' ? 'image/jpeg' : `image/${exportFormat.value}`
-  let quality = 0.9
-  
-  // 如果是 JPEG 格式且背景有透明度，需要先绘制白色背景
-  if (exportFormat.value === 'jpeg' && backgroundConfig.type === 'color' && backgroundConfig.opacity < 100) {
-    // 创建一个新的画布来处理 JPEG 的透明度问题
-    const tempCanvas = document.createElement('canvas')
-    tempCanvas.width = canvas.width
-    tempCanvas.height = canvas.height
-    const tempCtx = tempCanvas.getContext('2d')
-    
-    if (tempCtx) {
-      // 先绘制白色背景
-      tempCtx.fillStyle = '#ffffff'
-      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height)
-      
-      // 然后绘制原始内容
-      tempCtx.drawImage(canvas, 0, 0)
-      
-      // 使用临时画布导出
-      const dataURL = tempCanvas.toDataURL(mimeType, quality)
-      
-      // 创建下载链接
-      const link = document.createElement('a')
-      const finalFileName = getFinalFileName()
-      link.download = `${finalFileName}.jpg`
-      link.href = dataURL
-      link.click()
-      return
-    }
+    exportCtx.restore()
   }
   
-  const dataURL = canvas.toDataURL(mimeType, quality)
+// 获取最终文件名
+  const getFinalFileName = () => {
+    return exportConfig.useRandomFileName && exportConfig.currentRandomFileName
+      ? exportConfig.currentRandomFileName
+      : exportConfig.fileName
+  }
+  
+  // 导出图片
+  const dataURL = exportCanvas.toDataURL(`image/${exportConfig.format}`, 1.0)
   
   // 创建下载链接
   const link = document.createElement('a')
-  const finalFileName = getFinalFileName()
-  link.download = `${finalFileName}.${exportFormat.value === 'jpeg' ? 'jpg' : exportFormat.value}`
   link.href = dataURL
+  link.download = `${getFinalFileName()}.${exportConfig.format}`
+  document.body.appendChild(link)
   link.click()
+  document.body.removeChild(link)
 }
-
-// 专门用于导出的图标绘制函数
-const drawIconToCanvas = async (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
-  if (!iconConfig.svg) return
-
-  return new Promise<void>((resolve) => {
-    const svgBlob = new Blob([iconConfig.svg], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(svgBlob)
-    const img = new Image()
-
-    img.onload = () => {
-      // 设置阴影
-      if (iconConfig.shadowSize > 0) {
-        const scaledShadowSize = (iconConfig.shadowSize / 800) * ctx.canvas.width
-        ctx.shadowColor = iconConfig.shadowColor
-        ctx.shadowBlur = scaledShadowSize
-        ctx.shadowOffsetX = 0
-        ctx.shadowOffsetY = 0
-      }
-
-      // 绘制图标，保持宽高比
-      const aspectRatio = img.width / img.height
-      let drawWidth = size
-      let drawHeight = size
-
-      if (aspectRatio > 1) {
-        drawHeight = size / aspectRatio
-      } else {
-        drawWidth = size * aspectRatio
-      }
-
-      ctx.drawImage(img, x - drawWidth / 2, y - drawHeight / 2, drawWidth, drawHeight)
-
-      // 清除阴影
-      ctx.shadowColor = 'transparent'
-      ctx.shadowBlur = 0
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-
-      URL.revokeObjectURL(url)
-      resolve()
-    }
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      resolve()
-    }
-
-    img.src = url
-  })
-}
-
-// 监听随机文件名设置变化，清除缓存
-watch([randomFileNameLength, randomFileNameOptions], () => {
-  if (useRandomFileName.value) {
-    currentRandomFileName.value = '' // 清除缓存，强制重新生成
-  }
-}, { deep: true })
-
-// 监听是否使用随机文件名的变化
-watch(useRandomFileName, (newValue) => {
-  if (newValue) {
-    // 切换到随机文件名时，生成一个新的
-    generateAndCacheRandomFileName()
-  } else {
-    // 切换到自定义文件名时，清除随机文件名缓存
-    currentRandomFileName.value = ''
-  }
-})
-
-// 初始化动画状态
-const initAnimationStates = () => {
-  // 初始化标题相关动画状态
-  animationStates.titleSize.value = animationStates.titleSize.target = titleConfig.size;
-  animationStates.titleX.value = animationStates.titleX.target = titleConfig.position.x;
-  animationStates.titleY.value = animationStates.titleY.target = titleConfig.position.y;
-  
-  // 初始化水印相关动画状态
-  animationStates.watermarkSize.value = animationStates.watermarkSize.target = watermarkSize.value;
-  animationStates.watermarkX.value = animationStates.watermarkX.target = watermarkX.value;
-  animationStates.watermarkY.value = animationStates.watermarkY.target = watermarkY.value;
-  animationStates.watermarkOpacity.value = animationStates.watermarkOpacity.target = watermarkOpacity.value;
-  
-  // 初始化图标相关动画状态
-  animationStates.iconSize.value = animationStates.iconSize.target = iconConfig.size;
-  animationStates.iconX.value = animationStates.iconX.target = iconConfig.position.x;
-  animationStates.iconY.value = animationStates.iconY.target = iconConfig.position.y;
-  
-  // 初始化背景模糊动画状态
-  animationStates.backgroundBlur.value = animationStates.backgroundBlur.target = backgroundConfig.blur;
-};
 
 // 组件挂载时初始化
 onMounted(async () => {
-  // 初始化动画状态
-  initAnimationStates();
-  
-  // 先加载图标
-  await loadIcon()
-  
-  // 等待字体加载完成后再更新画布
+  // 等待字体加载
   await waitForFont()
   
-  // 初始渲染
-  renderCurrentFrame();
+  // 初始化画布
+  updateCanvas()
   
-  // 如果字体仍未加载完成，设置一个延迟重试
-  if (!fontLoaded) {
-    setTimeout(async () => {
-      await checkFontLoaded()
-      renderCurrentFrame();
-    }, 1000)
-  }
-  
-  // 如果默认使用随机文件名，初始化生成一个
-  if (useRandomFileName.value) {
-    generateAndCacheRandomFileName()
+  // 加载初始图标
+  if (iconConfig.code) {
+    loadIcon()
   }
 })
 </script>
-
-<style scoped>
-.container {
-  max-width: 1400px;
-}
-</style>

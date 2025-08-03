@@ -41,3 +41,33 @@ export type TitleConfig = {
   position: Position // 标题位置：控制标题在画布中的位置
   effects: TextEffects // 文本效果：控制标题文本的样式效果
 }
+
+// 水印设置
+export type WatermarkConfig = {
+  text: string // 水印文本：显示在封面上的水印内容
+  font: string // 字体名称：指定水印文本使用的字体
+  size: number // 字体大小：控制水印文本的显示尺寸，单位为像素
+  color: string // 字体颜色：指定水印文本的颜色，默认为白色
+  opacity: number // 不透明度：控制水印的透明度，范围0-100，100表示完全不透明
+  position: Position // 水印位置：控制水印在画布中的位置
+  effects: TextEffects // 文本效果：控制水印文本的样式效果
+}
+
+// 随机文件名选项
+export type RandomFileNameOptions = {
+  includeNumbers: boolean // 是否包含数字：true表示包含数字
+  includeLowercase: boolean // 是否包含小写字母：true表示包含小写字母
+  includeUppercase: boolean // 是否包含大写字母：true表示包含大写字母
+}
+
+// 导出设置
+export type ExportConfig = {
+  width: number // 导出宽度：导出图片的宽度，单位为像素
+  height: number // 导出高度：导出图片的高度，单位为像素
+  format: string // 导出格式：支持'png'、'jpeg'、'webp'等格式
+  fileName: string // 文件名：导出图片的文件名
+  useRandomFileName: boolean // 是否使用随机文件名：true表示使用随机生成的文件名
+  randomFileNameLength: number // 随机文件名长度：随机生成的文件名的字符数
+  randomFileNameOptions: RandomFileNameOptions // 随机文件名选项：控制随机文件名包含的字符类型
+  currentRandomFileName: string // 当前随机文件名：当前生成的随机文件名
+}
