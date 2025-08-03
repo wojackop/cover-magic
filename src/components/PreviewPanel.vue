@@ -1,11 +1,5 @@
 <template>
     <n-card class="mb-8" size="large">
-        <template #header>
-            <div class="flex items-center gap-2">
-                <Icon icon="material-symbols:preview" class="text-xl text-blue-600" />
-                <span class="font-semibold">实时预览</span>
-            </div>
-        </template>
         <div class="flex justify-center">
             <canvas ref="previewCanvas" class="border-2 border-gray-300 rounded-lg shadow-lg w-full max-w-4xl"
                 :width="800" :height="450" style="width: 100%; height: auto; max-width: 800px;"></canvas>
@@ -15,7 +9,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue'
-import { Icon } from '@iconify/vue'
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
 import { NCard } from 'naive-ui'
@@ -916,10 +909,6 @@ const exportImage = async (exportConfig: ExportConfig) => {
         // 测量文本宽度和高度
         const textWidth = exportCtx.measureText(props.titleConfig.text).width
         const textHeight = titleSize // 近似文本高度
-        
-        // 计算可滑动区域（考虑文本宽度和高度）
-        const titleHorizontalSpace = exportCanvas.width - textWidth
-        const titleVerticalSpace = exportCanvas.height - textHeight
         
         let adjustedTitlePosX, adjustedTitlePosY
         

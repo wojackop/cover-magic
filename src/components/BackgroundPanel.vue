@@ -129,7 +129,6 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { computed } from 'vue'
 import { colorSwatches } from '@/lib/constant'
 import {
     NButton,
@@ -171,31 +170,6 @@ const gradientDirectionOptions = [
     { label: '左下到右上', value: GRADIENT_DIRECTION.TO_TOP_RIGHT },
     { label: '右下到左上', value: GRADIENT_DIRECTION.TO_TOP_LEFT }
 ]
-
-// 渐变预览样式
-const gradientPreviewStyle = computed(() => {
-    const { startColor, endColor, direction } = props.backgroundConfig.gradient
-    const opacity = props.backgroundConfig.opacity / 100
-    
-    // 创建带透明度的颜色
-    const startColorWithOpacity = addOpacityToHexColor(startColor, opacity)
-    const endColorWithOpacity = addOpacityToHexColor(endColor, opacity)
-    
-    return {
-        background: `linear-gradient(${direction}, ${startColorWithOpacity}, ${endColorWithOpacity})`
-    }
-})
-
-// 为十六进制颜色添加透明度
-const addOpacityToHexColor = (hexColor: string, opacity: number): string => {
-    // 将十六进制颜色转换为 RGB
-    const r = parseInt(hexColor.slice(1, 3), 16)
-    const g = parseInt(hexColor.slice(3, 5), 16)
-    const b = parseInt(hexColor.slice(5, 7), 16)
-    
-    // 返回带透明度的 RGBA 颜色
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`
-}
 
 // 通用背景属性更新处理函数
 const updateBackgroundProperty = <T extends keyof BackgroundConfig>(property: T, value: BackgroundConfig[T]) => {

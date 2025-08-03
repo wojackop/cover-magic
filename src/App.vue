@@ -1,20 +1,35 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
     <!-- 顶部标题栏 -->
-    <div class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-      <div class="container mx-auto px-6 py-4">
-        <h1 class="text-3xl font-bold text-gray-800 text-center flex items-center justify-center gap-3">
-          <Icon icon="material-symbols:palette" class="text-4xl text-blue-600" />
-          封面制作工具
-        </h1>
-        <p class="text-gray-600 text-center mt-2">专业的封面设计工具，支持实时预览和高质量导出</p>
-      </div>
-    </div>
+    <HeaderPanel 
+      title="封面制作工具" 
+      subtitle="专业的封面设计工具，支持实时预览和高质量导出" 
+      @header-action="handleHeaderAction"
+    />
 
     <div class="container mx-auto px-6 py-8">
       <!-- 预览区域 -->
-      <PreviewPanel ref="previewPanelRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
-        :titleConfig="titleConfig" :watermarkConfig="watermarkConfig" @canvas-update="onCanvasUpdate" />
+      <div class="mb-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <Icon icon="material-symbols:preview" class="text-2xl text-blue-600" />
+            实时预览
+          </h2>
+          <div class="bg-blue-50 rounded-full px-4 py-1 text-sm text-blue-700 font-medium flex items-center gap-1">
+            <Icon icon="material-symbols:info-outline" />
+            拖动元素调整位置
+          </div>
+        </div>
+        <PreviewPanel 
+          ref="previewPanelRef" 
+          :backgroundConfig="backgroundConfig" 
+          :iconConfig="iconConfig"
+          :titleConfig="titleConfig" 
+          :watermarkConfig="watermarkConfig" 
+          @canvas-update="onCanvasUpdate" 
+          class="rounded-lg overflow-hidden shadow-inner"
+        />
+      </div>
 
       <!-- 控制面板 -->
       <n-grid cols="1 s:1 m:2 l:2 xl:3 2xl:3" responsive="screen" :x-gap="24" :y-gap="24">
@@ -65,6 +80,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { NGrid, NGridItem } from 'naive-ui'
+import HeaderPanel from '@/components/HeaderPanel.vue'
 import BackgroundPanel from '@/components/BackgroundPanel.vue'
 import IconPanel from '@/components/IconPanel.vue'
 import TitlePanel from '@/components/TitlePanel.vue'
@@ -217,6 +233,13 @@ const exportImage = async () => {
   if (previewPanelRef.value) {
     previewPanelRef.value.exportImage(exportConfig);
   }
+}
+
+// 处理头部面板的操作事件
+const handleHeaderAction = (action: string) => {
+  console.log('头部操作:', action)
+  // 可以根据不同的操作执行相应的逻辑
+  // 例如：打开帮助文档、显示关于信息等
 }
 
 // 组件挂载时初始化
