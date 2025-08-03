@@ -442,28 +442,98 @@ const renderFrame = async (
 
     // 绘制图标
     if (props.iconConfig.svg) {
-        const iconPosX = (currentIconX / 100) * canvas.width
-        const iconPosY = (currentIconY / 100) * canvas.height
+        // 测量图标大小（假设为正方形）
+        const iconSize = currentIconSize
+        const halfIconSize = iconSize / 2
+        
+        let iconPosX, iconPosY
+        
+        // 水平位置计算
+        if (currentIconX <= 0) {
+            // 左对齐
+            iconPosX = halfIconSize
+        } else if (currentIconX >= 100) {
+            // 右对齐
+            iconPosX = canvas.width - halfIconSize
+        } else {
+            // 在0%到100%之间线性插值
+            const minX = halfIconSize
+            const maxX = canvas.width - halfIconSize
+            iconPosX = minX + (maxX - minX) * (currentIconX / 100)
+        }
+        
+        // 垂直位置计算
+        if (currentIconY <= 0) {
+            // 顶部位置
+            iconPosY = halfIconSize
+        } else if (currentIconY >= 100) {
+            // 底部位置
+            iconPosY = canvas.height - halfIconSize
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfIconSize
+            const maxY = canvas.height - halfIconSize
+            iconPosY = minY + (maxY - minY) * (currentIconY / 100)
+        }
+        
         await drawIcon(ctx, iconPosX, iconPosY, currentIconSize)
     }
 
-    // 绘制标题
+        // 绘制标题
     if (props.titleConfig.text) {
-        const titlePosX = (currentTitleX / 100) * canvas.width
-        const titlePosY = (currentTitleY / 100) * canvas.height
-
         ctx.save()
         ctx.fillStyle = props.titleConfig.color
-        ctx.textAlign = 'center'
+        
+        // 设置字体以便测量文本宽度
+        const titleFontFamily = getFontFamilyWithFallback(props.titleConfig.font)
+        const titleFontWeight = props.titleConfig.effects.bold ? 'bold' : 'normal'
+        ctx.font = `${titleFontWeight} ${props.titleConfig.size}px ${titleFontFamily}`
+        
+        // 测量文本宽度和高度
+        const titleTextWidth = ctx.measureText(props.titleConfig.text).width
+        const titleTextHeight = props.titleConfig.size // 近似文本高度
+        
+        let titlePosX, titlePosY
+        
+        // 水平位置计算
+        if (currentTitleX <= 0) {
+            // 左对齐
+            ctx.textAlign = 'left'
+            titlePosX = 0
+        } else if (currentTitleX >= 100) {
+            // 右对齐
+            ctx.textAlign = 'right'
+            titlePosX = canvas.width
+        } else {
+            // 在0%到100%之间线性插值，考虑文本宽度
+            ctx.textAlign = 'center'
+            // 文本居中时，可滑动范围是从 titleTextWidth/2 到 canvas.width - titleTextWidth/2
+            const minX = titleTextWidth / 2
+            const maxX = canvas.width - titleTextWidth / 2
+            titlePosX = minX + (maxX - minX) * (currentTitleX / 100)
+        }
+        
+        // 垂直位置计算 - 始终使用中线对齐，避免切换基线导致的抖动
         ctx.textBaseline = 'middle'
+        
+        // 计算文本高度的一半，用于边缘位置的调整
+        const halfTitleHeight = titleTextHeight / 2
+        
+        if (currentTitleY <= 0) {
+            // 顶部位置
+            titlePosY = halfTitleHeight // 距离顶部半个文本高度
+        } else if (currentTitleY >= 100) {
+            // 底部位置
+            titlePosY = canvas.height - halfTitleHeight // 距离底部半个文本高度
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfTitleHeight
+            const maxY = canvas.height - halfTitleHeight
+            titlePosY = minY + (maxY - minY) * (currentTitleY / 100)
+        }
 
-        // 构建字体字符串 - 只设置加粗，斜体用变换实现
-        let fontWeight = props.titleConfig.effects.bold ? 'bold' : 'normal'
-
-        // 获取带回退的字体系列
-        const fontFamily = getFontFamilyWithFallback(props.titleConfig.font)
-
-        ctx.font = `${fontWeight} ${props.titleConfig.size}px ${fontFamily}`
+        // 更新字体设置 - 只设置加粗，斜体用变换实现
+        ctx.font = `${titleFontWeight} ${props.titleConfig.size}px ${titleFontFamily}`
 
         // 如果需要斜体，使用变换
         if (props.titleConfig.effects.italic) {
@@ -493,23 +563,62 @@ const renderFrame = async (
 
     // 绘制水印
     if (props.watermarkConfig.text) {
-        const watermarkPosX = (currentWatermarkX / 100) * canvas.width
-        const watermarkPosY = (currentWatermarkY / 100) * canvas.height
         const watermarkOpacity = props.watermarkConfig.opacity / 100
 
         ctx.save()
         ctx.globalAlpha = watermarkOpacity
         ctx.fillStyle = props.watermarkConfig.color
-        ctx.textAlign = 'center'
+        
+        // 设置字体以便测量文本宽度
+        const watermarkFontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
+        const watermarkFontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
+        ctx.font = `${watermarkFontWeight} ${props.watermarkConfig.size}px ${watermarkFontFamily}`
+        
+        // 测量文本宽度和高度
+        const watermarkTextWidth = ctx.measureText(props.watermarkConfig.text).width
+        const watermarkTextHeight = props.watermarkConfig.size // 近似文本高度
+        
+        let watermarkPosX, watermarkPosY
+        
+        // 水平位置计算
+        if (currentWatermarkX <= 0) {
+            // 左对齐
+            ctx.textAlign = 'left'
+            watermarkPosX = 0
+        } else if (currentWatermarkX >= 100) {
+            // 右对齐
+            ctx.textAlign = 'right'
+            watermarkPosX = canvas.width
+        } else {
+            // 在0%到100%之间线性插值，考虑文本宽度
+            ctx.textAlign = 'center'
+            // 文本居中时，可滑动范围是从 watermarkTextWidth/2 到 canvas.width - watermarkTextWidth/2
+            const minX = watermarkTextWidth / 2
+            const maxX = canvas.width - watermarkTextWidth / 2
+            watermarkPosX = minX + (maxX - minX) * (currentWatermarkX / 100)
+        }
+        
+        // 垂直位置计算 - 始终使用中线对齐，避免切换基线导致的抖动
         ctx.textBaseline = 'middle'
+        
+        // 计算文本高度的一半，用于边缘位置的调整
+        const halfWatermarkHeight = watermarkTextHeight / 2
+        
+        if (currentWatermarkY <= 0) {
+            // 顶部位置
+            watermarkPosY = halfWatermarkHeight // 距离顶部半个文本高度
+        } else if (currentWatermarkY >= 100) {
+            // 底部位置
+            watermarkPosY = canvas.height - halfWatermarkHeight // 距离底部半个文本高度
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfWatermarkHeight
+            const maxY = canvas.height - halfWatermarkHeight
+            watermarkPosY = minY + (maxY - minY) * (currentWatermarkY / 100)
+        }
 
-        // 构建字体字符串
-        let fontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
-
-        // 获取带回退的字体系列
-        const fontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
-
-        ctx.font = `${fontWeight} ${props.watermarkConfig.size}px ${fontFamily}`
+        // 更新字体设置
+        ctx.font = `${watermarkFontWeight} ${props.watermarkConfig.size}px ${watermarkFontFamily}`
 
         // 如果需要斜体，使用变换
         if (props.watermarkConfig.effects.italic) {
@@ -607,9 +716,38 @@ const exportImage = async (exportConfig: ExportConfig) => {
 
     // 绘制图标
     if (props.iconConfig.svg) {
-        const iconPosX = (props.iconConfig.position.x / 100) * exportCanvas.width
-        const iconPosY = (props.iconConfig.position.y / 100) * exportCanvas.height
         const iconSize = props.iconConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
+        const halfIconSize = iconSize / 2
+        
+        let adjustedIconPosX, adjustedIconPosY
+        
+        // 水平位置计算
+        if (props.iconConfig.position.x <= 0) {
+            // 左对齐
+            adjustedIconPosX = halfIconSize
+        } else if (props.iconConfig.position.x >= 100) {
+            // 右对齐
+            adjustedIconPosX = exportCanvas.width - halfIconSize
+        } else {
+            // 在0%到100%之间线性插值
+            const minX = halfIconSize
+            const maxX = exportCanvas.width - halfIconSize
+            adjustedIconPosX = minX + (maxX - minX) * (props.iconConfig.position.x / 100)
+        }
+        
+        // 垂直位置计算
+        if (props.iconConfig.position.y <= 0) {
+            // 顶部位置
+            adjustedIconPosY = halfIconSize
+        } else if (props.iconConfig.position.y >= 100) {
+            // 底部位置
+            adjustedIconPosY = exportCanvas.height - halfIconSize
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfIconSize
+            const maxY = exportCanvas.height - halfIconSize
+            adjustedIconPosY = minY + (maxY - minY) * (props.iconConfig.position.y / 100)
+        }
 
         // 使用 SVG 数据 URL 创建图像
         const svgBlob = new Blob([props.iconConfig.svg], { type: 'image/svg+xml' })
@@ -637,7 +775,7 @@ const exportImage = async (exportConfig: ExportConfig) => {
                     drawWidth = iconSize * aspectRatio
                 }
 
-                exportCtx.drawImage(img, iconPosX - drawWidth / 2, iconPosY - drawHeight / 2, drawWidth, drawHeight)
+                exportCtx.drawImage(img, adjustedIconPosX - drawWidth / 2, adjustedIconPosY - drawHeight / 2, drawWidth, drawHeight)
 
                 // 清除阴影
                 exportCtx.shadowColor = 'transparent'
@@ -660,26 +798,68 @@ const exportImage = async (exportConfig: ExportConfig) => {
 
     // 绘制标题
     if (props.titleConfig.text) {
-        const titlePosX = (props.titleConfig.position.x / 100) * exportCanvas.width
-        const titlePosY = (props.titleConfig.position.y / 100) * exportCanvas.height
         const titleSize = props.titleConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
-
         exportCtx.fillStyle = props.titleConfig.color
-        exportCtx.textAlign = 'center'
+        
+        // 设置字体以便测量文本宽度
+        const exportFontFamily = getFontFamilyWithFallback(props.titleConfig.font)
+        const exportTitleFontWeight = props.titleConfig.effects.bold ? 'bold' : 'normal'
+        exportCtx.font = `${exportTitleFontWeight} ${titleSize}px ${exportFontFamily}`
+        
+        // 测量文本宽度和高度
+        const textWidth = exportCtx.measureText(props.titleConfig.text).width
+        const textHeight = titleSize // 近似文本高度
+        
+        // 计算可滑动区域（考虑文本宽度和高度）
+        const titleHorizontalSpace = exportCanvas.width - textWidth
+        const titleVerticalSpace = exportCanvas.height - textHeight
+        
+        let adjustedTitlePosX, adjustedTitlePosY
+        
+        // 水平位置计算
+        if (props.titleConfig.position.x <= 0) {
+            // 左对齐
+            exportCtx.textAlign = 'left'
+            adjustedTitlePosX = 0
+        } else if (props.titleConfig.position.x >= 100) {
+            // 右对齐
+            exportCtx.textAlign = 'right'
+            adjustedTitlePosX = exportCanvas.width
+        } else {
+            // 在0%到100%之间线性插值，考虑文本宽度
+            exportCtx.textAlign = 'center'
+            // 文本居中时，可滑动范围是从 textWidth/2 到 canvas.width - textWidth/2
+            const minX = textWidth / 2
+            const maxX = exportCanvas.width - textWidth / 2
+            adjustedTitlePosX = minX + (maxX - minX) * (props.titleConfig.position.x / 100)
+        }
+        
+        // 垂直位置计算 - 始终使用中线对齐，避免切换基线导致的抖动
         exportCtx.textBaseline = 'middle'
+        
+        // 计算文本高度的一半，用于边缘位置的调整
+        const halfTextHeight = textHeight / 2
+        
+        if (props.titleConfig.position.y <= 0) {
+            // 顶部位置
+            adjustedTitlePosY = halfTextHeight // 距离顶部半个文本高度
+        } else if (props.titleConfig.position.y >= 100) {
+            // 底部位置
+            adjustedTitlePosY = exportCanvas.height - halfTextHeight // 距离底部半个文本高度
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfTextHeight
+            const maxY = exportCanvas.height - halfTextHeight
+            adjustedTitlePosY = minY + (maxY - minY) * (props.titleConfig.position.y / 100)
+        }
 
-        // 构建字体字符串
-        let fontWeight = props.titleConfig.effects.bold ? 'bold' : 'normal'
-
-        // 获取带回退的字体系列
-        const fontFamily = getFontFamilyWithFallback(props.titleConfig.font)
-
-        exportCtx.font = `${fontWeight} ${titleSize}px ${fontFamily}`
+        // 更新字体设置
+        exportCtx.font = `${exportTitleFontWeight} ${titleSize}px ${exportFontFamily}`
 
         exportCtx.save()
         // 如果需要斜体，使用变换
         if (props.titleConfig.effects.italic) {
-            exportCtx.translate(titlePosX, titlePosY)
+            exportCtx.translate(adjustedTitlePosX, adjustedTitlePosY)
             exportCtx.transform(1, 0, -0.2, 1, 0, 0)
 
             // 特殊处理 Maple Mono CN 的加粗效果
@@ -696,37 +876,77 @@ const exportImage = async (exportConfig: ExportConfig) => {
                 // 使用描边模拟加粗效果
                 exportCtx.strokeStyle = props.titleConfig.color
                 exportCtx.lineWidth = titleSize * 0.01 // 根据字体大小调整描边宽度
-                exportCtx.strokeText(props.titleConfig.text, titlePosX, titlePosY)
+                exportCtx.strokeText(props.titleConfig.text, adjustedTitlePosX, adjustedTitlePosY)
             }
-            exportCtx.fillText(props.titleConfig.text, titlePosX, titlePosY)
+            exportCtx.fillText(props.titleConfig.text, adjustedTitlePosX, adjustedTitlePosY)
         }
         exportCtx.restore()
     }
 
     // 绘制水印
     if (props.watermarkConfig.text) {
-        const watermarkPosX = (props.watermarkConfig.position.x / 100) * exportCanvas.width
-        const watermarkPosY = (props.watermarkConfig.position.y / 100) * exportCanvas.height
         const watermarkSize = props.watermarkConfig.size * (exportCanvas.width / canvas.width) // 按比例缩放
         const watermarkOpacity = props.watermarkConfig.opacity / 100
 
         exportCtx.save()
         exportCtx.globalAlpha = watermarkOpacity
         exportCtx.fillStyle = props.watermarkConfig.color
-        exportCtx.textAlign = 'center'
+        
+        // 设置字体以便测量文本宽度
+        const exportWatermarkFontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
+        const exportWatermarkFontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
+        exportCtx.font = `${exportWatermarkFontWeight} ${watermarkSize}px ${exportWatermarkFontFamily}`
+        
+        // 测量文本宽度和高度
+        const watermarkTextWidth = exportCtx.measureText(props.watermarkConfig.text).width
+        const watermarkTextHeight = watermarkSize // 近似文本高度
+    
+        
+        let adjustedWatermarkPosX, adjustedWatermarkPosY
+        
+        // 水平位置计算
+        if (props.watermarkConfig.position.x <= 0) {
+            // 左对齐
+            exportCtx.textAlign = 'left'
+            adjustedWatermarkPosX = 0
+        } else if (props.watermarkConfig.position.x >= 100) {
+            // 右对齐
+            exportCtx.textAlign = 'right'
+            adjustedWatermarkPosX = exportCanvas.width
+        } else {
+            // 在0%到100%之间线性插值，考虑文本宽度
+            exportCtx.textAlign = 'center'
+            // 文本居中时，可滑动范围是从 watermarkTextWidth/2 到 canvas.width - watermarkTextWidth/2
+            const minX = watermarkTextWidth / 2
+            const maxX = exportCanvas.width - watermarkTextWidth / 2
+            adjustedWatermarkPosX = minX + (maxX - minX) * (props.watermarkConfig.position.x / 100)
+        }
+        
+        // 垂直位置计算 - 始终使用中线对齐，避免切换基线导致的抖动
         exportCtx.textBaseline = 'middle'
+        
+        // 计算文本高度的一半，用于边缘位置的调整
+        const halfWatermarkHeight = watermarkTextHeight / 2
+        
+        if (props.watermarkConfig.position.y <= 0) {
+            // 顶部位置
+            adjustedWatermarkPosY = halfWatermarkHeight // 距离顶部半个文本高度
+        } else if (props.watermarkConfig.position.y >= 100) {
+            // 底部位置
+            adjustedWatermarkPosY = exportCanvas.height - halfWatermarkHeight // 距离底部半个文本高度
+        } else {
+            // 在0%到100%之间线性插值
+            const minY = halfWatermarkHeight
+            const maxY = exportCanvas.height - halfWatermarkHeight
+            adjustedWatermarkPosY = minY + (maxY - minY) * (props.watermarkConfig.position.y / 100)
+        }
 
-        // 构建字体字符串
-        let fontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
-
-        // 获取带回退的字体系列
-        const fontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
-
-        exportCtx.font = `${fontWeight} ${watermarkSize}px ${fontFamily}`
+        // 更新字体设置
+        exportCtx.font = `${exportWatermarkFontWeight} ${watermarkSize}px ${exportWatermarkFontFamily}`
 
         // 如果需要斜体，使用变换
         if (props.watermarkConfig.effects.italic) {
-            exportCtx.translate(watermarkPosX, watermarkPosY)
+            exportCtx.translate(adjustedWatermarkPosX, adjustedWatermarkPosY)
             exportCtx.transform(1, 0, -0.2, 1, 0, 0)
 
             // 特殊处理 Maple Mono CN 的加粗效果
@@ -743,9 +963,9 @@ const exportImage = async (exportConfig: ExportConfig) => {
                 // 使用描边模拟加粗效果
                 exportCtx.strokeStyle = props.watermarkConfig.color
                 exportCtx.lineWidth = watermarkSize * 0.01 // 根据字体大小调整描边宽度
-                exportCtx.strokeText(props.watermarkConfig.text, watermarkPosX, watermarkPosY)
+                exportCtx.strokeText(props.watermarkConfig.text, adjustedWatermarkPosX, adjustedWatermarkPosY)
             }
-            exportCtx.fillText(props.watermarkConfig.text, watermarkPosX, watermarkPosY)
+            exportCtx.fillText(props.watermarkConfig.text, adjustedWatermarkPosX, adjustedWatermarkPosY)
         }
         exportCtx.restore()
     }
