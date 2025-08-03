@@ -10,15 +10,15 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-3">背景类型</label>
                 <n-space>
-                    <n-button strong secondary round :type="background.type === 'color' ? 'primary' : 'default'"
-                        @click="updateBackgroundProperty('type', 'color')">
+                    <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.COLOR ? 'primary' : 'default'"
+                        @click="updateBackgroundProperty('type', BACKGROUND_TYPE.COLOR)">
                         <template #icon>
                             <Icon icon="material-symbols:palette" />
                         </template>
                         纯色
                     </n-button>
-                    <n-button strong secondary round :type="background.type === 'color' ? 'default' : 'primary'"
-                        @click="updateBackgroundProperty('type', 'image')">
+                    <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.COLOR ? 'default' : 'primary'"
+                        @click="updateBackgroundProperty('type', BACKGROUND_TYPE.IMAGE)">
                         <template #icon>
                             <Icon icon="material-symbols:image" />
                         </template>
@@ -27,26 +27,27 @@
                 </n-space>
             </div>
 
-            <div v-if="background.type === 'color'">
+            <div v-if="backgroundConfig.type === BACKGROUND_TYPE.COLOR">
                 <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <Icon icon="material-symbols:palette" class="text-lg" />
                     背景颜色
                 </label>
-                <n-color-picker :value="background.color" @update:value="value => updateBackgroundProperty('color', value)"
-                    :swatches="colorSwatches" :show-alpha="false" />
+                <n-color-picker :value="backgroundConfig.color"
+                    @update:value="value => updateBackgroundProperty('color', value)" :swatches="colorSwatches"
+                    :show-alpha="false" />
 
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                         <Icon icon="material-symbols:opacity" class="text-lg" />
                         背景透明度
                     </label>
-                    <n-slider :value="background.opacity" :min="0" :max="100" :step="1"
+                    <n-slider :value="backgroundConfig.opacity" :min="0" :max="100" :step="1"
                         @update:value="value => updateBackgroundProperty('opacity', value)" />
-                    <span class="text-sm text-gray-500">{{ background.opacity }}%</span>
+                    <span class="text-sm text-gray-500">{{ backgroundConfig.opacity }}%</span>
                 </div>
             </div>
 
-            <div v-if="background.type === 'image'">
+            <div v-if="backgroundConfig.type === 'image'">
                 <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <Icon icon="material-symbols:upload" class="text-lg" />
                     上传图片
@@ -62,13 +63,14 @@
                 </n-upload>
             </div>
 
-            <div v-if="background.type === 'image' && background.image">
+            <div v-if="backgroundConfig.type === 'image' && backgroundConfig.image">
                 <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <Icon icon="material-symbols:blur-on" class="text-lg" />
                     模糊度
                 </label>
-                <n-slider :value="background.blur" :min="0" :max="20" :step="1" @update:value="value => updateBackgroundProperty('blur', value)" />
-                <span class="text-sm text-gray-500">{{ background.blur }}px</span>
+                <n-slider :value="backgroundConfig.blur" :min="0" :max="20" :step="1"
+                    @update:value="value => updateBackgroundProperty('blur', value)" />
+                <span class="text-sm text-gray-500">{{ backgroundConfig.blur }}px</span>
             </div>
         </n-space>
     </n-card>
@@ -86,27 +88,19 @@ import {
     NCard,
     NSpace
 } from 'naive-ui'
-
-// 背景设置类型定义
-interface Background {
-    type: 'color' | 'image'
-    color: string
-    opacity: number
-    image: string
-    imageObj: HTMLImageElement | null
-    blur: number
-}
+import type { BackgroundConfig } from '@/lib/type'
+import { BACKGROUND_TYPE } from '@/lib/enum'
 
 // Props
-interface Props {
-    background: Background
+type Props = {
+    backgroundConfig: BackgroundConfig
 }
 
 const props = defineProps<Props>()
 
 // Emits
 interface Emits {
-    (e: 'update:background', value: Background): void
+    (e: 'update:backgroundConfig', value: BackgroundConfig): void
     (e: 'imageUpload', options: any): void
     (e: 'canvasUpdate'): void
 }
@@ -114,9 +108,9 @@ interface Emits {
 const emit = defineEmits<Emits>()
 
 // 通用背景属性更新处理函数
-const updateBackgroundProperty = <T extends keyof Background>(property: T, value: Background[T]) => {
-    const newBackground = { ...props.background, [property]: value }
-    emit('update:background', newBackground)
+const updateBackgroundProperty = <T extends keyof BackgroundConfig>(property: T, value: BackgroundConfig[T]) => {
+    const newBackgroundConfig = { ...props.backgroundConfig, [property]: value }
+    emit('update:backgroundConfig', newBackgroundConfig)
     emit('canvasUpdate')
 }
 

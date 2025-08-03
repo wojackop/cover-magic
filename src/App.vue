@@ -31,9 +31,9 @@
         <!-- 背景设置 -->
         <n-grid-item>
           <BackgroundPanel
-            :background="background"
-            @update:background="(newBackground) => { 
-              Object.assign(background, newBackground); 
+            :backgroundConfig="backgroundConfig"
+            @update:backgroundConfig="(newBackgroundConfig) => { 
+              Object.assign(backgroundConfig, newBackgroundConfig); 
               updateCanvas();
             }"
             @image-upload="handleImageUpload"
@@ -44,9 +44,9 @@
         <!-- 图标设置 -->
         <n-grid-item>
           <IconPanel
-            :icon="icon"
-            @update:icon="(newIcon) => { 
-              Object.assign(icon, newIcon); 
+            :iconConfig="iconConfig"
+            @update:iconConfig="(newIconConfig) => { 
+              Object.assign(iconConfig, newIconConfig); 
               updateCanvas();
             }"
             @icon-load="loadIcon"
@@ -56,96 +56,14 @@
 
         <!-- 标题设置 -->
         <n-grid-item>
-          <n-card size="large" hoverable class="h-full">
-            <template #header>
-              <div class="flex items-center gap-2">
-                <Icon icon="material-symbols:title" class="text-xl text-green-600" />
-                <span class="font-semibold">标题设置</span>
-              </div>
-            </template>
-            <n-space vertical size="large">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:text-fields" class="text-lg" />
-                  标题文本
-                </label>
-                <n-input v-model:value="titleText" placeholder="输入标题..." @input="updateCanvas">
-                  <template #prefix>
-                    <Icon icon="material-symbols:edit" />
-                  </template>
-                </n-input>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                  <Icon icon="material-symbols:font-download" class="text-lg" />
-                  字体
-                </label>
-                <n-select v-model:value="titleFont" @update:value="updateCanvas" :options="fontOptions" />
-              </div>
-
-              <div>
-                <n-space>
-                  <n-checkbox v-model:checked="titleBold" @update:checked="updateCanvas">
-                    <span class="flex items-center gap-2">
-                      <Icon icon="material-symbols:format-bold" class="text-lg" />
-                      加粗
-                    </span>
-                  </n-checkbox>
-                  <n-checkbox v-model:checked="titleItalic" @update:checked="updateCanvas">
-                    <span class="flex items-center gap-2">
-                      <Icon icon="material-symbols:format-italic" class="text-lg" />
-                      斜体
-                    </span>
-                  </n-checkbox>
-                </n-space>
-              </div>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:format-size" class="text-lg" />
-                    字体大小
-                  </label>
-                  <n-slider v-model:value="titleSize" :min="16" :max="120" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ titleSize }}px</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:palette" class="text-lg" />
-                    颜色
-                  </label>
-                  <n-color-picker 
-                    v-model:value="titleColor" 
-                    @update:value="updateCanvas"
-                    :swatches="colorSwatches"
-                    :show-alpha="false"
-                  />
-                </n-grid-item>
-              </n-grid>
-
-              <n-grid cols="2" :x-gap="16">
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-horiz" class="text-lg" />
-                    水平位置
-                  </label>
-                  <n-slider v-model:value="titleX" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ titleX }}%</span>
-                </n-grid-item>
-
-                <n-grid-item>
-                  <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Icon icon="material-symbols:swap-vert" class="text-lg" />
-                    垂直位置
-                  </label>
-                  <n-slider v-model:value="titleY" :min="0" :max="100" :step="1" @update:value="updateCanvas" />
-                  <span class="text-sm text-gray-500">{{ titleY }}%</span>
-                </n-grid-item>
-              </n-grid>
-            </n-space>
-          </n-card>
+          <TitlePanel
+            :titleConfig="titleConfig"
+            @update:titleConfig="(newTitleConfig) => { 
+              Object.assign(titleConfig, newTitleConfig); 
+              updateCanvas();
+            }"
+            @canvas-update="updateCanvas"
+          />
         </n-grid-item>
 
         <!-- 水印设置 -->
@@ -379,13 +297,17 @@ import {
   NGrid,
   NGridItem
 } from 'naive-ui'
-import BackgroundPanel from './components/BackgroundPanel.vue'
-import IconPanel from './components/IconPanel.vue'
+import BackgroundPanel from '@/components/BackgroundPanel.vue'
+import IconPanel from '@/components/IconPanel.vue'
+import TitlePanel from '@/components/TitlePanel.vue'
 import { colorSwatches,fontOptions } from '@/lib/constant'
+import type { BackgroundConfig,IconConfig,TitleConfig } from '@/lib/type'
 
-// 背景设置
-const background = reactive({
-  type: 'color' as 'color' | 'image',  // 背景类型：'color'表示纯色背景，'image'表示图片背景
+import { BACKGROUND_TYPE } from '@/lib/enum'
+
+// 背景设置 - 用于控制封面背景的各项属性
+const backgroundConfig = reactive<BackgroundConfig>({
+  type: BACKGROUND_TYPE.COLOR,  // 背景类型：'color'表示纯色背景，'image'表示图片背景
   color: '#000000',                    // 背景颜色：十六进制颜色值，默认为黑色
   opacity: 100,                        // 背景不透明度：范围0-100，100表示完全不透明
   image: '' as string,                 // 背景图片：Base64格式的图片数据URL字符串
@@ -394,7 +316,7 @@ const background = reactive({
 })
 
 // 图标设置 - 用于控制封面中心图标的各项属性
-const icon = reactive({
+const iconConfig = reactive<IconConfig>({
   code: 'fluent-emoji-flat:four-leaf-clover', // 图标代码：使用Iconify图标库的标识符，指定要显示的图标
   size: 100,                            // 图标大小：控制图标的显示尺寸，单位为像素
   shadowSize: 100,                      // 阴影大小：控制图标阴影的模糊半径，值越大阴影越模糊扩散
@@ -402,57 +324,24 @@ const icon = reactive({
   position: {                           // 图标位置：控制图标在画布中的位置
     x: 50,                              // 水平位置：以百分比表示，50表示水平居中
     y: 50                               // 垂直位置：以百分比表示，50表示垂直居中
-  }
-})
-// 图标SVG内容 - 存储从Iconify API获取的SVG代码
-const iconSvg = ref<string>('')         // 存储图标的SVG源代码，用于在Canvas中渲染图标
-
-// 标题设置
-const titleText = ref('谜叶  象限')
-
-// 标题样式配置
-const titleStyle = reactive({
-  font: 'Maple Mono CN',
-  size: 80,
-  color: '#ffffff',
-  position: {
-    x: 50,
-    y: 50
   },
-  effects: {
-    bold: true,
-    italic: true
-  }
+  svg: ''                               // 图标SVG内容：存储从Iconify API获取的SVG代码，用于在Canvas中渲染图标
 })
 
-// 为了保持向后兼容，创建计算属性
-const titleFont = computed({
-  get: () => titleStyle.font,
-  set: (value) => titleStyle.font = value
-})
-const titleSize = computed({
-  get: () => titleStyle.size,
-  set: (value) => titleStyle.size = value
-})
-const titleColor = computed({
-  get: () => titleStyle.color,
-  set: (value) => titleStyle.color = value
-})
-const titleX = computed({
-  get: () => titleStyle.position.x,
-  set: (value) => titleStyle.position.x = value
-})
-const titleY = computed({
-  get: () => titleStyle.position.y,
-  set: (value) => titleStyle.position.y = value
-})
-const titleBold = computed({
-  get: () => titleStyle.effects.bold,
-  set: (value) => titleStyle.effects.bold = value
-})
-const titleItalic = computed({
-  get: () => titleStyle.effects.italic,
-  set: (value) => titleStyle.effects.italic = value
+// 标题设置 - 用于控制封面标题文本的各项属性
+const titleConfig = reactive<TitleConfig>({
+  text: '谜叶  象限',           // 标题文本：显示在封面上的文字内容
+  font: 'Maple Mono CN',       // 字体名称：指定标题文本使用的字体
+  size: 80,                    // 字体大小：控制标题文本的显示尺寸，单位为像素
+  color: '#ffffff',            // 字体颜色：指定标题文本的颜色，默认为白色
+  position: {                  // 标题位置：控制标题在画布中的位置
+    x: 50,                     // 水平位置：以百分比表示，50表示水平居中
+    y: 50                      // 垂直位置：以百分比表示，50表示垂直居中
+  },
+  effects: {                   // 文本效果：控制标题文本的样式效果
+    bold: true,                // 粗体：true表示使用粗体，false表示不使用
+    italic: true               // 斜体：true表示使用斜体，false表示不使用
+  }
 })
 
 // 水印设置
@@ -572,10 +461,10 @@ const waitForFont = async (maxWait = 3000) => {
   return fontLoaded
 }
 
-// 加载图标
+  // 加载图标
 const loadIcon = async () => {
-  if (!icon.code) {
-    iconSvg.value = ''
+  if (!iconConfig.code) {
+    iconConfig.svg = ''
     iconImageCache = null // 清除缓存
     updateCanvas()
     return
@@ -583,18 +472,18 @@ const loadIcon = async () => {
 
   try {
     // 从 Iconify API 获取 SVG
-    const response = await fetch(`https://api.iconify.design/${icon.code}.svg`)
+    const response = await fetch(`https://api.iconify.design/${iconConfig.code}.svg`)
     if (response.ok) {
-      iconSvg.value = await response.text()
+      iconConfig.svg = await response.text()
       iconImageCache = null // 清除旧缓存
     } else {
-      iconSvg.value = ''
+      iconConfig.svg = ''
       iconImageCache = null
     }
     updateCanvas()
   } catch (error) {
     console.error('加载图标失败:', error)
-    iconSvg.value = ''
+    iconConfig.svg = ''
     iconImageCache = null
     updateCanvas()
   }
@@ -609,9 +498,9 @@ const handleImageUpload = (options: any) => {
       const imageDataUrl = e.target?.result as string
       const img = new Image()
       img.onload = () => {
-        // 创建新的对象引用更新背景对象，确保响应式更新
-        background.image = imageDataUrl
-        background.imageObj = img
+      // 创建新的对象引用更新背景对象，确保响应式更新
+      backgroundConfig.image = imageDataUrl
+      backgroundConfig.imageObj = img
         updateCanvas()
       }
       img.src = imageDataUrl
@@ -622,9 +511,9 @@ const handleImageUpload = (options: any) => {
 
 // 绘制阴影
 const drawShadow = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
-  if (icon.shadowSize > 0) {
-    ctx.shadowColor = icon.shadowColor
-    ctx.shadowBlur = icon.shadowSize
+  if (iconConfig.shadowSize > 0) {
+    ctx.shadowColor = iconConfig.shadowColor
+    ctx.shadowBlur = iconConfig.shadowSize
     ctx.shadowOffsetX = 0
     ctx.shadowOffsetY = 0
   }
@@ -640,7 +529,7 @@ const clearShadow = (ctx: CanvasRenderingContext2D) => {
 
 // 绘制 SVG 图标（使用缓存）
 const drawIcon = async (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
-  if (!iconSvg.value) return
+  if (!iconConfig.svg) return
 
   // 如果缓存的图标存在且可用，直接使用
   if (iconImageCache) {
@@ -667,7 +556,7 @@ const drawIcon = async (ctx: CanvasRenderingContext2D, x: number, y: number, siz
 
   // 如果没有缓存，创建新的图标
   return new Promise<void>((resolve) => {
-    const svgBlob = new Blob([iconSvg.value], { type: 'image/svg+xml' })
+    const svgBlob = new Blob([iconConfig.svg], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(svgBlob)
     const img = new Image()
 
@@ -784,9 +673,9 @@ const updateSpringAnimation = (state: AnimationState, dt: number): boolean => {
 // 更新动画目标值
 const updateAnimationTargets = () => {
   // 更新标题相关动画目标
-  animationStates.titleSize.target = titleSize.value;
-  animationStates.titleX.target = titleX.value;
-  animationStates.titleY.target = titleY.value;
+  animationStates.titleSize.target = titleConfig.size;
+  animationStates.titleX.target = titleConfig.position.x;
+  animationStates.titleY.target = titleConfig.position.y;
   
   // 更新水印相关动画目标
   animationStates.watermarkSize.target = watermarkSize.value;
@@ -795,12 +684,12 @@ const updateAnimationTargets = () => {
   animationStates.watermarkOpacity.target = watermarkOpacity.value;
   
   // 更新图标相关动画目标
-  animationStates.iconSize.target = icon.size;
-  animationStates.iconX.target = icon.position.x;
-  animationStates.iconY.target = icon.position.y;
+  animationStates.iconSize.target = iconConfig.size;
+  animationStates.iconX.target = iconConfig.position.x;
+  animationStates.iconY.target = iconConfig.position.y;
   
   // 更新背景模糊动画目标
-  animationStates.backgroundBlur.target = background.blur;
+  animationStates.backgroundBlur.target = backgroundConfig.blur;
   
   // 如果是首次更新，直接设置当前值等于目标值
   if (animationStates.titleSize.value === 0) {
@@ -924,10 +813,10 @@ const renderFrame = async (
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   // 绘制背景
-  if (background.type === 'color') {
+  if (backgroundConfig.type === 'color') {
     // 绘制纯色背景，应用透明度
-    const opacity = background.opacity / 100
-    const color = background.color
+    const opacity = backgroundConfig.opacity / 100
+    const color = backgroundConfig.color
     
     // 将十六进制颜色转换为 rgba 格式
     const r = parseInt(color.slice(1, 3), 16)
@@ -936,36 +825,36 @@ const renderFrame = async (
     
     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-  } else if (background.imageObj) {
+  } else if (backgroundConfig.imageObj) {
     // 绘制背景图片
-    ctx.filter = `blur(${background.blur}px)`
-    ctx.drawImage(background.imageObj, 0, 0, canvas.width, canvas.height)
+    ctx.filter = `blur(${backgroundConfig.blur}px)`
+    ctx.drawImage(backgroundConfig.imageObj, 0, 0, canvas.width, canvas.height)
     ctx.filter = 'none'
   }
 
   // 绘制图标
-    if (iconSvg.value) {
+    if (iconConfig.svg) {
       const iconPosX = (currentIconX / 100) * canvas.width
       const iconPosY = (currentIconY / 100) * canvas.height
       await drawIcon(ctx, iconPosX, iconPosY, currentIconSize)
     }
 
     // 绘制标题
-    if (titleText.value) {
+    if (titleConfig.text) {
       const titlePosX = (currentTitleX / 100) * canvas.width
       const titlePosY = (currentTitleY / 100) * canvas.height
 
       ctx.save()
-      ctx.fillStyle = titleColor.value
+      ctx.fillStyle = titleConfig.color
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       
       // 构建字体字符串 - 只设置加粗，斜体用变换实现
-      let fontWeight = titleBold.value ? 'bold' : 'normal'
+      let fontWeight = titleConfig.effects.bold ? 'bold' : 'normal'
       
       // 改进字体回退机制
       let fontFamily = ''
-      switch (titleFont.value) {
+      switch (titleConfig.font) {
         case 'Maple Mono CN':
           fontFamily = '"Maple Mono CN", "Courier New", "Consolas", monospace'
           break
@@ -996,34 +885,34 @@ const renderFrame = async (
         case 'serif':
           fontFamily = '"Times New Roman", Times, "Songti SC", serif'
           break
-        default:
-          fontFamily = `"${titleFont.value}", Arial, sans-serif`
+      default:
+        fontFamily = `"${titleConfig.font}", Arial, sans-serif`
       }
       
-      ctx.font = `${fontWeight} ${titleSize.value}px ${fontFamily}`
+      ctx.font = `${fontWeight} ${titleConfig.size}px ${fontFamily}`
       
       // 如果需要斜体，使用变换
-      if (titleItalic.value) {
+      if (titleConfig.effects.italic) {
         ctx.translate(titlePosX, titlePosY)
         ctx.transform(1, 0, -0.2, 1, 0, 0)
         
         // 特殊处理 Maple Mono CN 的加粗效果
-        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+        if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
           // 使用描边模拟加粗效果
-          ctx.strokeStyle = titleColor.value
-          ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-          ctx.strokeText(titleText.value, 0, 0)
+          ctx.strokeStyle = titleConfig.color
+          ctx.lineWidth = titleConfig.size * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(titleConfig.text, 0, 0)
         }
-        ctx.fillText(titleText.value, 0, 0)
+        ctx.fillText(titleConfig.text, 0, 0)
       } else {
         // 特殊处理 Maple Mono CN 的加粗效果
-        if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+        if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
           // 使用描边模拟加粗效果
-          ctx.strokeStyle = titleColor.value
-          ctx.lineWidth = titleSize.value * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
-          ctx.strokeText(titleText.value, titlePosX, titlePosY)
+          ctx.strokeStyle = titleConfig.color
+          ctx.lineWidth = titleConfig.size * 2 * 0.01 // 根据字体大小调整描边宽度（导出时使用2倍缩放）
+          ctx.strokeText(titleConfig.text, titlePosX, titlePosY)
         }
-        ctx.fillText(titleText.value, titlePosX, titlePosY)
+        ctx.fillText(titleConfig.text, titlePosX, titlePosY)
       }
       
       ctx.restore()
@@ -1187,20 +1076,20 @@ const exportImage = async () => {
   if (!ctx) return
 
   // 绘制背景
-  if (background.type === 'image' && background.imageObj) {
+  if (backgroundConfig.type === 'image' && backgroundConfig.imageObj) {
     // 绘制图片背景
     ctx.save()
     
-    if (background.blur > 0) {
-      ctx.filter = `blur(${background.blur}px)`
+    if (backgroundConfig.blur > 0) {
+      ctx.filter = `blur(${backgroundConfig.blur}px)`
     }
     
-    ctx.drawImage(background.imageObj, 0, 0, canvas.width, canvas.height)
+    ctx.drawImage(backgroundConfig.imageObj, 0, 0, canvas.width, canvas.height)
     ctx.restore()
-  } else if (background.type === 'color') {
+  } else if (backgroundConfig.type === 'color') {
     // 绘制纯色背景，应用透明度
-    const opacity = background.opacity / 100
-    const color = background.color
+    const opacity = backgroundConfig.opacity / 100
+    const color = backgroundConfig.color
     
     // 将十六进制颜色转换为 rgba 格式
     const r = parseInt(color.slice(1, 3), 16)
@@ -1212,27 +1101,27 @@ const exportImage = async () => {
   }
 
   // 绘制图标
-  if (iconSvg.value) {
-    const iconPosX = (icon.position.x / 100) * canvas.width
-    const iconPosY = (icon.position.y / 100) * canvas.height
-    const scaledIconSize = (icon.size / 800) * canvas.width // 根据画布大小缩放
+  if (iconConfig.svg) {
+    const iconPosX = (iconConfig.position.x / 100) * canvas.width
+    const iconPosY = (iconConfig.position.y / 100) * canvas.height
+    const scaledIconSize = (iconConfig.size / 800) * canvas.width // 根据画布大小缩放
     await drawIconToCanvas(ctx, iconPosX, iconPosY, scaledIconSize)
   }
 
   // 绘制标题
-  if (titleText.value) {
-    const titlePosX = (titleX.value / 100) * canvas.width
-    const titlePosY = (titleY.value / 100) * canvas.height
-    const scaledTitleSize = (titleSize.value / 800) * canvas.width // 根据画布大小缩放
+  if (titleConfig.text) {
+    const titlePosX = (titleConfig.position.x / 100) * canvas.width
+    const titlePosY = (titleConfig.position.y / 100) * canvas.height
+    const scaledTitleSize = (titleConfig.size / 800) * canvas.width // 根据画布大小缩放
 
     // 保存当前状态
     ctx.save()
     
     // 构建字体样式 - 使用相同的字体回退机制
-    const fontWeight = titleBold.value ? 'bold' : 'normal'
+    const fontWeight = titleConfig.effects.bold ? 'bold' : 'normal'
     
     let fontFamily = ''
-    switch (titleFont.value) {
+    switch (titleConfig.font) {
       case 'Maple Mono CN':
         fontFamily = '"Maple Mono CN", "Courier New", "Consolas", monospace'
         break
@@ -1264,36 +1153,36 @@ const exportImage = async () => {
         fontFamily = '"Times New Roman", Times, "Songti SC", serif'
         break
       default:
-        fontFamily = `"${titleFont.value}", Arial, sans-serif`
+        fontFamily = `"${titleConfig.font}", Arial, sans-serif`
     }
     
     ctx.font = `${fontWeight} ${scaledTitleSize}px ${fontFamily}`
-    ctx.fillStyle = titleColor.value
+    ctx.fillStyle = titleConfig.color
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     
     // 如果需要斜体，使用变换
-    if (titleItalic.value) {
+    if (titleConfig.effects.italic) {
       ctx.translate(titlePosX, titlePosY)
       ctx.transform(1, 0, -0.2, 1, 0, 0)
       
       // 特殊处理 Maple Mono CN 的加粗效果
-      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+      if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleColor.value
+        ctx.strokeStyle = titleConfig.color
         ctx.lineWidth = 0.8
-        ctx.strokeText(titleText.value, 0, 0)
+        ctx.strokeText(titleConfig.text, 0, 0)
       }
-      ctx.fillText(titleText.value, 0, 0)
+      ctx.fillText(titleConfig.text, 0, 0)
     } else {
       // 特殊处理 Maple Mono CN 的加粗效果
-      if (titleBold.value && titleFont.value === 'Maple Mono CN') {
+      if (titleConfig.effects.bold && titleConfig.font === 'Maple Mono CN') {
         // 使用描边模拟加粗效果
-        ctx.strokeStyle = titleColor.value
+        ctx.strokeStyle = titleConfig.color
         ctx.lineWidth = 0.8
-        ctx.strokeText(titleText.value, titlePosX, titlePosY)
+        ctx.strokeText(titleConfig.text, titlePosX, titlePosY)
       }
-      ctx.fillText(titleText.value, titlePosX, titlePosY)
+      ctx.fillText(titleConfig.text, titlePosX, titlePosY)
     }
     
     // 恢复状态
@@ -1389,7 +1278,7 @@ const exportImage = async () => {
   let quality = 0.9
   
   // 如果是 JPEG 格式且背景有透明度，需要先绘制白色背景
-  if (exportFormat.value === 'jpeg' && background.type === 'color' && background.opacity < 100) {
+  if (exportFormat.value === 'jpeg' && backgroundConfig.type === 'color' && backgroundConfig.opacity < 100) {
     // 创建一个新的画布来处理 JPEG 的透明度问题
     const tempCanvas = document.createElement('canvas')
     tempCanvas.width = canvas.width
@@ -1429,18 +1318,18 @@ const exportImage = async () => {
 
 // 专门用于导出的图标绘制函数
 const drawIconToCanvas = async (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
-  if (!iconSvg.value) return
+  if (!iconConfig.svg) return
 
   return new Promise<void>((resolve) => {
-    const svgBlob = new Blob([iconSvg.value], { type: 'image/svg+xml' })
+    const svgBlob = new Blob([iconConfig.svg], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(svgBlob)
     const img = new Image()
 
     img.onload = () => {
       // 设置阴影
-      if (icon.shadowSize > 0) {
-        const scaledShadowSize = (icon.shadowSize / 800) * ctx.canvas.width
-        ctx.shadowColor = icon.shadowColor
+      if (iconConfig.shadowSize > 0) {
+        const scaledShadowSize = (iconConfig.shadowSize / 800) * ctx.canvas.width
+        ctx.shadowColor = iconConfig.shadowColor
         ctx.shadowBlur = scaledShadowSize
         ctx.shadowOffsetX = 0
         ctx.shadowOffsetY = 0
@@ -1499,9 +1388,9 @@ watch(useRandomFileName, (newValue) => {
 // 初始化动画状态
 const initAnimationStates = () => {
   // 初始化标题相关动画状态
-  animationStates.titleSize.value = animationStates.titleSize.target = titleSize.value;
-  animationStates.titleX.value = animationStates.titleX.target = titleX.value;
-  animationStates.titleY.value = animationStates.titleY.target = titleY.value;
+  animationStates.titleSize.value = animationStates.titleSize.target = titleConfig.size;
+  animationStates.titleX.value = animationStates.titleX.target = titleConfig.position.x;
+  animationStates.titleY.value = animationStates.titleY.target = titleConfig.position.y;
   
   // 初始化水印相关动画状态
   animationStates.watermarkSize.value = animationStates.watermarkSize.target = watermarkSize.value;
@@ -1510,12 +1399,12 @@ const initAnimationStates = () => {
   animationStates.watermarkOpacity.value = animationStates.watermarkOpacity.target = watermarkOpacity.value;
   
   // 初始化图标相关动画状态
-  animationStates.iconSize.value = animationStates.iconSize.target = icon.size;
-  animationStates.iconX.value = animationStates.iconX.target = icon.position.x;
-  animationStates.iconY.value = animationStates.iconY.target = icon.position.y;
+  animationStates.iconSize.value = animationStates.iconSize.target = iconConfig.size;
+  animationStates.iconX.value = animationStates.iconX.target = iconConfig.position.x;
+  animationStates.iconY.value = animationStates.iconY.target = iconConfig.position.y;
   
   // 初始化背景模糊动画状态
-  animationStates.backgroundBlur.value = animationStates.backgroundBlur.target = background.blur;
+  animationStates.backgroundBlur.value = animationStates.backgroundBlur.target = backgroundConfig.blur;
 };
 
 // 组件挂载时初始化
