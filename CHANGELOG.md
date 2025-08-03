@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/baiwumm/cover-magic/compare/1.1.0...1.2.0) (2025-08-03)
+
+### ✨ Features | 新功能
+
+* 新增 GithubCorner 组件 ([6a06332](https://github.com/baiwumm/cover-magic/commit/6a063322e85b376daf87795b3292f2df8304379b))
+* 新增水印大写设置功能 ([3d207bc](https://github.com/baiwumm/cover-magic/commit/3d207bca54b7233218412042919cd19719f1159f))
+
+### 💄 Styles | 风格
+
+* 添加 eslint，细节完善 ([2c611e7](https://github.com/baiwumm/cover-magic/commit/2c611e718f17f5a37831cc508b27da8f8b4c9f5e))
+
+### ⚡ Performance Improvements | 性能优化
+
+* 标题调整 ([0959200](https://github.com/baiwumm/cover-magic/commit/0959200cbed45eaa13734efee5d8c62289501005))
+
 ## [1.1.0](https://github.com/baiwumm/vue3-mini-cover/compare/1.0.0...1.1.0) (2025-08-03)
 
 ### ✨ Features | 新功能
