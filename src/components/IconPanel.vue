@@ -8,7 +8,7 @@
     </template>
     <n-space vertical size="large">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
           <Icon icon="material-symbols:code" class="text-lg" />
           图标代码
         </label>
@@ -24,7 +24,7 @@
 
       <n-grid cols="2" :x-gap="16">
         <n-grid-item>
-          <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
             <Icon icon="material-symbols:photo-size-select-large" class="text-lg" />
             大小
           </label>
@@ -33,7 +33,7 @@
         </n-grid-item>
 
         <n-grid-item>
-          <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
             <Icon icon="material-symbols:shadow" class="text-lg" />
             阴影大小
           </label>
@@ -43,21 +43,21 @@
       </n-grid>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
           <Icon icon="material-symbols:palette" class="text-lg" />
           阴影颜色
         </label>
         <n-color-picker 
           :value="iconConfig.shadowColor" 
-          @update:value="value => updateIconProperty('shadowColor', value)"
           :swatches="colorSwatches"
           :show-alpha="false"
+          @update:value="value => updateIconProperty('shadowColor', value)"
         />
       </div>
 
       <n-grid cols="2" :x-gap="16">
         <n-grid-item>
-          <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
             <Icon icon="material-symbols:swap-horiz" class="text-lg" />
             水平位置
           </label>
@@ -66,7 +66,7 @@
         </n-grid-item>
 
         <n-grid-item>
-          <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
             <Icon icon="material-symbols:swap-vert" class="text-lg" />
             垂直位置
           </label>
@@ -89,8 +89,10 @@ import {
   NGrid,
   NGridItem
 } from 'naive-ui'
-import { colorSwatches } from '@/lib/constant'
+
 import type { IconConfig,Position } from '@/lib/type'
+
+import { colorSwatches } from '@/lib/constant'
 
 // Props
 type Props = {
@@ -101,8 +103,11 @@ const props = defineProps<Props>()
 
 // Emits
 interface Emits {
+  // eslint-disable-next-line no-unused-vars
   (e: 'update:iconConfig', value: IconConfig): void
+  // eslint-disable-next-line no-unused-vars
   (e: 'icon-load'): void
+  // eslint-disable-next-line no-unused-vars
   (e: 'canvas-update'): void
 }
 

@@ -110,10 +110,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { NButton, NInput, NSlider, NSelect, NCheckbox, NInputNumber, NCard, NSpace } from 'naive-ui'
+import { reactive, watch, onMounted } from 'vue'
+
 import type { ExportConfig, RandomFileNameOptions } from '@/lib/type'
+
 import { formatOptions } from '@/lib/constant'
 
 // 定义组件的 props

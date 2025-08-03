@@ -1,100 +1,111 @@
 <template>
   <n-config-provider :theme="theme">
-    <div class="min-h-screen" :class="[isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode' : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50']">
+    <div class="min-h-screen"
+      :class="[isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode' : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50']">
       <!-- 顶部标题栏 -->
-      <HeaderPanel 
-        title="Vue3 Mini Cover" 
-        subtitle="专业的封面设计工具，支持实时预览和高质量导出" 
-        @header-action="handleHeaderAction"
-        @theme-change="handleThemeChange"
-      />
+      <HeaderPanel :title="siteInfo.name" :subtitle="siteInfo.description" @header-action="handleHeaderAction"
+        @theme-change="handleThemeChange" />
 
-    <div class="container mx-auto px-6 py-8">
-      <!-- 预览区域 -->
-      <div class="mb-8" :class="isDarkMode ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50' : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold flex items-center gap-2" :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
-            <Icon icon="material-symbols:preview" class="text-2xl" :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
-            实时预览
-          </h2>
-          <div class="rounded-full px-4 py-1 text-sm font-medium flex items-center gap-1" :class="isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-700'">
-            <Icon icon="material-symbols:info-outline" />
-            拖动元素调整位置
+      <div class="container mx-auto px-6 py-8">
+        <!-- 预览区域 -->
+        <div class="mb-8"
+          :class="isDarkMode ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50' : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold flex items-center gap-2"
+              :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
+              <Icon icon="material-symbols:preview" class="text-2xl"
+                :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
+              实时预览
+            </h2>
+            <div class="rounded-full px-4 py-1 text-sm font-medium flex items-center gap-1"
+              :class="isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-700'">
+              <Icon icon="material-symbols:info-outline" />
+              拖动元素调整位置
+            </div>
           </div>
+          <PreviewPanel ref="previewPanelRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
+            :titleConfig="titleConfig" :watermarkConfig="watermarkConfig"
+            class="rounded-lg overflow-hidden shadow-inner" @canvas-update="onCanvasUpdate" />
         </div>
-        <PreviewPanel 
-          ref="previewPanelRef" 
-          :backgroundConfig="backgroundConfig" 
-          :iconConfig="iconConfig"
-          :titleConfig="titleConfig" 
-          :watermarkConfig="watermarkConfig" 
-          @canvas-update="onCanvasUpdate" 
-          class="rounded-lg overflow-hidden shadow-inner"
-        />
+
+        <!-- 控制面板 -->
+        <n-grid cols="1 s:1 m:2 l:2 xl:3 2xl:3" responsive="screen" :x-gap="24" :y-gap="24">
+          <!-- 背景设置 -->
+          <n-grid-item>
+            <BackgroundPanel :backgroundConfig="backgroundConfig" @update:backgroundConfig="(newBackgroundConfig) => {
+              Object.assign(backgroundConfig, newBackgroundConfig);
+              updateCanvas();
+            }" @image-upload="handleImageUpload" @canvas-update="updateCanvas" />
+          </n-grid-item>
+
+          <!-- 图标设置 -->
+          <n-grid-item>
+            <IconPanel :iconConfig="iconConfig" @update:iconConfig="(newIconConfig) => {
+              Object.assign(iconConfig, newIconConfig);
+              updateCanvas();
+            }" @icon-load="loadIcon" @canvas-update="updateCanvas" />
+          </n-grid-item>
+
+          <!-- 标题设置 -->
+          <n-grid-item>
+            <TitlePanel :titleConfig="titleConfig" @update:titleConfig="(newTitleConfig) => {
+              Object.assign(titleConfig, newTitleConfig);
+              updateCanvas();
+            }" @canvas-update="updateCanvas" />
+          </n-grid-item>
+
+          <!-- 水印设置 -->
+          <n-grid-item>
+            <WatermarkPanel :watermarkConfig="watermarkConfig" @update:watermarkConfig="(newWatermarkConfig) => {
+              Object.assign(watermarkConfig, newWatermarkConfig);
+              updateCanvas();
+            }" @canvas-update="updateCanvas" />
+          </n-grid-item>
+
+          <!-- 导出设置 -->
+          <n-grid-item>
+            <ExportPanel :exportConfig="exportConfig" @update:exportConfig="(newExportConfig) => {
+              Object.assign(exportConfig, newExportConfig);
+            }" @export-image="exportImage" />
+          </n-grid-item>
+        </n-grid>
       </div>
-
-      <!-- 控制面板 -->
-      <n-grid cols="1 s:1 m:2 l:2 xl:3 2xl:3" responsive="screen" :x-gap="24" :y-gap="24">
-        <!-- 背景设置 -->
-        <n-grid-item>
-          <BackgroundPanel :backgroundConfig="backgroundConfig" @update:backgroundConfig="(newBackgroundConfig) => {
-            Object.assign(backgroundConfig, newBackgroundConfig);
-            updateCanvas();
-          }" @image-upload="handleImageUpload" @canvas-update="updateCanvas" />
-        </n-grid-item>
-
-        <!-- 图标设置 -->
-        <n-grid-item>
-          <IconPanel :iconConfig="iconConfig" @update:iconConfig="(newIconConfig) => {
-            Object.assign(iconConfig, newIconConfig);
-            updateCanvas();
-          }" @icon-load="loadIcon" @canvas-update="updateCanvas" />
-        </n-grid-item>
-
-        <!-- 标题设置 -->
-        <n-grid-item>
-          <TitlePanel :titleConfig="titleConfig" @update:titleConfig="(newTitleConfig) => {
-            Object.assign(titleConfig, newTitleConfig);
-            updateCanvas();
-          }" @canvas-update="updateCanvas" />
-        </n-grid-item>
-
-        <!-- 水印设置 -->
-        <n-grid-item>
-          <WatermarkPanel :watermarkConfig="watermarkConfig" @update:watermarkConfig="(newWatermarkConfig) => {
-            Object.assign(watermarkConfig, newWatermarkConfig);
-            updateCanvas();
-          }" @canvas-update="updateCanvas" />
-        </n-grid-item>
-
-        <!-- 导出设置 -->
-        <n-grid-item>
-          <ExportPanel :exportConfig="exportConfig" @update:exportConfig="(newExportConfig) => {
-            Object.assign(exportConfig, newExportConfig);
-          }" @export-image="exportImage" />
-        </n-grid-item>
-      </n-grid>
-    </div>
     </div>
   </n-config-provider>
   <github-corner />
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
+import { useHead } from '@unhead/vue'
 import { NGrid, NGridItem, NConfigProvider, darkTheme } from 'naive-ui'
-import HeaderPanel from '@/components/HeaderPanel.vue'
-import BackgroundPanel from '@/components/BackgroundPanel.vue'
-import IconPanel from '@/components/IconPanel.vue'
-import TitlePanel from '@/components/TitlePanel.vue'
-import WatermarkPanel from '@/components/WatermarkPanel.vue'
-import ExportPanel from '@/components/ExportPanel.vue'
-import PreviewPanel from '@/components/PreviewPanel.vue'
-import GithubCorner from '@/components/GithubCorner.vue'
+import { ref, reactive, onMounted } from 'vue'
+
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
 
+import BackgroundPanel from '@/components/BackgroundPanel.vue'
+import ExportPanel from '@/components/ExportPanel.vue'
+import GithubCorner from '@/components/GithubCorner.vue'
+import HeaderPanel from '@/components/HeaderPanel.vue'
+import IconPanel from '@/components/IconPanel.vue'
+import PreviewPanel from '@/components/PreviewPanel.vue'
+import TitlePanel from '@/components/TitlePanel.vue'
+import WatermarkPanel from '@/components/WatermarkPanel.vue'
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
+ 
+// 站点信息
+const siteInfo = reactive({
+  name: import.meta.env.VITE_APP_SITE_NAME,
+  description: import.meta.env.VITE_APP_SITE_DESCRIPTION
+})
+
+// 页面元数据
+useHead({
+  title: `${import.meta.env.VITE_APP_SITE_NAME} - ${import.meta.env.VITE_APP_SITE_DESCRIPTION}`,
+  meta: [
+    { name: 'description', content: import.meta.env.VITE_APP_SITE_DESCRIPTION }
+  ]
+})
 
 // 背景设置 - 用于控制封面背景的各项属性
 const backgroundConfig = reactive<BackgroundConfig>({
