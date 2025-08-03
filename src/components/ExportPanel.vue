@@ -1,7 +1,7 @@
 <template>
     <n-card size="large" hoverable class="h-full !rounded-lg">
         <template #header>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
                 <Icon icon="material-symbols:download" class="text-xl dark:text-blue-400 text-blue-600" />
                 <span class="font-semibold dark:text-gray-100">导出设置</span>
             </div>
@@ -10,7 +10,7 @@
             <!-- 导出尺寸设置 -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-2">
+                    <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
                         <Icon icon="material-symbols:width" class="text-lg" />
                         导出宽度
                     </div>
@@ -18,7 +18,7 @@
                         class="w-full" @update:value="updateExportConfig" />
                 </div>
                 <div>
-                    <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-2">
+                    <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
                         <Icon icon="material-symbols:height" class="text-lg" />
                         导出高度
                     </div>
@@ -29,7 +29,7 @@
 
             <!-- 导出格式选择 -->
             <div>
-                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-2">
+                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
                     <Icon icon="material-symbols:format-paint" class="text-lg" />
                     导出格式
                 </div>
@@ -39,7 +39,7 @@
 
             <!-- 文件名设置 -->
             <div>
-                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-2">
+                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
                     <Icon icon="material-symbols:drive-file-rename-outline" class="text-lg" />
                     文件名
                 </div>
@@ -60,7 +60,7 @@
 
             <!-- 随机文件名长度设置 -->
             <div v-if="localExportConfig.useRandomFileName">
-                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-2">
+                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
                     <Icon icon="material-symbols:format-size" class="text-lg" />
                     随机文件名长度
                 </div>
@@ -72,15 +72,15 @@
             <div v-if="localExportConfig.useRandomFileName" class="grid grid-cols-3 gap-2">
                 <n-checkbox v-model:checked="localExportConfig.randomFileNameOptions.includeNumbers"
                     @update:checked="updateRandomFileNameOptions('includeNumbers', $event)">
-                    包含数字
+                    数字
                 </n-checkbox>
                 <n-checkbox v-model:checked="localExportConfig.randomFileNameOptions.includeLowercase"
                     @update:checked="updateRandomFileNameOptions('includeLowercase', $event)">
-                    包含小写字母
+                    小写字母
                 </n-checkbox>
                 <n-checkbox v-model:checked="localExportConfig.randomFileNameOptions.includeUppercase"
                     @update:checked="updateRandomFileNameOptions('includeUppercase', $event)">
-                    包含大写字母
+                    大写字母
                 </n-checkbox>
             </div>
 
@@ -90,7 +90,7 @@
                     <Icon icon="material-symbols:preview" class="text-lg" />
                     预览：
                 </div>
-                <div class="text-sm font-mono px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-200 bg-gray-100 text-gray-800">
+                <div class="text-sm font-mono px-1 py-1 rounded dark:bg-gray-700 dark:text-gray-200 bg-gray-100 text-gray-800">
                     {{ localExportConfig.currentRandomFileName || '生成中...' }}.{{ localExportConfig.format }}
                 </div>
                 <n-button size="small" @click="generateAndCacheRandomFileName">

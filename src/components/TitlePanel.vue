@@ -1,14 +1,14 @@
 <template>
   <n-card size="large" hoverable class="h-full !rounded-lg">
     <template #header>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1">
         <Icon icon="material-symbols:title" class="text-xl text-green-600" />
         <span class="font-semibold">标题设置</span>
       </div>
     </template>
     <n-space vertical size="large">
       <div>
-        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
           <Icon icon="material-symbols:text-fields" class="text-lg" />
           标题文本
         </label>
@@ -24,7 +24,7 @@
       </div>
 
       <div>
-        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
           <Icon icon="material-symbols:font-download" class="text-lg" />
           字体
         </label>
@@ -38,7 +38,7 @@
       <div>
         <n-space>
           <n-checkbox :checked="titleConfig.effects.bold" @update:checked="(value) => updateTitleEffect('bold', value)">
-            <span class="flex items-center gap-2">
+            <span class="flex items-center gap-1">
               <Icon icon="material-symbols:format-bold" class="text-lg" />
               加粗
             </span>
@@ -47,7 +47,7 @@
             :checked="titleConfig.effects.italic"
             @update:checked="(value) => updateTitleEffect('italic', value)"
           >
-            <span class="flex items-center gap-2">
+            <span class="flex items-center gap-1">
               <Icon icon="material-symbols:format-italic" class="text-lg" />
               斜体
             </span>
@@ -57,7 +57,7 @@
 
       <n-grid cols="2" :x-gap="16">
         <n-grid-item>
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:format-size" class="text-lg" />
             字体大小
           </label>
@@ -72,7 +72,7 @@
         </n-grid-item>
 
         <n-grid-item>
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:palette" class="text-lg" />
             颜色
           </label>
@@ -87,7 +87,7 @@
 
       <n-grid cols="2" :x-gap="16">
         <n-grid-item>
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:swap-horiz" class="text-lg" />
             水平位置
           </label>
@@ -102,7 +102,7 @@
         </n-grid-item>
 
         <n-grid-item>
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:swap-vert" class="text-lg" />
             垂直位置
           </label>

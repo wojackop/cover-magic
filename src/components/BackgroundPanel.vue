@@ -1,14 +1,14 @@
 <template>
   <n-card size="large" hoverable class="h-full !rounded-lg">
     <template #header>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1">
         <Icon icon="material-symbols:image" class="text-xl text-purple-600" />
         <span class="font-semibold">背景设置</span>
       </div>
     </template>
     <n-space vertical size="large">
       <div>
-        <label class="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-3 flex items-center gap-1">
           <Icon icon="material-symbols:category" class="text-lg" />
           背景类型
         </label>
@@ -53,7 +53,7 @@
       </div>
 
       <div v-if="backgroundConfig.type === BACKGROUND_TYPE.COLOR">
-        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
           <Icon icon="material-symbols:palette" class="text-lg" />
           背景颜色
         </label>
@@ -65,7 +65,7 @@
         />
 
         <div class="mt-4">
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:opacity" class="text-lg" />
             背景透明度
           </label>
@@ -82,7 +82,7 @@
 
       <div v-if="backgroundConfig.type === BACKGROUND_TYPE.GRADIENT">
         <div>
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:gradient-sharp" class="text-lg" />
             起始颜色
           </label>
@@ -95,7 +95,7 @@
         </div>
 
         <div class="mt-4">
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:gradient" class="text-lg" />
             结束颜色
           </label>
@@ -108,7 +108,7 @@
         </div>
 
         <div class="mt-4">
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:arrow-forward" class="text-lg" />
             渐变方向
           </label>
@@ -120,7 +120,7 @@
         </div>
 
         <div class="mt-4">
-          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:opacity" class="text-lg" />
             背景透明度
           </label>
@@ -136,7 +136,7 @@
       </div>
 
       <div v-if="backgroundConfig.type === 'image'">
-        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
           <Icon icon="material-symbols:upload" class="text-lg" />
           上传图片
         </label>
@@ -152,7 +152,7 @@
       </div>
 
       <div v-if="backgroundConfig.type === 'image' && backgroundConfig.image">
-        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
           <Icon icon="material-symbols:blur-on" class="text-lg" />
           模糊度
         </label>

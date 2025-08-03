@@ -15,7 +15,7 @@
             <div class="bg-blue-500/80 backdrop-blur-md p-3 rounded-xl shadow-lg">
               <Icon icon="material-symbols:palette" class="text-4xl text-white" />
             </div>
-            <n-gradient-text :size="40" type="success" class="text-3xl md:text-4xl !font-bold">
+            <n-gradient-text :size="40" type="success" class="block text-3xl md:text-4xl !font-bold">
               {{ props.title }}
             </n-gradient-text>
           </div>
@@ -126,15 +126,15 @@
             <div>
               <h3 :class="['font-bold mb-2', isDarkMode ? 'text-blue-300' : 'text-blue-800']">背景设计</h3>
               <ul class="space-y-2">
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   自定义纯色背景
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   上传自定义图片
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   多方向渐变背景
                 </li>
@@ -152,15 +152,15 @@
             <div>
               <h3 :class="['font-bold mb-2', isDarkMode ? 'text-indigo-300' : 'text-indigo-800']">内容编辑</h3>
               <ul class="space-y-2">
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   丰富的图标库
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   自定义标题文本
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   水印保护功能
                 </li>
@@ -178,15 +178,15 @@
             <div>
               <h3 :class="['font-bold mb-2', isDarkMode ? 'text-purple-300' : 'text-purple-800']">主题模式</h3>
               <ul class="space-y-2">
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   支持暗黑主题
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   一键主题切换
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   护眼模式体验
                 </li>
@@ -204,15 +204,15 @@
             <div>
               <h3 :class="['font-bold mb-2', isDarkMode ? 'text-blue-300' : 'text-blue-800']">导出选项</h3>
               <ul class="space-y-2">
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   多种格式导出
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   自定义尺寸
                 </li>
-                <li :class="['flex items-center gap-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
                   高质量图像
                 </li>

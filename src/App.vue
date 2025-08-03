@@ -11,7 +11,7 @@
         <div class="mb-8"
           :class="isDarkMode ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50' : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold flex items-center gap-2"
+            <h2 class="text-xl font-bold flex items-center gap-1"
               :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
               <Icon icon="material-symbols:preview" class="text-2xl"
                 :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
@@ -70,6 +70,9 @@
           </n-grid-item>
         </n-grid>
       </div>
+      
+      <!-- 底部版权信息 -->
+      <FooterPanel />
     </div>
   </n-config-provider>
   <github-corner />
@@ -85,6 +88,7 @@ import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, Export
 
 import BackgroundPanel from '@/components/BackgroundPanel.vue'
 import ExportPanel from '@/components/ExportPanel.vue'
+import FooterPanel from '@/components/FooterPanel.vue'
 import GithubCorner from '@/components/GithubCorner.vue'
 import HeaderPanel from '@/components/HeaderPanel.vue'
 import IconPanel from '@/components/IconPanel.vue'
@@ -103,7 +107,18 @@ const siteInfo = reactive({
 useHead({
   title: `${import.meta.env.VITE_APP_SITE_NAME} - ${import.meta.env.VITE_APP_SITE_DESCRIPTION}`,
   meta: [
-    { name: 'description', content: import.meta.env.VITE_APP_SITE_DESCRIPTION }
+    { name: 'description', content: import.meta.env.VITE_APP_SITE_DESCRIPTION },
+    { 
+      name: 'keywords', 
+      content: import.meta.env.VITE_APP_SITE_KEYWORDS 
+    }
+  ],
+  link: [
+    { 
+      rel: 'icon', 
+      type: 'image/x-icon', 
+      href: '/favicon.ico' // 路径指向 public/favicon.ico
+    }
   ]
 })
 
