@@ -8,6 +8,11 @@
     "email": "me@baiwumm.com",
     "url": "https://baiwumm.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baiwumm/vue3-mini-cover",
+    "issues": "https://github.com/baiwumm/vue3-mini-cover/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",

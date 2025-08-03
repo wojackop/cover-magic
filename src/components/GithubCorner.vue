@@ -1,5 +1,5 @@
 <template>
-    <a href="https://your-url" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80"
+    <a :href="pkg.repository.url" class="github-corner" target="_blank" aria-label="View source on GitHub"><svg width="80" height="80"
             viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
             aria-hidden="true">
             <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />
@@ -11,6 +11,9 @@
                 fill="currentColor" class="octo-body" />
         </svg></a>
 </template>
+<script setup>
+import pkg from '../../package.json';
+</script>
 <style scoped>
 .github-corner:hover .octo-arm {
     animation: octocat-wave 560ms ease-in-out
