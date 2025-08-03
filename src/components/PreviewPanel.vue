@@ -17,6 +17,7 @@
 import { ref, onMounted, nextTick, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
+import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
 import { NCard } from 'naive-ui'
 
 // 定义组件的属性
@@ -421,7 +422,7 @@ const renderFrame = async (
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // 绘制背景
-    if (props.backgroundConfig.type === 'color') {
+    if (props.backgroundConfig.type === BACKGROUND_TYPE.COLOR) {
         // 绘制纯色背景，应用透明度
         const opacity = props.backgroundConfig.opacity / 100
         const color = props.backgroundConfig.color
@@ -432,6 +433,59 @@ const renderFrame = async (
         const b = parseInt(color.slice(5, 7), 16)
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+    } else if (props.backgroundConfig.type === BACKGROUND_TYPE.GRADIENT) {
+        // 绘制渐变背景
+        const { startColor, endColor, direction } = props.backgroundConfig.gradient
+        const opacity = props.backgroundConfig.opacity / 100
+        
+        // 创建渐变对象
+        let gradient
+        
+        switch (direction) {
+            case GRADIENT_DIRECTION.TO_RIGHT:
+                gradient = ctx.createLinearGradient(0, 0, canvas.width, 0)
+                break
+            case GRADIENT_DIRECTION.TO_LEFT:
+                gradient = ctx.createLinearGradient(canvas.width, 0, 0, 0)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM:
+                gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_TOP:
+                gradient = ctx.createLinearGradient(0, canvas.height, 0, 0)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM_RIGHT:
+                gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM_LEFT:
+                gradient = ctx.createLinearGradient(canvas.width, 0, 0, canvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_TOP_RIGHT:
+                gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0)
+                break
+            case GRADIENT_DIRECTION.TO_TOP_LEFT:
+                gradient = ctx.createLinearGradient(canvas.width, canvas.height, 0, 0)
+                break
+            default:
+                gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+        }
+        
+        // 将十六进制颜色转换为 rgba 格式
+        const startR = parseInt(startColor.slice(1, 3), 16)
+        const startG = parseInt(startColor.slice(3, 5), 16)
+        const startB = parseInt(startColor.slice(5, 7), 16)
+        
+        const endR = parseInt(endColor.slice(1, 3), 16)
+        const endG = parseInt(endColor.slice(3, 5), 16)
+        const endB = parseInt(endColor.slice(5, 7), 16)
+        
+        // 添加渐变色标
+        gradient.addColorStop(0, `rgba(${startR}, ${startG}, ${startB}, ${opacity})`)
+        gradient.addColorStop(1, `rgba(${endR}, ${endG}, ${endB}, ${opacity})`)
+        
+        // 应用渐变
+        ctx.fillStyle = gradient
         ctx.fillRect(0, 0, canvas.width, canvas.height)
     } else if (props.backgroundConfig.imageObj) {
         // 绘制背景图片
@@ -695,7 +749,7 @@ const exportImage = async (exportConfig: ExportConfig) => {
     exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
 
     // 绘制背景
-    if (props.backgroundConfig.type === 'color') {
+    if (props.backgroundConfig.type === BACKGROUND_TYPE.COLOR) {
         // 绘制纯色背景，应用透明度
         const opacity = props.backgroundConfig.opacity / 100
         const color = props.backgroundConfig.color
@@ -706,6 +760,59 @@ const exportImage = async (exportConfig: ExportConfig) => {
         const b = parseInt(color.slice(5, 7), 16)
 
         exportCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
+        exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
+    } else if (props.backgroundConfig.type === BACKGROUND_TYPE.GRADIENT) {
+        // 绘制渐变背景
+        const { startColor, endColor, direction } = props.backgroundConfig.gradient
+        const opacity = props.backgroundConfig.opacity / 100
+        
+        // 创建渐变对象
+        let gradient
+        
+        switch (direction) {
+            case GRADIENT_DIRECTION.TO_RIGHT:
+                gradient = exportCtx.createLinearGradient(0, 0, exportCanvas.width, 0)
+                break
+            case GRADIENT_DIRECTION.TO_LEFT:
+                gradient = exportCtx.createLinearGradient(exportCanvas.width, 0, 0, 0)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM:
+                gradient = exportCtx.createLinearGradient(0, 0, 0, exportCanvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_TOP:
+                gradient = exportCtx.createLinearGradient(0, exportCanvas.height, 0, 0)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM_RIGHT:
+                gradient = exportCtx.createLinearGradient(0, 0, exportCanvas.width, exportCanvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_BOTTOM_LEFT:
+                gradient = exportCtx.createLinearGradient(exportCanvas.width, 0, 0, exportCanvas.height)
+                break
+            case GRADIENT_DIRECTION.TO_TOP_RIGHT:
+                gradient = exportCtx.createLinearGradient(0, exportCanvas.height, exportCanvas.width, 0)
+                break
+            case GRADIENT_DIRECTION.TO_TOP_LEFT:
+                gradient = exportCtx.createLinearGradient(exportCanvas.width, exportCanvas.height, 0, 0)
+                break
+            default:
+                gradient = exportCtx.createLinearGradient(0, 0, exportCanvas.width, exportCanvas.height)
+        }
+        
+        // 将十六进制颜色转换为 rgba 格式
+        const startR = parseInt(startColor.slice(1, 3), 16)
+        const startG = parseInt(startColor.slice(3, 5), 16)
+        const startB = parseInt(startColor.slice(5, 7), 16)
+        
+        const endR = parseInt(endColor.slice(1, 3), 16)
+        const endG = parseInt(endColor.slice(3, 5), 16)
+        const endB = parseInt(endColor.slice(5, 7), 16)
+        
+        // 添加渐变色标
+        gradient.addColorStop(0, `rgba(${startR}, ${startG}, ${startB}, ${opacity})`)
+        gradient.addColorStop(1, `rgba(${endR}, ${endG}, ${endB}, ${opacity})`)
+        
+        // 应用渐变
+        exportCtx.fillStyle = gradient
         exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
     } else if (props.backgroundConfig.imageObj) {
         // 绘制背景图片

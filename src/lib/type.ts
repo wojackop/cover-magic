@@ -1,13 +1,21 @@
-import { BACKGROUND_TYPE } from '@/lib/enum'
+import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
+
+// 渐变背景配置
+export type GradientConfig = {
+    startColor: string // 起始颜色：十六进制颜色值
+    endColor: string // 结束颜色：十六进制颜色值
+    direction: GRADIENT_DIRECTION // 渐变方向
+}
 
 // 背景设置
 export type BackgroundConfig = {
-    type: BACKGROUND_TYPE // 背景类型：'color'表示纯色背景，'image'表示图片背景
+    type: BACKGROUND_TYPE // 背景类型：'color'表示纯色背景，'image'表示图片背景，'gradient'表示渐变背景
     color: string // 背景颜色：十六进制颜色值，默认为黑色
     opacity: number // 背景不透明度：范围0-100，100表示完全不透明
     image: string // 背景图片：Base64格式的图片数据URL字符串
     imageObj: HTMLImageElement | null // 背景图片对象：用于Canvas绘制的图片DOM元素
     blur: number // 背景模糊度：应用于图片背景的模糊效果，单位为像素
+    gradient: GradientConfig // 渐变背景配置
 }
 
 // 位置类型定义

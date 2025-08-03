@@ -10,12 +10,18 @@
             <!-- 导出尺寸设置 -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <div class="mb-2 text-sm text-gray-600">导出宽度</div>
+                    <div class="mb-2 text-sm text-gray-600 flex items-center gap-2">
+                        <Icon icon="material-symbols:width" class="text-lg" />
+                        导出宽度
+                    </div>
                     <n-input-number v-model:value="localExportConfig.width" :min="100" :max="3840" :step="10"
                         class="w-full" @update:value="updateExportConfig" />
                 </div>
                 <div>
-                    <div class="mb-2 text-sm text-gray-600">导出高度</div>
+                    <div class="mb-2 text-sm text-gray-600 flex items-center gap-2">
+                        <Icon icon="material-symbols:height" class="text-lg" />
+                        导出高度
+                    </div>
                     <n-input-number v-model:value="localExportConfig.height" :min="100" :max="2160" :step="10"
                         class="w-full" @update:value="updateExportConfig" />
                 </div>
@@ -23,14 +29,20 @@
 
             <!-- 导出格式选择 -->
             <div>
-                <div class="mb-2 text-sm text-gray-600">导出格式</div>
+                <div class="mb-2 text-sm text-gray-600 flex items-center gap-2">
+                    <Icon icon="material-symbols:format-paint" class="text-lg" />
+                    导出格式
+                </div>
                 <n-select v-model:value="localExportConfig.format" :options="formatOptions" class="w-full"
                     @update:value="updateExportConfig" />
             </div>
 
             <!-- 文件名设置 -->
             <div>
-                <div class="mb-2 text-sm text-gray-600">文件名</div>
+                <div class="mb-2 text-sm text-gray-600 flex items-center gap-2">
+                    <Icon icon="material-symbols:drive-file-rename-outline" class="text-lg" />
+                    文件名
+                </div>
                 <n-input v-model:value="localExportConfig.fileName" placeholder="输入文件名" class="w-full"
                     :disabled="localExportConfig.useRandomFileName" @update:value="updateExportConfig">
                     <template #suffix>
@@ -48,7 +60,10 @@
 
             <!-- 随机文件名长度设置 -->
             <div v-if="localExportConfig.useRandomFileName">
-                <div class="mb-2 text-sm text-gray-600">随机文件名长度</div>
+                <div class="mb-2 text-sm text-gray-600 flex items-center gap-2">
+                    <Icon icon="material-symbols:format-size" class="text-lg" />
+                    随机文件名长度
+                </div>
                 <n-slider v-model:value="localExportConfig.randomFileNameLength" :min="4" :max="32" :step="1"
                     :tooltip="true" @update:value="updateExportConfig" />
             </div>
@@ -70,8 +85,11 @@
             </div>
 
             <!-- 随机文件名预览 -->
-            <div v-if="localExportConfig.useRandomFileName" class="flex items-center gap-2">
-                <div class="text-sm text-gray-600">预览：</div>
+            <div v-if="localExportConfig.useRandomFileName" class="flex items-center gap-1">
+                <div class="text-sm text-gray-600 flex items-center gap-1">
+                    <Icon icon="material-symbols:preview" class="text-lg" />
+                    预览：
+                </div>
                 <div class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
                     {{ localExportConfig.currentRandomFileName || '生成中...' }}.{{ localExportConfig.format }}
                 </div>

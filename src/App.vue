@@ -73,16 +73,21 @@ import ExportPanel from '@/components/ExportPanel.vue'
 import PreviewPanel from '@/components/PreviewPanel.vue'
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
 
-import { BACKGROUND_TYPE } from '@/lib/enum'
+import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
 
 // 背景设置 - 用于控制封面背景的各项属性
 const backgroundConfig = reactive<BackgroundConfig>({
-  type: BACKGROUND_TYPE.COLOR,  // 背景类型：'color'表示纯色背景，'image'表示图片背景
+  type: BACKGROUND_TYPE.COLOR,  // 背景类型：'color'表示纯色背景，'image'表示图片背景，'gradient'表示渐变背景
   color: '#000000',                    // 背景颜色：十六进制颜色值，默认为黑色
   opacity: 100,                        // 背景不透明度：范围0-100，100表示完全不透明
   image: '' as string,                 // 背景图片：Base64格式的图片数据URL字符串
   imageObj: null as HTMLImageElement | null, // 背景图片对象：用于Canvas绘制的图片DOM元素
-  blur: 0                              // 背景模糊度：应用于图片背景的模糊效果，单位为像素
+  blur: 0,                             // 背景模糊度：应用于图片背景的模糊效果，单位为像素
+  gradient: {                          // 渐变背景配置
+    startColor: '#3b82f6',             // 起始颜色：默认为蓝色
+    endColor: '#8b5cf6',               // 结束颜色：默认为紫色
+    direction: GRADIENT_DIRECTION.TO_BOTTOM_RIGHT // 渐变方向：默认为左上到右下
+  }
 })
 
 // 图标设置 - 用于控制封面中心图标的各项属性

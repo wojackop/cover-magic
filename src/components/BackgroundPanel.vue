@@ -8,8 +8,11 @@
         </template>
         <n-space vertical size="large">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-3">背景类型</label>
-                <n-space>
+                <label class="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                    <Icon icon="material-symbols:category" class="text-lg" />
+                    背景类型
+                </label>
+                <n-space wrap>
                     <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.COLOR ? 'primary' : 'default'"
                         @click="updateBackgroundProperty('type', BACKGROUND_TYPE.COLOR)">
                         <template #icon>
@@ -17,7 +20,14 @@
                         </template>
                         纯色
                     </n-button>
-                    <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.COLOR ? 'default' : 'primary'"
+                    <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.GRADIENT ? 'primary' : 'default'"
+                        @click="updateBackgroundProperty('type', BACKGROUND_TYPE.GRADIENT)">
+                        <template #icon>
+                            <Icon icon="material-symbols:gradient" />
+                        </template>
+                        渐变
+                    </n-button>
+                    <n-button strong secondary round :type="backgroundConfig.type === BACKGROUND_TYPE.IMAGE ? 'primary' : 'default'"
                         @click="updateBackgroundProperty('type', BACKGROUND_TYPE.IMAGE)">
                         <template #icon>
                             <Icon icon="material-symbols:image" />
@@ -35,6 +45,47 @@
                 <n-color-picker :value="backgroundConfig.color"
                     @update:value="value => updateBackgroundProperty('color', value)" :swatches="colorSwatches"
                     :show-alpha="false" />
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Icon icon="material-symbols:opacity" class="text-lg" />
+                        背景透明度
+                    </label>
+                    <n-slider :value="backgroundConfig.opacity" :min="0" :max="100" :step="1"
+                        @update:value="value => updateBackgroundProperty('opacity', value)" />
+                    <span class="text-sm text-gray-500">{{ backgroundConfig.opacity }}%</span>
+                </div>
+            </div>
+
+            <div v-if="backgroundConfig.type === BACKGROUND_TYPE.GRADIENT">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Icon icon="material-symbols:gradient-sharp" class="text-lg" />
+                        起始颜色
+                    </label>
+                    <n-color-picker :value="backgroundConfig.gradient.startColor"
+                        @update:value="value => updateGradientProperty('startColor', value)" :swatches="colorSwatches"
+                        :show-alpha="false" />
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Icon icon="material-symbols:gradient" class="text-lg" />
+                        结束颜色
+                    </label>
+                    <n-color-picker :value="backgroundConfig.gradient.endColor"
+                        @update:value="value => updateGradientProperty('endColor', value)" :swatches="colorSwatches"
+                        :show-alpha="false" />
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Icon icon="material-symbols:direction" class="text-lg" />
+                        渐变方向
+                    </label>
+                    <n-select v-model:value="backgroundConfig.gradient.direction" :options="gradientDirectionOptions"
+                        @update:value="value => updateGradientProperty('direction', value)" />
+                </div>
 
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -78,6 +129,7 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { computed } from 'vue'
 import { colorSwatches } from '@/lib/constant'
 import {
     NButton,
@@ -86,10 +138,11 @@ import {
     NUpload,
     NUploadDragger,
     NCard,
-    NSpace
+    NSpace,
+    NSelect
 } from 'naive-ui'
-import type { BackgroundConfig } from '@/lib/type'
-import { BACKGROUND_TYPE } from '@/lib/enum'
+import type { BackgroundConfig, GradientConfig } from '@/lib/type'
+import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
 
 // Props
 type Props = {
@@ -107,9 +160,57 @@ interface Emits {
 
 const emit = defineEmits<Emits>()
 
+// 渐变方向选项
+const gradientDirectionOptions = [
+    { label: '从左到右', value: GRADIENT_DIRECTION.TO_RIGHT },
+    { label: '从右到左', value: GRADIENT_DIRECTION.TO_LEFT },
+    { label: '从上到下', value: GRADIENT_DIRECTION.TO_BOTTOM },
+    { label: '从下到上', value: GRADIENT_DIRECTION.TO_TOP },
+    { label: '左上到右下', value: GRADIENT_DIRECTION.TO_BOTTOM_RIGHT },
+    { label: '右上到左下', value: GRADIENT_DIRECTION.TO_BOTTOM_LEFT },
+    { label: '左下到右上', value: GRADIENT_DIRECTION.TO_TOP_RIGHT },
+    { label: '右下到左上', value: GRADIENT_DIRECTION.TO_TOP_LEFT }
+]
+
+// 渐变预览样式
+const gradientPreviewStyle = computed(() => {
+    const { startColor, endColor, direction } = props.backgroundConfig.gradient
+    const opacity = props.backgroundConfig.opacity / 100
+    
+    // 创建带透明度的颜色
+    const startColorWithOpacity = addOpacityToHexColor(startColor, opacity)
+    const endColorWithOpacity = addOpacityToHexColor(endColor, opacity)
+    
+    return {
+        background: `linear-gradient(${direction}, ${startColorWithOpacity}, ${endColorWithOpacity})`
+    }
+})
+
+// 为十六进制颜色添加透明度
+const addOpacityToHexColor = (hexColor: string, opacity: number): string => {
+    // 将十六进制颜色转换为 RGB
+    const r = parseInt(hexColor.slice(1, 3), 16)
+    const g = parseInt(hexColor.slice(3, 5), 16)
+    const b = parseInt(hexColor.slice(5, 7), 16)
+    
+    // 返回带透明度的 RGBA 颜色
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
 // 通用背景属性更新处理函数
 const updateBackgroundProperty = <T extends keyof BackgroundConfig>(property: T, value: BackgroundConfig[T]) => {
     const newBackgroundConfig = { ...props.backgroundConfig, [property]: value }
+    emit('update:backgroundConfig', newBackgroundConfig)
+    emit('canvasUpdate')
+}
+
+// 渐变属性更新处理函数
+const updateGradientProperty = <T extends keyof GradientConfig>(property: T, value: GradientConfig[T]) => {
+    const newGradient = { ...props.backgroundConfig.gradient, [property]: value }
+    const newBackgroundConfig = { 
+        ...props.backgroundConfig, 
+        gradient: newGradient 
+    }
     emit('update:backgroundConfig', newBackgroundConfig)
     emit('canvasUpdate')
 }
