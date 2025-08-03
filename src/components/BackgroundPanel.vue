@@ -13,37 +13,25 @@
           背景类型
         </label>
         <n-space wrap>
-          <n-button
-            strong
-            secondary
-            round
+          <n-button strong secondary round
             :type="backgroundConfig.type === BACKGROUND_TYPE.COLOR ? 'primary' : 'default'"
-            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.COLOR)"
-          >
+            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.COLOR)">
             <template #icon>
               <Icon icon="material-symbols:palette" />
             </template>
             纯色
           </n-button>
-          <n-button
-            strong
-            secondary
-            round
+          <n-button strong secondary round
             :type="backgroundConfig.type === BACKGROUND_TYPE.GRADIENT ? 'primary' : 'default'"
-            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.GRADIENT)"
-          >
+            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.GRADIENT)">
             <template #icon>
               <Icon icon="material-symbols:gradient" />
             </template>
             渐变
           </n-button>
-          <n-button
-            strong
-            secondary
-            round
+          <n-button strong secondary round
             :type="backgroundConfig.type === BACKGROUND_TYPE.IMAGE ? 'primary' : 'default'"
-            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.IMAGE)"
-          >
+            @click="updateBackgroundProperty('type', BACKGROUND_TYPE.IMAGE)">
             <template #icon>
               <Icon icon="material-symbols:image" />
             </template>
@@ -57,25 +45,16 @@
           <Icon icon="material-symbols:palette" class="text-lg" />
           背景颜色
         </label>
-        <n-color-picker
-          :value="backgroundConfig.color"
-          :swatches="colorSwatches"
-          :show-alpha="false"
-          @update:value="(value) => updateBackgroundProperty('color', value)"
-        />
+        <n-color-picker :value="backgroundConfig.color" :swatches="colorSwatches" :show-alpha="false"
+          @update:value="(value) => updateBackgroundProperty('color', value)" />
 
         <div class="mt-4">
           <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
             <Icon icon="material-symbols:opacity" class="text-lg" />
             背景透明度
           </label>
-          <n-slider
-            :value="backgroundConfig.opacity"
-            :min="0"
-            :max="100"
-            :step="1"
-            @update:value="(value) => updateBackgroundProperty('opacity', value)"
-          />
+          <n-slider :value="backgroundConfig.opacity" :min="0" :max="100" :step="1"
+            @update:value="(value) => updateBackgroundProperty('opacity', value)" />
           <span class="text-sm text-gray-500">{{ backgroundConfig.opacity }}%</span>
         </div>
       </div>
@@ -86,12 +65,8 @@
             <Icon icon="material-symbols:gradient-sharp" class="text-lg" />
             起始颜色
           </label>
-          <n-color-picker
-            :value="backgroundConfig.gradient.startColor"
-            :swatches="colorSwatches"
-            :show-alpha="false"
-            @update:value="(value) => updateGradientProperty('startColor', value)"
-          />
+          <n-color-picker :value="backgroundConfig.gradient.startColor" :swatches="colorSwatches" :show-alpha="false"
+            @update:value="(value) => updateGradientProperty('startColor', value)" />
         </div>
 
         <div class="mt-4">
@@ -99,12 +74,8 @@
             <Icon icon="material-symbols:gradient" class="text-lg" />
             结束颜色
           </label>
-          <n-color-picker
-            :value="backgroundConfig.gradient.endColor"
-            :swatches="colorSwatches"
-            :show-alpha="false"
-            @update:value="(value) => updateGradientProperty('endColor', value)"
-          />
+          <n-color-picker :value="backgroundConfig.gradient.endColor" :swatches="colorSwatches" :show-alpha="false"
+            @update:value="(value) => updateGradientProperty('endColor', value)" />
         </div>
 
         <div class="mt-4">
@@ -112,11 +83,8 @@
             <Icon icon="material-symbols:arrow-forward" class="text-lg" />
             渐变方向
           </label>
-          <n-select
-            v-model:value="backgroundConfig.gradient.direction"
-            :options="gradientDirectionOptions"
-            @update:value="(value) => updateGradientProperty('direction', value)"
-          />
+          <n-select v-model:value="backgroundConfig.gradient.direction" :options="gradientDirectionOptions"
+            @update:value="(value) => updateGradientProperty('direction', value)" />
         </div>
 
         <div class="mt-4">
@@ -124,13 +92,8 @@
             <Icon icon="material-symbols:opacity" class="text-lg" />
             背景透明度
           </label>
-          <n-slider
-            :value="backgroundConfig.opacity"
-            :min="0"
-            :max="100"
-            :step="1"
-            @update:value="(value) => updateBackgroundProperty('opacity', value)"
-          />
+          <n-slider :value="backgroundConfig.opacity" :min="0" :max="100" :step="1"
+            @update:value="(value) => updateBackgroundProperty('opacity', value)" />
           <span class="text-sm text-gray-500">{{ backgroundConfig.opacity }}%</span>
         </div>
       </div>
@@ -156,13 +119,8 @@
           <Icon icon="material-symbols:blur-on" class="text-lg" />
           模糊度
         </label>
-        <n-slider
-          :value="backgroundConfig.blur"
-          :min="0"
-          :max="20"
-          :step="1"
-          @update:value="(value) => updateBackgroundProperty('blur', value)"
-        />
+        <n-slider :value="backgroundConfig.blur" :min="0" :max="20" :step="1"
+          @update:value="(value) => updateBackgroundProperty('blur', value)" />
         <span class="text-sm text-gray-500">{{ backgroundConfig.blur }}px</span>
       </div>
     </n-space>
@@ -175,8 +133,7 @@ import { NButton, NColorPicker, NSlider, NUpload, NUploadDragger, NCard, NSpace,
 
 import type { BackgroundConfig, GradientConfig } from "@/lib/type";
 
-import { colorSwatches, gradientDirectionOptions } from "@/lib/constant";
-import { BACKGROUND_TYPE } from "@/lib/enum";
+import { colorSwatches, gradientDirectionOptions, BACKGROUND_TYPE } from "@/lib/constant";
 
 // Props
 type Props = {

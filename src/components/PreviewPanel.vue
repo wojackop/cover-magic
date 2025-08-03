@@ -18,7 +18,7 @@ import { ref, onMounted, nextTick, watch } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
 
-import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/enum";
+import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/constant";
 
 // 定义组件的属性
 const props = defineProps<{
