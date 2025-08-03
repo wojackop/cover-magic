@@ -77,6 +77,7 @@
     </div>
     </div>
   </n-config-provider>
+  <github-corner />
 </template>
 
 <script setup lang="ts">
@@ -90,6 +91,7 @@ import TitlePanel from '@/components/TitlePanel.vue'
 import WatermarkPanel from '@/components/WatermarkPanel.vue'
 import ExportPanel from '@/components/ExportPanel.vue'
 import PreviewPanel from '@/components/PreviewPanel.vue'
+import GithubCorner from '@/components/GithubCorner.vue'
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from '@/lib/type'
 
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
@@ -134,7 +136,8 @@ const titleConfig = reactive<TitleConfig>({
   },
   effects: {                   // 文本效果：控制标题文本的样式效果
     bold: true,                // 粗体：true表示使用粗体，false表示不使用
-    italic: true               // 斜体：true表示使用斜体，false表示不使用
+    italic: true,              // 斜体：true表示使用斜体，false表示不使用
+    uppercase: false           // 大写：true表示将英文转换为大写，false表示不转换
   }
 })
 
