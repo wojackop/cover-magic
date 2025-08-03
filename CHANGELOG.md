@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/baiwumm/cover-magic/compare/1.2.0...1.2.1) (2025-08-03)
+
+### ✨ Features | 新功能
+
+* 添加底部版权信息和网站图标 ([da659fa](https://github.com/baiwumm/cover-magic/commit/da659faf374f2786278bf6597ad8aed318c8ebfd))
+* update README.md ([d1db66d](https://github.com/baiwumm/cover-magic/commit/d1db66d7d5e6cda78e824d52875e78e0bf6280bf))
+
 ## [1.2.0](https://github.com/baiwumm/cover-magic/compare/1.1.0...1.2.0) (2025-08-03)
 
 ### ✨ Features | 新功能

@@ -1,13 +1,13 @@
 {
   "name": "cover-magic",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "author": {
     "name": "baiwumm",
     "email": "me@baiwumm.com",
     "url": "https://baiwumm.com",
-    "github":"https://github.com/baiwumm"
+    "github": "https://github.com/baiwumm"
   },
   "repository": {
     "type": "git",
