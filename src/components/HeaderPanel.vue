@@ -15,14 +15,14 @@
                             <Icon icon="material-symbols:palette" class="text-4xl text-white" />
                         </div>
                         <n-gradient-text :size="40" type="success" class="text-3xl md:text-4xl !font-bold">
-                            {{ props.title || '封面制作工具' }}
+                            {{ props.title }}
                         </n-gradient-text>
                     </div>
                     <p :class="[
-                        'text-lg mt-2 max-w-lg',
-                        isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                        'text-lg mt-2 max-w-lg font-bold',
+                        isDarkMode ? 'text-gray-300' : 'text-gray-600'
                     ]">
-                        {{ props.subtitle || '专业的封面设计工具，支持实时预览和高质量导出' }}
+                        {{ props.subtitle }}
                     </p>
                 </div>
 

@@ -3,7 +3,7 @@
     <div class="min-h-screen" :class="[isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode' : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50']">
       <!-- 顶部标题栏 -->
       <HeaderPanel 
-        title="封面制作工具" 
+        title="Vue3 Mini Cover" 
         subtitle="专业的封面设计工具，支持实时预览和高质量导出" 
         @header-action="handleHeaderAction"
         @theme-change="handleThemeChange"
