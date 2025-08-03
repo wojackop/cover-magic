@@ -1,5 +1,5 @@
 <template>
-  <n-card size="large" hoverable class="h-full">
+  <n-card size="large" hoverable class="h-full !rounded-lg">
     <template #header>
       <div class="flex items-center gap-2">
         <Icon icon="material-symbols:star" class="text-xl text-yellow-600" />

@@ -32,6 +32,45 @@ body {
   padding: 0;
 }
 
+/* 暗黑模式下的全局样式调整 */
+.dark-mode .n-card {
+  background-color: rgba(31, 41, 55, 0.7) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+}
+
+.dark-mode .n-card-header__main {
+  color: rgba(229, 231, 235, 0.9) !important;
+}
+
+.dark-mode .n-card__content {
+  color: rgba(209, 213, 219, 0.8) !important;
+}
+
+.dark-mode label {
+  color: rgba(229, 231, 235, 0.9) !important;
+}
+
+.dark-mode .text-gray-700 {
+  color: rgba(209, 213, 219, 0.8) !important;
+}
+
+.dark-mode .text-gray-600 {
+  color: rgba(209, 213, 219, 0.7) !important;
+}
+
+.dark-mode .text-gray-500 {
+  color: rgba(209, 213, 219, 0.6) !important;
+}
+
+.dark-mode .bg-white {
+  background-color: rgba(31, 41, 55, 0.7) !important;
+}
+
+.dark-mode .border-gray-200 {
+  border-color: rgba(75, 85, 99, 0.3) !important;
+}
+
 /* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 8px;

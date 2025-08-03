@@ -1,21 +1,23 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-    <!-- 顶部标题栏 -->
-    <HeaderPanel 
-      title="封面制作工具" 
-      subtitle="专业的封面设计工具，支持实时预览和高质量导出" 
-      @header-action="handleHeaderAction"
-    />
+  <n-config-provider :theme="theme">
+    <div class="min-h-screen" :class="[isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode' : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50']">
+      <!-- 顶部标题栏 -->
+      <HeaderPanel 
+        title="封面制作工具" 
+        subtitle="专业的封面设计工具，支持实时预览和高质量导出" 
+        @header-action="handleHeaderAction"
+        @theme-change="handleThemeChange"
+      />
 
     <div class="container mx-auto px-6 py-8">
       <!-- 预览区域 -->
-      <div class="mb-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50">
+      <div class="mb-8" :class="isDarkMode ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50' : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <Icon icon="material-symbols:preview" class="text-2xl text-blue-600" />
+          <h2 class="text-xl font-bold flex items-center gap-2" :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
+            <Icon icon="material-symbols:preview" class="text-2xl" :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
             实时预览
           </h2>
-          <div class="bg-blue-50 rounded-full px-4 py-1 text-sm text-blue-700 font-medium flex items-center gap-1">
+          <div class="rounded-full px-4 py-1 text-sm font-medium flex items-center gap-1" :class="isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-700'">
             <Icon icon="material-symbols:info-outline" />
             拖动元素调整位置
           </div>
@@ -73,13 +75,14 @@
         </n-grid-item>
       </n-grid>
     </div>
-  </div>
+    </div>
+  </n-config-provider>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
-import { NGrid, NGridItem } from 'naive-ui'
+import { NGrid, NGridItem, NConfigProvider, darkTheme } from 'naive-ui'
 import HeaderPanel from '@/components/HeaderPanel.vue'
 import BackgroundPanel from '@/components/BackgroundPanel.vue'
 import IconPanel from '@/components/IconPanel.vue'
@@ -121,7 +124,7 @@ const iconConfig = reactive<IconConfig>({
 
 // 标题设置 - 用于控制封面标题文本的各项属性
 const titleConfig = reactive<TitleConfig>({
-  text: '谜叶  象限',           // 标题文本：显示在封面上的文字内容
+  text: '封面  制作',           // 标题文本：显示在封面上的文字内容
   font: 'Maple Mono CN',       // 字体名称：指定标题文本使用的字体
   size: 80,                    // 字体大小：控制标题文本的显示尺寸，单位为像素
   color: '#ffffff',            // 字体颜色：指定标题文本的颜色，默认为白色
@@ -235,11 +238,21 @@ const exportImage = async () => {
   }
 }
 
+// 暗黑主题状态
+const isDarkMode = ref(false)
+const theme = ref<any>(null)
+
 // 处理头部面板的操作事件
 const handleHeaderAction = (action: string) => {
   console.log('头部操作:', action)
   // 可以根据不同的操作执行相应的逻辑
   // 例如：打开帮助文档、显示关于信息等
+}
+
+// 处理主题切换
+const handleThemeChange = (isDark: boolean) => {
+  isDarkMode.value = isDark
+  theme.value = isDark ? darkTheme : null
 }
 
 // 组件挂载时初始化

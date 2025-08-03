@@ -1,5 +1,5 @@
 <template>
-    <n-card size="large" hoverable class="h-full">
+    <n-card size="large" hoverable class="h-full !rounded-lg">
         <template #header>
             <div class="flex items-center gap-2">
                 <Icon icon="material-symbols:image" class="text-xl text-purple-600" />
@@ -80,7 +80,7 @@
 
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                        <Icon icon="material-symbols:direction" class="text-lg" />
+                        <Icon icon="material-symbols:arrow-forward" class="text-lg" />
                         渐变方向
                     </label>
                     <n-select v-model:value="backgroundConfig.gradient.direction" :options="gradientDirectionOptions"
@@ -141,7 +141,8 @@ import {
     NSelect
 } from 'naive-ui'
 import type { BackgroundConfig, GradientConfig } from '@/lib/type'
-import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from '@/lib/enum'
+import { BACKGROUND_TYPE } from '@/lib/enum'
+import {gradientDirectionOptions} from '@/lib/constant'
 
 // Props
 type Props = {
@@ -158,18 +159,6 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>()
-
-// 渐变方向选项
-const gradientDirectionOptions = [
-    { label: '从左到右', value: GRADIENT_DIRECTION.TO_RIGHT },
-    { label: '从右到左', value: GRADIENT_DIRECTION.TO_LEFT },
-    { label: '从上到下', value: GRADIENT_DIRECTION.TO_BOTTOM },
-    { label: '从下到上', value: GRADIENT_DIRECTION.TO_TOP },
-    { label: '左上到右下', value: GRADIENT_DIRECTION.TO_BOTTOM_RIGHT },
-    { label: '右上到左下', value: GRADIENT_DIRECTION.TO_BOTTOM_LEFT },
-    { label: '左下到右上', value: GRADIENT_DIRECTION.TO_TOP_RIGHT },
-    { label: '右下到左上', value: GRADIENT_DIRECTION.TO_TOP_LEFT }
-]
 
 // 通用背景属性更新处理函数
 const updateBackgroundProperty = <T extends keyof BackgroundConfig>(property: T, value: BackgroundConfig[T]) => {

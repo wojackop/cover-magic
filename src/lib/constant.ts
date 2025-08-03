@@ -1,3 +1,5 @@
+import { GRADIENT_DIRECTION } from '@/lib/enum'
+
 // 常用颜色预设
 export const colorSwatches = [
   // 基础色
@@ -41,4 +43,16 @@ export const formatOptions = [
   { label: 'PNG (无损)', value: 'png' },
   { label: 'JPEG (有损)', value: 'jpeg' },
   { label: 'WEBP (高压缩率)', value: 'webp' }
+]
+
+// 渐变方向选项
+export const gradientDirectionOptions = [
+    { label: '从左到右', value: GRADIENT_DIRECTION.TO_RIGHT },
+    { label: '从右到左', value: GRADIENT_DIRECTION.TO_LEFT },
+    { label: '从上到下', value: GRADIENT_DIRECTION.TO_BOTTOM },
+    { label: '从下到上', value: GRADIENT_DIRECTION.TO_TOP },
+    { label: '左上到右下', value: GRADIENT_DIRECTION.TO_BOTTOM_RIGHT },
+    { label: '右上到左下', value: GRADIENT_DIRECTION.TO_BOTTOM_LEFT },
+    { label: '左下到右上', value: GRADIENT_DIRECTION.TO_TOP_RIGHT },
+    { label: '右下到左上', value: GRADIENT_DIRECTION.TO_TOP_LEFT }
 ]

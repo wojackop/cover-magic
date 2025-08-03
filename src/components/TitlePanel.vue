@@ -1,5 +1,5 @@
 <template>
-  <n-card size="large" hoverable class="h-full">
+  <n-card size="large" hoverable class="h-full !rounded-lg">
     <template #header>
       <div class="flex items-center gap-2">
         <Icon icon="material-symbols:title" class="text-xl text-green-600" />
@@ -105,31 +105,67 @@ import {
   NGridItem
 } from 'naive-ui'
 import { colorSwatches, fontOptions } from '@/lib/constant'
-import type { TextEffects,Position,TitleConfig } from '@/lib/type'
+import type { TextEffects, Position, TitleConfig } from '@/lib/type'
 
-// Props 类型定义
+/**
+ * Props 类型定义
+ */
 type Props = {
-  titleConfig: TitleConfig  // 标题数据对象
+  /**
+   * 标题配置对象，包含标题的所有属性
+   * @property {string} text - 标题文本内容
+   * @property {string} font - 字体名称
+   * @property {number} size - 字体大小（像素）
+   * @property {string} color - 字体颜色（十六进制）
+   * @property {Position} position - 标题位置坐标
+   * @property {TextEffects} effects - 文本效果设置
+   */
+  titleConfig: TitleConfig
 }
 
 const props = defineProps<Props>()
 
-// Emits 类型定义
+/**
+ * Emits 类型定义
+ */
 interface Emits {
-  (e: 'update:titleConfig', value: TitleConfig): void  // 更新标题数据
-  (e: 'canvas-update'): void               // 通知画布更新
+  /**
+   * 更新标题配置事件
+   * @param {string} e - 事件名称 'update:titleConfig'
+   * @param {TitleConfig} value - 更新后的标题配置对象
+   */
+  (e: 'update:titleConfig', value: TitleConfig): void
+  
+  /**
+   * 通知画布更新事件
+   * @param {string} e - 事件名称 'canvas-update'
+   */
+  (e: 'canvas-update'): void
 }
 
 const emit = defineEmits<Emits>()
 
-// 通用标题属性更新处理函数
+/**
+ * 更新标题基本属性
+ * 用于更新标题的文本、字体、大小、颜色等基本属性
+ * 
+ * @template T - 属性名类型，限制为TitleConfig中除position和effects外的属性
+ * @param {T} property - 要更新的属性名
+ * @param {TitleConfig[T]} value - 属性的新值
+ */
 const updateTitleProperty = <T extends keyof Omit<TitleConfig, 'position' | 'effects'>>(property: T, value: TitleConfig[T]) => {
   const newTitleConfig = { ...props.titleConfig, [property]: value }
   emit('update:titleConfig', newTitleConfig)
   emit('canvas-update')
 }
 
-// 更新位置属性
+/**
+ * 更新标题位置属性
+ * 用于更新标题在画布中的水平(x)或垂直(y)位置
+ * 
+ * @param {keyof Position} axis - 坐标轴，'x'表示水平位置，'y'表示垂直位置
+ * @param {number} value - 位置值，范围0-100，表示百分比
+ */
 const updateTitlePosition = (axis: keyof Position, value: number) => {
   const newPosition = { ...props.titleConfig.position, [axis]: value }
   const newTitleConfig = { ...props.titleConfig, position: newPosition }
@@ -137,7 +173,13 @@ const updateTitlePosition = (axis: keyof Position, value: number) => {
   emit('canvas-update')
 }
 
-// 更新效果属性
+/**
+ * 更新标题文本效果
+ * 用于更新标题的粗体、斜体等文本效果
+ * 
+ * @param {keyof TextEffects} effect - 效果类型，如'bold'表示粗体，'italic'表示斜体
+ * @param {boolean} value - 效果状态，true表示启用，false表示禁用
+ */
 const updateTitleEffect = (effect: keyof TextEffects, value: boolean) => {
   const newEffects = { ...props.titleConfig.effects, [effect]: value }
   const newTitleConfig = { ...props.titleConfig, effects: newEffects }
