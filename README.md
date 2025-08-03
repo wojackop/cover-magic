@@ -1,12 +1,16 @@
-# Cover Magic - 专业的封面设计工具
-
-![Cover Magic](https://img.shields.io/badge/Cover%20Magic-v1.2.0-blue)
-![Vue](https://img.shields.io/badge/Vue-v3.5.17-brightgreen)
-![Vite](https://img.shields.io/badge/Vite-v7.0.4-yellow)
-![TypeScript](https://img.shields.io/badge/TypeScript-v5.8.3-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-
-Cover Magic 是一款专业的封面设计工具，支持实时预览和高质量导出，帮助您轻松创建精美的封面图像。
+<div align="center">
+  <img alt="Cover Magic Logo" src="./public/logo.svg" width="120"/>
+  <h1>Cover Magic - 专业的封面设计工具</h1>
+  <p><strong>一款专业的封面设计工具，支持实时预览和高质量导出，帮助您轻松创建精美的封面图像</strong></p>
+  
+  <p>
+  <img src="https://img.shields.io/github/stars/baiwumm/cover-magic?style=flat-square&logo=github" alt="GitHub stars"/>
+    <img src="https://img.shields.io/badge/Vue-v3.5.17-brightgreen" alt="Vue.js"/>
+    <img src="https://img.shields.io/badge/Vite-v7.0.4-yellow" alt="Vite.js"/>
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4.1.11-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+    <img src="https://img.shields.io/badge/License-MIT-green" alt="License MIT" />
+  </p>
+</div>
 
 ## 🌟 功能特点
 
@@ -33,41 +37,23 @@ Cover Magic 是一款专业的封面设计工具，支持实时预览和高质�
 - 高质量图像
 - 随机文件名生成
 
-## 🚀 快速开始
+### 🛠️ 本地开发
 
-### 安装依赖
 ```bash
-npm install
-```
+# 1. 克隆项目
+git clone git@github.com:baiwumm/cover-magic.git
 
-### 启动开发服务器
-```bash
-npm run dev
-```
+# 2. 进入项目目录
+cd cover-magic
 
-### 构建生产版本
-```bash
-npm run build
-```
+# 3. 安装依赖
+pnpm install
 
-### 预览生产构建
-```bash
-npm run preview
-```
+# 4. 启动开发服务器
+pnpm dev
 
-### 代码检查
-```bash
-npm run lint
-```
-
-### 修复代码问题
-```bash
-npm run lint:fix
-```
-
-### 发布新版本
-```bash
-npm run release
+# 5. 打开浏览器访问
+# http://localhost:5173
 ```
 
 ## 🛠️ 技术栈
@@ -117,6 +103,8 @@ cover-magic/
 VITE_APP_SITE_NAME = 'Cover Magic'
 # 页面描述
 VITE_APP_SITE_DESCRIPTION = "专业的封面设计工具，支持实时预览和高质量导出"
+# 关键词
+VITE_APP_SITE_KEYWORDS = "封面设计,封面,设计,cover,designer"
 ```
 
 ## 📄 许可证
@@ -134,3 +122,17 @@ VITE_APP_SITE_DESCRIPTION = "专业的封面设计工具，支持实时预览和
 
 - **问题反馈**: [https://github.com/baiwumm/cover-magic/issues](https://github.com/baiwumm/cover-magic/issues)
 - **项目仓库**: [https://github.com/baiwumm/cover-magic](https://github.com/baiwumm/cover-magic)
+
+## ⭐ Star History
+
+<div align="center">
+  <img src="https://api.star-history.com/svg?repos=baiwumm/cover-magic&type=Date" alt="Star History Chart" width="600"/>
+</div>
+
+---
+
+<div align="center">
+  <p>如果这个项目对你有帮助，请给它一个 ⭐️</p>
+  <p>Made with ❤️ by <a href="https://github.com/baiwumm">@baiwumm</a></p>
+  <p>© 2025 今日热榜. All rights reserved.</p>
+</div>
