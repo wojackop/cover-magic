@@ -616,13 +616,18 @@ const renderFrame = async (
         ctx.globalAlpha = watermarkOpacity
         ctx.fillStyle = props.watermarkConfig.color
         
+        // 处理大写转换
+        const displayWatermarkText = props.watermarkConfig.effects.uppercase 
+            ? props.watermarkConfig.text.toUpperCase() 
+            : props.watermarkConfig.text
+        
         // 设置字体以便测量文本宽度
         const watermarkFontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
         const watermarkFontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
         ctx.font = `${watermarkFontWeight} ${props.watermarkConfig.size}px ${watermarkFontFamily}`
         
         // 测量文本宽度和高度
-        const watermarkTextWidth = ctx.measureText(props.watermarkConfig.text).width
+        const watermarkTextWidth = ctx.measureText(displayWatermarkText).width
         const watermarkTextHeight = props.watermarkConfig.size // 近似文本高度
         
         let watermarkPosX, watermarkPosY
@@ -677,18 +682,18 @@ const renderFrame = async (
                 // 使用描边模拟加粗效果
                 ctx.strokeStyle = props.watermarkConfig.color
                 ctx.lineWidth = props.watermarkConfig.size * 0.01 // 根据字体大小调整描边宽度
-                ctx.strokeText(props.watermarkConfig.text, 0, 0)
+                ctx.strokeText(displayWatermarkText, 0, 0)
             }
-            ctx.fillText(props.watermarkConfig.text, 0, 0)
+            ctx.fillText(displayWatermarkText, 0, 0)
         } else {
             // 特殊处理 Maple Mono CN 的加粗效果
             if (props.watermarkConfig.effects.bold && props.watermarkConfig.font === 'Maple Mono CN') {
                 // 使用描边模拟加粗效果
                 ctx.strokeStyle = props.watermarkConfig.color
                 ctx.lineWidth = props.watermarkConfig.size * 0.01 // 根据字体大小调整描边宽度
-                ctx.strokeText(props.watermarkConfig.text, watermarkPosX, watermarkPosY)
+                ctx.strokeText(displayWatermarkText, watermarkPosX, watermarkPosY)
             }
-            ctx.fillText(props.watermarkConfig.text, watermarkPosX, watermarkPosY)
+            ctx.fillText(displayWatermarkText, watermarkPosX, watermarkPosY)
         }
         ctx.restore()
     }
@@ -988,13 +993,18 @@ const exportImage = async (exportConfig: ExportConfig) => {
         exportCtx.globalAlpha = watermarkOpacity
         exportCtx.fillStyle = props.watermarkConfig.color
         
+        // 处理大写转换
+        const exportDisplayWatermarkText = props.watermarkConfig.effects.uppercase 
+            ? props.watermarkConfig.text.toUpperCase() 
+            : props.watermarkConfig.text
+        
         // 设置字体以便测量文本宽度
         const exportWatermarkFontFamily = getFontFamilyWithFallback(props.watermarkConfig.font)
         const exportWatermarkFontWeight = props.watermarkConfig.effects.bold ? 'bold' : 'normal'
         exportCtx.font = `${exportWatermarkFontWeight} ${watermarkSize}px ${exportWatermarkFontFamily}`
         
         // 测量文本宽度和高度
-        const watermarkTextWidth = exportCtx.measureText(props.watermarkConfig.text).width
+        const watermarkTextWidth = exportCtx.measureText(exportDisplayWatermarkText).width
         const watermarkTextHeight = watermarkSize // 近似文本高度
     
         
@@ -1050,18 +1060,18 @@ const exportImage = async (exportConfig: ExportConfig) => {
                 // 使用描边模拟加粗效果
                 exportCtx.strokeStyle = props.watermarkConfig.color
                 exportCtx.lineWidth = watermarkSize * 0.01 // 根据字体大小调整描边宽度
-                exportCtx.strokeText(props.watermarkConfig.text, 0, 0)
+                exportCtx.strokeText(exportDisplayWatermarkText, 0, 0)
             }
-            exportCtx.fillText(props.watermarkConfig.text, 0, 0)
+            exportCtx.fillText(exportDisplayWatermarkText, 0, 0)
         } else {
             // 特殊处理 Maple Mono CN 的加粗效果
             if (props.watermarkConfig.effects.bold && props.watermarkConfig.font === 'Maple Mono CN') {
                 // 使用描边模拟加粗效果
                 exportCtx.strokeStyle = props.watermarkConfig.color
                 exportCtx.lineWidth = watermarkSize * 0.01 // 根据字体大小调整描边宽度
-                exportCtx.strokeText(props.watermarkConfig.text, adjustedWatermarkPosX, adjustedWatermarkPosY)
+                exportCtx.strokeText(exportDisplayWatermarkText, adjustedWatermarkPosX, adjustedWatermarkPosY)
             }
-            exportCtx.fillText(props.watermarkConfig.text, adjustedWatermarkPosX, adjustedWatermarkPosY)
+            exportCtx.fillText(exportDisplayWatermarkText, adjustedWatermarkPosX, adjustedWatermarkPosY)
         }
         exportCtx.restore()
     }

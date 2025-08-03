@@ -55,6 +55,15 @@
               斜体
             </span>
           </n-checkbox>
+          <n-checkbox 
+            :checked="watermarkConfig.effects.uppercase" 
+            @update:checked="updateWatermarkEffect('uppercase', $event)"
+          >
+            <span class="flex items-center gap-2">
+              <Icon icon="material-symbols:text-format" class="text-lg" />
+              大写
+            </span>
+          </n-checkbox>
         </n-space>
       </div>
 

@@ -38,6 +38,7 @@ export type IconConfig = {
 export type TextEffects = {
   bold: boolean // 粗体：true表示使用粗体，false表示不使用
   italic: boolean // 斜体：true表示使用斜体，false表示不使用
+  uppercase: boolean // 大写：true表示将英文转换为大写，false表示不转换
 }
 
 // 标题设置

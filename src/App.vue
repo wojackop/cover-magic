@@ -151,7 +151,8 @@ const watermarkConfig = reactive<WatermarkConfig>({
   },
   effects: {                  // 文本效果：控制水印文本的样式效果
     bold: true,               // 粗体：true表示使用粗体，false表示不使用
-    italic: true              // 斜体：true表示使用斜体，false表示不使用
+    italic: true,             // 斜体：true表示使用斜体，false表示不使用
+    uppercase: false          // 大写：true表示将英文转换为大写，false表示不转换
   }
 })
 
