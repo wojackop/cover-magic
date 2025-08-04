@@ -42,12 +42,13 @@
           <n-grid :x-gap="16" :y-gap="24" cols="1 s:1 m:1 l:5 xl:5 2xl:5" responsive="screen">
             <!-- 操作面板 - 大屏幕左侧，小屏幕下方 -->
             <n-gi span="24 m:24 l:2" class="order-2 lg:order-1">
-              <n-tabs type="segment" animated>
+              <n-tabs type="segment" animated size="small" :tabs-padding="8">
                 <n-tab-pane name="background-panel">
                   <template #tab>
-                    <div class="flex items-center gap-0.5">
-                      <Icon icon="material-symbols:image" class="text-xl text-purple-600" />
-                      <span class="font-semibold">背景设置</span>
+                    <div class="flex items-center gap-0.5 min-w-0">
+                      <Icon icon="material-symbols:image" class="text-lg text-purple-600 flex-shrink-0" />
+                      <span class="font-medium text-sm truncate hidden sm:inline">背景设置</span>
+                      <span class="font-medium text-sm truncate sm:hidden">背景</span>
                     </div>
                   </template>
                   <BackgroundPanel :backgroundConfig="backgroundConfig" @update:backgroundConfig="
@@ -60,9 +61,10 @@
 
                 <n-tab-pane name="icon-panel">
                   <template #tab>
-                    <div class="flex items-center gap-0.5">
-                      <Icon icon="material-symbols:star" class="text-xl text-yellow-600" />
-                      <span class="font-semibold">图标设置</span>
+                    <div class="flex items-center gap-0.5 min-w-0">
+                      <Icon icon="material-symbols:star" class="text-lg text-yellow-600 flex-shrink-0" />
+                      <span class="font-medium text-sm truncate hidden sm:inline">图标设置</span>
+                      <span class="font-medium text-sm truncate sm:hidden">图标</span>
                     </div>
                   </template>
                   <IconPanel :iconConfig="iconConfig" @update:iconConfig="
@@ -75,9 +77,10 @@
 
                 <n-tab-pane name="title-panel">
                   <template #tab>
-                    <div class="flex items-center gap-0.5">
-                      <Icon icon="material-symbols:title" class="text-xl text-green-600" />
-                      <span class="font-semibold">标题设置</span>
+                    <div class="flex items-center gap-0.5 min-w-0">
+                      <Icon icon="material-symbols:title" class="text-lg text-green-600 flex-shrink-0" />
+                      <span class="font-medium text-sm truncate hidden sm:inline">标题设置</span>
+                      <span class="font-medium text-sm truncate sm:hidden">标题</span>
                     </div>
                   </template>
                   <TitlePanel :titleConfig="titleConfig" @update:titleConfig="
@@ -90,9 +93,10 @@
 
                 <n-tab-pane name="watermark-panel">
                   <template #tab>
-                    <div class="flex items-center gap-0.5">
-                      <Icon icon="material-symbols:water-drop" class="text-xl text-blue-500" />
-                      <span class="font-semibold">水印设置</span>
+                    <div class="flex items-center gap-0.5 min-w-0">
+                      <Icon icon="material-symbols:water-drop" class="text-lg text-blue-500 flex-shrink-0" />
+                      <span class="font-medium text-sm truncate hidden sm:inline">水印设置</span>
+                      <span class="font-medium text-sm truncate sm:hidden">水印</span>
                     </div>
                   </template>
                   <WatermarkPanel :watermarkConfig="watermarkConfig" @update:watermarkConfig="
@@ -105,9 +109,10 @@
 
                 <n-tab-pane name="export-panel">
                   <template #tab>
-                    <div class="flex items-center gap-0.5">
-                      <Icon icon="material-symbols:download" class="text-xl text-blue-600" />
-                      <span class="font-semibold">导出设置</span>
+                    <div class="flex items-center gap-0.5 min-w-0">
+                      <Icon icon="material-symbols:download" class="text-lg text-blue-600 flex-shrink-0" />
+                      <span class="font-medium text-sm truncate hidden sm:inline">导出设置</span>
+                      <span class="font-medium text-sm truncate sm:hidden">导出</span>
                     </div>
                   </template>
                   <ExportPanel :exportConfig="exportConfig" @update:exportConfig="
