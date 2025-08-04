@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.1](https://github.com/baiwumm/cover-magic/compare/1.3.0...1.3.1) (2025-08-04)
+
+### ⚡ Performance Improvements | 性能优化
+
+* 调整操作面板布局 ([13ee13a](https://github.com/baiwumm/cover-magic/commit/13ee13a54bceede2f9d381a23c84b5d5d2edcef1))
+
+### 👷‍ Build System | 构建
+
+* 修复打包报错问题 ([e82616e](https://github.com/baiwumm/cover-magic/commit/e82616ea9904f02a06e0e27f0b8d216fde8f8d53))
+
 ## [1.3.0](https://github.com/baiwumm/cover-magic/compare/1.2.1...1.3.0) (2025-08-04)
 
 ### ✨ Features | 新功能
