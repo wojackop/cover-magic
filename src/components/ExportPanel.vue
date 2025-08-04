@@ -1,11 +1,5 @@
 <template>
     <n-card size="large" hoverable class="h-full !rounded-lg">
-        <template #header>
-            <div class="flex items-center gap-1">
-                <Icon icon="material-symbols:download" class="text-xl dark:text-blue-400 text-blue-600" />
-                <span class="font-semibold dark:text-gray-100">导出设置</span>
-            </div>
-        </template>
         <n-space vertical>
             <!-- 导出尺寸设置 -->
             <div class="grid grid-cols-2 gap-4">

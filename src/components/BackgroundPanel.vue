@@ -1,11 +1,5 @@
 <template>
   <n-card size="large" hoverable class="h-full !rounded-lg">
-    <template #header>
-      <div class="flex items-center gap-1">
-        <Icon icon="material-symbols:image" class="text-xl text-purple-600" />
-        <span class="font-semibold">背景设置</span>
-      </div>
-    </template>
     <n-space vertical size="large">
       <div>
         <label class="text-sm font-medium text-gray-700 mb-3 flex items-center gap-1">
