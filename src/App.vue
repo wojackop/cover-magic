@@ -41,12 +41,37 @@
               />
               实时预览
             </h2>
-            <div
-              class="rounded-full px-4 py-1 text-sm font-medium flex items-center gap-1"
-              :class="isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-700'"
-            >
-              <Icon icon="material-symbols:info-outline" />
-              拖动元素调整位置
+            <div class="flex items-center gap-3">
+              <!-- 全局操作按钮 - 移到预览区域标题栏 -->
+              <n-button 
+                size="small"
+                type="primary" 
+                secondary 
+                @click="saveCurrentConfig"
+                class="flex items-center gap-1"
+                :class="isDarkMode ? 'hover:bg-blue-700/50' : 'hover:bg-blue-100'"
+              >
+                <Icon icon="material-symbols:save-outline" />
+                保存配置
+              </n-button>
+              <n-button 
+                size="small"
+                type="warning" 
+                secondary 
+                @click="showResetConfirm = true"
+                class="flex items-center gap-1"
+                :class="isDarkMode ? 'hover:bg-amber-700/50' : 'hover:bg-amber-100'"
+              >
+                <Icon icon="material-symbols:restart-alt" />
+                重置配置
+              </n-button>
+              <div
+                class="rounded-full px-4 py-1 text-sm font-medium flex items-center gap-1"
+                :class="isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-700'"
+              >
+                <Icon icon="material-symbols:info-outline" />
+                拖动元素调整位置
+              </div>
             </div>
           </div>
           <PreviewPanel
@@ -140,13 +165,30 @@
     </div>
   </n-config-provider>
   <github-corner />
+  
+  <!-- 重置确认对话框 -->
+  <n-modal v-model:show="showResetConfirm" preset="dialog" title="确认重置">
+    <template #header>
+      <div class="flex items-center gap-2">
+        <Icon icon="material-symbols:warning-outline" class="text-2xl text-yellow-500" />
+        <span class="text-lg font-bold">确认重置</span>
+      </div>
+    </template>
+    <div>确定要重置所有配置吗？此操作将恢复所有设置为默认值，且无法撤销。</div>
+    <template #action>
+      <div class="flex justify-end gap-2">
+        <n-button @click="showResetConfirm = false">取消</n-button>
+        <n-button type="warning" @click="resetAllConfig">确认重置</n-button>
+      </div>
+    </template>
+  </n-modal>
 </template>
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useHead } from "@unhead/vue";
-import { NGrid, NGridItem, NConfigProvider, darkTheme } from "naive-ui";
-import { ref, reactive, onMounted, nextTick } from "vue";
+import { NGrid, NGridItem, NConfigProvider, darkTheme, NButton, NModal, NMessageProvider, createDiscreteApi } from "naive-ui";
+import { ref, reactive, onMounted, nextTick, watch, computed } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
 
@@ -164,6 +206,16 @@ import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/constant";
 
 // 加载状态
 const isLoading = ref(true);
+
+// 重置确认对话框
+const showResetConfirm = ref(false);
+
+// 创建独立的消息 API
+const { message } = createDiscreteApi(['message'], {
+  configProviderProps: {
+    theme: computed(() => isDarkMode.value ? darkTheme : null)
+  }
+});
 
 // 站点信息
 const siteInfo = reactive({
@@ -435,6 +487,202 @@ const initializeApp = async () => {
   }
 };
 
+// 保存当前配置到本地存储
+const saveCurrentConfig = () => {
+  try {
+    // 创建配置对象
+    const config = {
+      background: { ...backgroundConfig },
+      icon: { 
+        ...iconConfig,
+        svg: undefined // 不保存SVG内容，避免存储过大
+      },
+      title: { ...titleConfig },
+      watermark: { ...watermarkConfig },
+      export: { ...exportConfig },
+      theme: isDarkMode.value ? 'dark' : 'light'
+    };
+    
+    // 移除图片对象引用，因为它不能被序列化
+    if (config.background.imageObj) {
+      config.background.imageObj = null;
+    }
+    
+    // 保存到本地存储
+    localStorage.setItem('cover-magic-config', JSON.stringify(config));
+    
+    // 显示成功消息
+    message.success('配置已保存');
+  } catch (error) {
+    console.error('保存配置失败:', error);
+    message.error('保存配置失败');
+  }
+};
+
+// 加载保存的配置
+const loadSavedConfig = () => {
+  try {
+    const savedConfig = localStorage.getItem('cover-magic-config');
+    if (savedConfig) {
+      const config = JSON.parse(savedConfig);
+      
+      // 恢复背景配置
+      if (config.background) {
+        Object.assign(backgroundConfig, config.background);
+        // 如果有图片，需要重新加载图片对象
+        if (backgroundConfig.image) {
+          const img = new Image();
+          img.onload = () => {
+            backgroundConfig.imageObj = img;
+            updateCanvas();
+          };
+          img.src = backgroundConfig.image;
+        }
+      }
+      
+      // 恢复图标配置
+      if (config.icon) {
+        Object.assign(iconConfig, config.icon);
+        // 重新加载图标SVG
+        if (iconConfig.code) {
+          loadIcon();
+        }
+      }
+      
+      // 恢复标题配置
+      if (config.title) {
+        Object.assign(titleConfig, config.title);
+      }
+      
+      // 恢复水印配置
+      if (config.watermark) {
+        Object.assign(watermarkConfig, config.watermark);
+      }
+      
+      // 恢复导出配置
+      if (config.export) {
+        Object.assign(exportConfig, config.export);
+      }
+      
+      // 恢复主题
+      if (config.theme) {
+        const isDark = config.theme === 'dark';
+        isDarkMode.value = isDark;
+        theme.value = isDark ? darkTheme : null;
+      }
+      
+      // 更新画布
+      nextTick(() => {
+        updateCanvas();
+      });
+    }
+  } catch (error) {
+    console.error('加载配置失败:', error);
+    message.error('加载配置失败');
+  }
+};
+
+// 重置所有配置
+const resetAllConfig = () => {
+  try {
+    // 重置背景配置
+    Object.assign(backgroundConfig, {
+      type: BACKGROUND_TYPE.COLOR,
+      color: "#000000",
+      opacity: 100,
+      image: "",
+      imageObj: null,
+      blur: 0,
+      gradient: {
+        startColor: "#3b82f6",
+        endColor: "#8b5cf6",
+        direction: GRADIENT_DIRECTION.TO_BOTTOM_RIGHT,
+      },
+    });
+    
+    // 重置图标配置
+    Object.assign(iconConfig, {
+      code: "fluent-emoji-flat:four-leaf-clover",
+      size: 100,
+      shadowSize: 100,
+      shadowColor: "#ffffff",
+      position: {
+        x: 50,
+        y: 50,
+      },
+      svg: "",
+    });
+    
+    // 重新加载图标
+    loadIcon();
+    
+    // 重置标题配置
+    Object.assign(titleConfig, {
+      text: "封面  制作",
+      font: "Maple Mono CN",
+      size: 80,
+      color: "#ffffff",
+      position: {
+        x: 50,
+        y: 50,
+      },
+      effects: {
+        bold: true,
+        italic: true,
+        uppercase: false,
+      },
+    });
+    
+    // 重置水印配置
+    Object.assign(watermarkConfig, {
+      text: "@baiwumm",
+      font: "Maple Mono CN",
+      size: 24,
+      color: "#ffffff",
+      opacity: 80,
+      position: {
+        x: 98,
+        y: 98,
+      },
+      effects: {
+        bold: true,
+        italic: true,
+        uppercase: false,
+      },
+    });
+    
+    // 重置导出配置
+    Object.assign(exportConfig, {
+      width: 1920,
+      height: 1080,
+      format: "webp",
+      fileName: "封面设计",
+      useRandomFileName: true,
+      randomFileNameLength: 32,
+      randomFileNameOptions: {
+        includeNumbers: true,
+        includeLowercase: true,
+        includeUppercase: true,
+      },
+      currentRandomFileName: "",
+    });
+    
+    // 更新画布
+    nextTick(() => {
+      updateCanvas();
+    });
+    
+    // 关闭确认对话框
+    showResetConfirm.value = false;
+    
+    // 显示成功消息
+    message.success('已重置所有配置');
+  } catch (error) {
+    console.error('重置配置失败:', error);
+    message.error('重置配置失败');
+  }
+};
+
 // 组件挂载时初始化
 onMounted(() => {
   // 如果页面已经加载完成，直接初始化应用
@@ -444,6 +692,9 @@ onMounted(() => {
     // 否则等待页面资源加载完成
     window.addEventListener('load', initializeApp);
   }
+  
+  // 加载保存的配置
+  loadSavedConfig();
 });
 </script>
 
