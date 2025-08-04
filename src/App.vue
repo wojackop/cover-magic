@@ -1,5 +1,8 @@
 <template>
-  <n-config-provider :theme="theme">
+  <!-- 加载动画 -->
+  <LoadingScreen v-if="isLoading" />
+
+  <n-config-provider :theme="theme" v-else>
     <div
       class="min-h-screen"
       :class="[
@@ -143,7 +146,7 @@
 import { Icon } from "@iconify/vue";
 import { useHead } from "@unhead/vue";
 import { NGrid, NGridItem, NConfigProvider, darkTheme } from "naive-ui";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, nextTick } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
 
@@ -153,10 +156,14 @@ import FooterPanel from "@/components/FooterPanel.vue";
 import GithubCorner from "@/components/GithubCorner.vue";
 import HeaderPanel from "@/components/HeaderPanel.vue";
 import IconPanel from "@/components/IconPanel.vue";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 import PreviewPanel from "@/components/PreviewPanel.vue";
 import TitlePanel from "@/components/TitlePanel.vue";
 import WatermarkPanel from "@/components/WatermarkPanel.vue";
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/constant";
+
+// 加载状态
+const isLoading = ref(true);
 
 // 站点信息
 const siteInfo = reactive({
@@ -274,26 +281,38 @@ const previewPanelRef = ref<InstanceType<typeof PreviewPanel> | null>(null);
 
 // 加载图标
 const loadIcon = async () => {
-  if (!iconConfig.code) {
-    iconConfig.svg = "";
-    updateCanvas();
-    return;
-  }
-
-  try {
-    // 从 Iconify API 获取 SVG
-    const response = await fetch(`https://api.iconify.design/${iconConfig.code}.svg`);
-    if (response.ok) {
-      iconConfig.svg = await response.text();
-    } else {
+  return new Promise<void>((resolve) => {
+    if (!iconConfig.code) {
       iconConfig.svg = "";
+      resolve();
+      return;
     }
-    updateCanvas();
-  } catch (error) {
-    console.error("加载图标失败:", error);
-    iconConfig.svg = "";
-    updateCanvas();
-  }
+
+    try {
+      // 从 Iconify API 获取 SVG
+      fetch(`https://api.iconify.design/${iconConfig.code}.svg`)
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            return "";
+          }
+        })
+        .then(svg => {
+          iconConfig.svg = svg;
+          resolve();
+        })
+        .catch(error => {
+          console.error("加载图标失败:", error);
+          iconConfig.svg = "";
+          resolve();
+        });
+    } catch (error) {
+      console.error("加载图标失败:", error);
+      iconConfig.svg = "";
+      resolve();
+    }
+  });
 };
 
 // 处理图片上传
@@ -353,14 +372,125 @@ const handleThemeChange = (isDark: boolean) => {
   theme.value = isDark ? darkTheme : null;
 };
 
+// 检查字体是否加载完成
+const checkFontsLoaded = async () => {
+  return new Promise<void>((resolve) => {
+    // 检查标题和水印使用的字体
+    const fonts = [titleConfig.font, watermarkConfig.font].filter(Boolean);
+    
+    if (fonts.length === 0) {
+      resolve();
+      return;
+    }
+    
+    // 使用FontFaceObserver检查字体加载
+    if ('FontFace' in window) {
+      // 如果浏览器支持FontFace API，使用document.fonts.ready
+      document.fonts.ready.then(() => {
+        resolve();
+      }).catch(() => {
+        // 即使字体加载失败，也继续初始化应用
+        console.warn('字体加载失败，使用后备字体');
+        resolve();
+      });
+    } else {
+      // 如果不支持，直接继续
+      resolve();
+    }
+  });
+};
+
+// 初始化应用
+const initializeApp = async () => {
+  try {
+    // 模拟一些初始化时间，确保加载动画能够显示
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 并行加载资源
+    await Promise.all([
+      // 加载初始图标
+      iconConfig.code ? loadIcon() : Promise.resolve(),
+      // 检查字体加载
+      checkFontsLoaded()
+    ]);
+    
+    // 所有资源加载完成后，添加短暂延迟以完成加载动画
+    setTimeout(() => {
+      isLoading.value = false;
+      
+      // 初始化画布
+      nextTick(() => {
+        updateCanvas();
+      });
+    }, 500);
+  } catch (error) {
+    console.error('初始化应用失败:', error);
+    // 即使出错，也隐藏加载动画并尝试初始化
+    setTimeout(() => {
+      isLoading.value = false;
+      nextTick(() => {
+        updateCanvas();
+      });
+    }, 500);
+  }
+};
+
 // 组件挂载时初始化
 onMounted(() => {
-  // 初始化画布
-  updateCanvas();
-
-  // 加载初始图标
-  if (iconConfig.code) {
-    loadIcon();
+  // 如果页面已经加载完成，直接初始化应用
+  if (document.readyState === 'complete') {
+    initializeApp();
+  } else {
+    // 否则等待页面资源加载完成
+    window.addEventListener('load', initializeApp);
   }
 });
 </script>
+
+<style scoped>
+/* 加载动画容器 */
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  z-index: 9999;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 旋转加载图标 */
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* 加载文字 */
+.loading-text {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
