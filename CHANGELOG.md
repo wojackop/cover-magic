@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/baiwumm/cover-magic/compare/1.2.1...1.3.0) (2025-08-04)
+
+### ✨ Features | 新功能
+
+* 新增 LoadingScreen 全局组件 ([134bf61](https://github.com/baiwumm/cover-magic/commit/134bf6155dda3c74be48ff52895cb96a3db153e0))
+* 新增保存配置功能 ([f238e99](https://github.com/baiwumm/cover-magic/commit/f238e99c83b4a4c358d115e26c9bd70003e6319c))
+* 新增代码统计 ([c5e2ed2](https://github.com/baiwumm/cover-magic/commit/c5e2ed22360a30db58a74b340a52efa76bc680e1))
+* update README.md ([f7e04eb](https://github.com/baiwumm/cover-magic/commit/f7e04ebcfb1b101854fc4f5f4fa39ef4722eb25a))
+
+### 👷‍ Build System | 构建
+
+* 修复部署报错的问题 ([45eed2f](https://github.com/baiwumm/cover-magic/commit/45eed2ff78e2387f2b077fd59d76424ee8809e9e))
+
 ## [1.2.1](https://github.com/baiwumm/cover-magic/compare/1.2.0...1.2.1) (2025-08-03)
 
 ### ✨ Features | 新功能
