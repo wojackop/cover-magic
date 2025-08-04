@@ -187,8 +187,8 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useHead } from "@unhead/vue";
-import { NGrid, NGridItem, NConfigProvider, darkTheme, NButton, NModal, NMessageProvider, createDiscreteApi } from "naive-ui";
-import { ref, reactive, onMounted, nextTick, watch, computed } from "vue";
+import { NGrid, NGridItem, NConfigProvider, darkTheme, NButton, NModal, createDiscreteApi, type GlobalTheme } from "naive-ui";
+import { ref, reactive, onMounted, nextTick } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
 
@@ -211,11 +211,7 @@ const isLoading = ref(true);
 const showResetConfirm = ref(false);
 
 // 创建独立的消息 API
-const { message } = createDiscreteApi(['message'], {
-  configProviderProps: {
-    theme: computed(() => isDarkMode.value ? darkTheme : null)
-  }
-});
+const { message } = createDiscreteApi(['message']);
 
 // 站点信息
 const siteInfo = reactive({
@@ -409,7 +405,7 @@ const exportImage = async () => {
 
 // 暗黑主题状态
 const isDarkMode = ref(false);
-const theme = ref<any>(null);
+const theme = ref<GlobalTheme | null>(null);
 
 // 处理头部面板的操作事件
 const handleHeaderAction = (action: string) => {
