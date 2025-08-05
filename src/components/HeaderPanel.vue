@@ -180,7 +180,7 @@
               <ul class="space-y-2">
                 <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
-                  支持暗黑主题
+                  多种精美主题
                 </li>
                 <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
@@ -188,7 +188,7 @@
                 </li>
                 <li :class="['flex items-center gap-1 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                   <Icon icon="material-symbols:check-circle" class="text-green-500" />
-                  护眼模式体验
+                  个性化主题定制
                 </li>
               </ul>
             </div>

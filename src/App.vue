@@ -27,6 +27,11 @@
             </h2>
             <div class="flex items-center gap-3">
               <!-- 全局操作按钮 - 移到预览区域标题栏 -->
+               <n-button size="small" type="info" secondary class="flex items-center gap-1"
+                :class="isDarkMode ? 'hover:bg-cyan-700/50' : 'hover:bg-cyan-100'" @click="openThemeSelector">
+                <Icon icon="material-symbols:palette-outline" />
+                主题选择
+              </n-button>
               <n-button size="small" type="primary" secondary class="flex items-center gap-1"
                 :class="isDarkMode ? 'hover:bg-blue-700/50' : 'hover:bg-blue-100'" @click="saveCurrentConfig">
                 <Icon icon="material-symbols:save-outline" />
@@ -154,6 +159,9 @@
       </div>
     </template>
   </n-modal>
+  
+  <!-- 主题选择器组件 -->
+  <ThemeSelector ref="themeSelectorRef" @theme-selected="applyTheme" />
 </template>
 
 <script setup lang="ts">
@@ -172,6 +180,7 @@ import GithubCorner from "@/components/GithubCorner.vue"; // GitHub 图标
 import HeaderPanel from "@/components/HeaderPanel.vue"; // 页面顶部信息面板
 import IconPanel from "@/components/IconPanel.vue"; // 图标设置面板
 import LoadingScreen from "@/components/LoadingScreen.vue"; // 页面加载进度条
+import ThemeSelector from "@/components/ThemeSelector.vue"; // 主题选择器组件
 import TitlePanel from "@/components/TitlePanel.vue"; // 标题设置面板
 import WatermarkPanel from "@/components/WatermarkPanel.vue"; // 水印设置面板
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/constant";
@@ -298,6 +307,16 @@ const exportConfig = reactive<ExportConfig>({
 
 // 预览面板引用
 const defaultThemeRef = ref<InstanceType<typeof DefaultTheme> | null>(null);
+// 主题选择器引用
+const themeSelectorRef = ref<InstanceType<typeof ThemeSelector> | null>(null);
+
+// 定义主题配置类型
+interface ThemeConfig {
+  background?: Partial<BackgroundConfig>;
+  icon?: Partial<Omit<IconConfig, 'svg'>>;
+  title?: Partial<TitleConfig>;
+  watermark?: Partial<WatermarkConfig>;
+}
 
 // 加载图标
 const loadIcon = async () => {
@@ -392,6 +411,55 @@ const handleThemeChange = (isDark: boolean) => {
   theme.value = isDark ? darkTheme : null;
 };
 
+// 打开主题选择器
+const openThemeSelector = () => {
+  if (themeSelectorRef.value) {
+    themeSelectorRef.value.openThemeSelector();
+  }
+};
+
+// 应用选择的主题
+const applyTheme = (themeConfig: ThemeConfig) => {
+  // 应用背景配置
+  if (themeConfig.background) {
+    Object.assign(backgroundConfig, themeConfig.background);
+    // 如果是图片背景且有图片，需要重新加载图片对象
+    if (backgroundConfig.type === 'image' && backgroundConfig.image) {
+      const img = new Image();
+      img.onload = () => {
+        backgroundConfig.imageObj = img;
+        updateCanvas();
+      };
+      img.src = backgroundConfig.image;
+    }
+  }
+
+  // 应用图标配置
+  if (themeConfig.icon) {
+    Object.assign(iconConfig, themeConfig.icon);
+    // 重新加载图标SVG
+    if (iconConfig.code) {
+      loadIcon().then(() => updateCanvas());
+    }
+  }
+
+  // 应用标题配置
+  if (themeConfig.title) {
+    Object.assign(titleConfig, themeConfig.title);
+  }
+
+  // 应用水印配置
+  if (themeConfig.watermark) {
+    Object.assign(watermarkConfig, themeConfig.watermark);
+  }
+
+  // 更新画布
+  nextTick(() => {
+    updateCanvas();
+    message.success('主题应用成功');
+  });
+};
+
 // 检查字体是否加载完成
 const checkFontsLoaded = async () => {
   return new Promise<void>((resolve) => {
@@ -468,7 +536,9 @@ const saveCurrentConfig = () => {
       title: { ...titleConfig },
       watermark: { ...watermarkConfig },
       export: { ...exportConfig },
-      theme: isDarkMode.value ? 'dark' : 'light'
+      theme: isDarkMode.value ? 'dark' : 'light',
+      // 保存当前主题ID，如果有的话
+      themeId: themeSelectorRef.value?.selectedThemeId || 'default'
     };
 
     // 移除图片对象引用，因为它不能被序列化
@@ -537,6 +607,15 @@ const loadSavedConfig = () => {
         const isDark = config.theme === 'dark';
         isDarkMode.value = isDark;
         theme.value = isDark ? darkTheme : null;
+      }
+
+      // 恢复主题ID（如果有）
+      if (config.themeId && themeSelectorRef.value) {
+        nextTick(() => {
+          if (themeSelectorRef.value) {
+            themeSelectorRef.value.selectedThemeId = config.themeId;
+          }
+        });
       }
 
       // 更新画布
