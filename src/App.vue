@@ -125,7 +125,7 @@
             </n-gi>
             <!-- 预览区域 - 大屏幕右侧，小屏幕上方 -->
             <n-gi span="24 m:24 l:3" class="order-1 lg:order-2">
-              <PreviewPanel ref="previewPanelRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
+              <DefaultTheme ref="defaultThemeRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
                 :titleConfig="titleConfig" :watermarkConfig="watermarkConfig" @canvas-update="onCanvasUpdate" />
             </n-gi>
           </n-grid>
@@ -164,16 +164,16 @@ import { ref, reactive, onMounted, nextTick } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
 
-import BackgroundPanel from "@/components/BackgroundPanel.vue";
-import ExportPanel from "@/components/ExportPanel.vue";
-import FooterPanel from "@/components/FooterPanel.vue";
-import GithubCorner from "@/components/GithubCorner.vue";
-import HeaderPanel from "@/components/HeaderPanel.vue";
-import IconPanel from "@/components/IconPanel.vue";
-import LoadingScreen from "@/components/LoadingScreen.vue";
-import PreviewPanel from "@/components/PreviewPanel.vue";
-import TitlePanel from "@/components/TitlePanel.vue";
-import WatermarkPanel from "@/components/WatermarkPanel.vue";
+import BackgroundPanel from "@/components/BackgroundPanel.vue"; // 背景设置面板
+import DefaultTheme from "@/components/DefaultTheme.vue"; // 默认主题组件
+import ExportPanel from "@/components/ExportPanel.vue"; // 导出设置面板
+import FooterPanel from "@/components/FooterPanel.vue"; // 底部版权信息
+import GithubCorner from "@/components/GithubCorner.vue"; // GitHub 图标
+import HeaderPanel from "@/components/HeaderPanel.vue"; // 页面顶部信息面板
+import IconPanel from "@/components/IconPanel.vue"; // 图标设置面板
+import LoadingScreen from "@/components/LoadingScreen.vue"; // 页面加载进度条
+import TitlePanel from "@/components/TitlePanel.vue"; // 标题设置面板
+import WatermarkPanel from "@/components/WatermarkPanel.vue"; // 水印设置面板
 import { BACKGROUND_TYPE, GRADIENT_DIRECTION } from "@/lib/constant";
 
 // 加载状态
@@ -297,7 +297,7 @@ const exportConfig = reactive<ExportConfig>({
 });
 
 // 预览面板引用
-const previewPanelRef = ref<InstanceType<typeof PreviewPanel> | null>(null);
+const defaultThemeRef = ref<InstanceType<typeof DefaultTheme> | null>(null);
 
 // 加载图标
 const loadIcon = async () => {
@@ -357,8 +357,8 @@ const handleImageUpload = (options: any) => {
 
 // 更新画布 - 公共入口点
 const updateCanvas = () => {
-  if (previewPanelRef.value) {
-    previewPanelRef.value.updateCanvas();
+  if (defaultThemeRef.value) {
+    defaultThemeRef.value.updateCanvas();
   }
 };
 
@@ -370,8 +370,8 @@ const onCanvasUpdate = () => {
 // 导出图片
 const exportImage = async () => {
   // 调用预览面板的导出方法
-  if (previewPanelRef.value) {
-    previewPanelRef.value.exportImage(exportConfig);
+  if (defaultThemeRef.value) {
+    defaultThemeRef.value.exportImage(exportConfig);
   }
 };
 
