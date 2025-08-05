@@ -1,6 +1,16 @@
 <template>
     <n-card size="large" hoverable class="h-full !rounded-lg">
         <n-space vertical>
+            <!-- 导出平台选择 -->
+            <div>
+                <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
+                    <Icon icon="material-symbols:devices" class="text-lg" />
+                    导出平台
+                </div>
+                <n-select v-model:value="selectedPlatform" :options="platformOptions" class="w-full"
+                    @update:value="handlePlatformChange" />
+            </div>
+
             <!-- 导出尺寸设置 -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
@@ -9,7 +19,7 @@
                         导出宽度
                     </div>
                     <n-input-number v-model:value="localExportConfig.width" :min="100" :max="3840" :step="10"
-                        class="w-full" @update:value="updateExportConfig" />
+                        class="w-full" :disabled="selectedPlatform !== 'custom'" @update:value="updateExportConfig" />
                 </div>
                 <div>
                     <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
@@ -17,7 +27,7 @@
                         导出高度
                     </div>
                     <n-input-number v-model:value="localExportConfig.height" :min="100" :max="2160" :step="10"
-                        class="w-full" @update:value="updateExportConfig" />
+                        class="w-full" :disabled="selectedPlatform !== 'custom'" @update:value="updateExportConfig" />
                 </div>
             </div>
 
@@ -128,7 +138,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { NButton, NInput, NSlider, NSelect, NCheckbox, NInputNumber, NCard, NSpace } from 'naive-ui'
-import { reactive, watch, onMounted } from 'vue'
+import { reactive, watch, onMounted, ref, h } from 'vue'
 
 import type { ExportConfig, RandomFileNameOptions } from '@/lib/type'
 
@@ -145,8 +155,99 @@ const emit = defineEmits<{
     'export-image': []
 }>()
 
+// 平台选项
+const platformOptions = [
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'material-symbols:tune', class: 'text-lg' }),
+            '自定义'
+        ]),
+        value: 'custom'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'ri:wechat-fill', class: 'text-lg text-green-500' }),
+            '微信公众号'
+        ]),
+        value: 'wechat'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'simple-icons:juejin', class: 'text-lg text-blue-500' }),
+            '掘金'
+        ]),
+        value: 'juejin'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'simple-icons:zhihu', class: 'text-lg text-blue-600' }),
+            '知乎'
+        ]),
+        value: 'zhihu'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'simple-icons:alibabacloud', class: 'text-lg text-orange-500' }),
+            '阿里云开发者社区'
+        ]),
+        value: 'aliyun'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h('img', { src: '/src/assets/images/tencentcloud.svg', class: 'w-5 h-5' }),
+            '腾讯云开发者社区'
+        ]),
+        value: 'tencent'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h(Icon, { icon: 'simple-icons:csdn', class: 'text-lg text-red-500' }),
+            'CSDN'
+        ]),
+        value: 'csdn'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h('img', { src: '/src/assets/images/toutiao.svg', class: 'w-5 h-5' }),
+            '今日头条'
+        ]),
+        value: 'toutiao'
+    },
+    {
+        label: () => h('div', { class: 'flex items-center gap-1' }, [
+            h('img', { src: '/src/assets/images/jianshu.svg', class: 'w-5 h-5' }),
+            '简书'
+        ]),
+        value: 'jianshu'
+    }
+]
+
+// 平台尺寸配置
+const platformSizes = {
+    custom: { width: 1920, height: 1080 },
+    wechat: { width: 900, height: 383 },
+    juejin: { width: 1000, height: 600 },
+    zhihu: { width: 1080, height: 607 },
+    aliyun: { width: 1000, height: 600 },
+    tencent: { width: 960, height: 540 },
+    csdn: { width: 1080, height: 607 },
+    toutiao: { width: 900, height: 500 },
+    jianshu: { width: 1250, height: 1000 }
+}
+
+// 选中的平台
+const selectedPlatform = ref('custom')
+
 // 创建本地配置副本
 const localExportConfig = reactive<ExportConfig>({ ...props.exportConfig })
+
+// 处理平台变更
+const handlePlatformChange = (platform: string) => {
+    const { width, height } = platformSizes[platform as keyof typeof platformSizes]
+    localExportConfig.width = width
+    localExportConfig.height = height
+    updateExportConfig()
+}
 
 // 更新导出配置
 const updateExportConfig = () => {
@@ -208,6 +309,19 @@ const handleExportImage = () => {
 watch(() => props.exportConfig, (newConfig) => {
     // 更新本地配置
     Object.assign(localExportConfig, newConfig)
+
+    // 检查当前尺寸是否匹配某个平台
+    const currentSize = { width: localExportConfig.width, height: localExportConfig.height }
+    let matchedPlatform = 'custom'
+
+    for (const [platform, size] of Object.entries(platformSizes)) {
+        if (size.width === currentSize.width && size.height === currentSize.height) {
+            matchedPlatform = platform
+            break
+        }
+    }
+
+    selectedPlatform.value = matchedPlatform
 }, { deep: true })
 
 // 监听随机文件名相关配置变化
