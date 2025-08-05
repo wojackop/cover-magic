@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1](https://github.com/baiwumm/cover-magic/compare/1.4.0...1.4.1) (2025-08-05)
+
+### ✨ Features | 新功能
+
+* 新增导出图片质量 ([bfd662c](https://github.com/baiwumm/cover-magic/commit/bfd662cefbb72fd41a309caa5d9eef2832903f61))
+
 ## [1.4.0](https://github.com/baiwumm/cover-magic/compare/1.3.1...1.4.0) (2025-08-05)
 
 ### ✨ Features | 新功能
