@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/baiwumm/cover-magic/compare/1.3.1...1.4.0) (2025-08-05)
+
+### ✨ Features | 新功能
+
+* 新增主题选择功能 ([83c2d43](https://github.com/baiwumm/cover-magic/commit/83c2d43fb072455118b6deef24e8a8a195f081dc))
+
+### 💄 Styles | 风格
+
+* 优化小屏幕下标签页的显示溢出问题 ([fad2461](https://github.com/baiwumm/cover-magic/commit/fad2461b312803c498f0815e83bf67d4ba436c3c))
+
+### ⚡ Performance Improvements | 性能优化
+
+* 调整文件结构 ([e7433e4](https://github.com/baiwumm/cover-magic/commit/e7433e4281254638d75d5f75bb932c20bf03d575))
+
 ## [1.3.1](https://github.com/baiwumm/cover-magic/compare/1.3.0...1.3.1) (2025-08-04)
 
 ### ⚡ Performance Improvements | 性能优化
