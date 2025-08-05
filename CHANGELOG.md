@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.2](https://github.com/baiwumm/cover-magic/compare/1.4.1...1.4.2) (2025-08-05)
+
+### ✨ Features | 新功能
+
+* 新增本地图标上传 ([620ab40](https://github.com/baiwumm/cover-magic/commit/620ab40c05e34528de9dd71511f1f6e5e2c2ba45))
+
+### 💄 Styles | 风格
+
+* 修改主题模式图标 ([93cfdc1](https://github.com/baiwumm/cover-magic/commit/93cfdc152bd1c01f180ecfd5ec3e3e7753878bfd))
+
 ## [1.4.1](https://github.com/baiwumm/cover-magic/compare/1.4.0...1.4.1) (2025-08-05)
 
 ### ✨ Features | 新功能
