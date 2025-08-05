@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.3](https://github.com/baiwumm/cover-magic/compare/1.4.2...1.4.3) (2025-08-05)
+
+### ✨ Features | 新功能
+
+* 新增导出平台尺寸选择 ([bbee371](https://github.com/baiwumm/cover-magic/commit/bbee371dd56a66000ebb9f4d5d54b447007d3741))
+
 ## [1.4.2](https://github.com/baiwumm/cover-magic/compare/1.4.1...1.4.2) (2025-08-05)
 
 ### ✨ Features | 新功能
