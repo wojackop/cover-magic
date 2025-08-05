@@ -173,7 +173,7 @@
         <n-card size="large" hoverable class="h-full !rounded-lg">
           <div class="flex items-start gap-4">
             <div class="bg-purple-500/90 text-white p-3 rounded-lg shadow-sm">
-              <Icon icon="material-symbols:dark-mode" class="text-2xl" />
+              <Icon icon="material-symbols:palette-outline" class="text-2xl" />
             </div>
             <div>
               <h3 :class="['font-bold mb-2', isDarkMode ? 'text-purple-300' : 'text-purple-800']">主题模式</h3>
