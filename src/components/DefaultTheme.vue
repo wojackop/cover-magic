@@ -1099,7 +1099,8 @@ const exportImage = async (exportConfig: ExportConfig) => {
   };
 
   // 导出图片
-  const dataURL = exportCanvas.toDataURL(`image/${exportConfig.format}`, 1.0);
+  // 使用质量参数控制压缩程度，1.0表示原始质量
+  const dataURL = exportCanvas.toDataURL(`image/${exportConfig.format}`, exportConfig.quality);
 
   // 创建下载链接
   const link = document.createElement("a");

@@ -303,6 +303,7 @@ const exportConfig = reactive<ExportConfig>({
     includeUppercase: true, // 是否包含大写字母：true表示包含大写字母
   },
   currentRandomFileName: "", // 当前随机文件名：当前生成的随机文件名
+  quality: 0.9, // 图片质量：范围0.1-1.0，默认0.9，在保持较高质量的同时有效减小文件体积
 });
 
 // 预览面板引用

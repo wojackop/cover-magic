@@ -85,4 +85,5 @@ export type ExportConfig = {
   randomFileNameLength: number // 随机文件名长度：随机生成的文件名的字符数
   randomFileNameOptions: RandomFileNameOptions // 随机文件名选项：控制随机文件名包含的字符类型
   currentRandomFileName: string // 当前随机文件名：当前生成的随机文件名
+  quality: number // 图片质量：范围0.1-1.0，值越大质量越高，体积越大，1.0表示原始质量
 }

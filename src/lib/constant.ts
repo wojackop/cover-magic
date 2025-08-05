@@ -57,9 +57,9 @@ export const fontOptions = [
 
 // 导出格式选项
 export const formatOptions = [
+  { label: 'WEBP (高压缩率)', value: 'webp' },
   { label: 'PNG (无损)', value: 'png' },
-  { label: 'JPEG (有损)', value: 'jpeg' },
-  { label: 'WEBP (高压缩率)', value: 'webp' }
+  { label: 'JPEG (有损)', value: 'jpeg' }
 ]
 
 // 渐变方向选项

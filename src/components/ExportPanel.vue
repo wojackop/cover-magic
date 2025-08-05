@@ -31,6 +31,26 @@
                     @update:value="updateExportConfig" />
             </div>
 
+            <!-- 图片质量设置 -->
+            <div>
+                <div class="flex items-center justify-between mb-1">
+                    <div class="text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
+                        <Icon icon="material-symbols:high-quality" class="text-lg" />
+                        图片质量
+                    </div>
+                    <span class="text-xs dark:text-gray-400 text-gray-500">
+                        {{ Math.round(localExportConfig.quality * 100) }}%
+                    </span>
+                </div>
+                <n-slider v-model:value="localExportConfig.quality" :min="0.1" :max="1" :step="0.05" :tooltip="false"
+                    :marks="{
+                        0.1: '低',
+                        0.5: '中',
+                        0.9: '高',
+                        1: '原始'
+                    }" @update:value="updateExportConfig" />
+            </div>
+
             <!-- 文件名设置 -->
             <div>
                 <div class="mb-2 text-sm dark:text-gray-300 text-gray-600 flex items-center gap-1">
@@ -40,7 +60,8 @@
                 <n-input v-model:value="localExportConfig.fileName" placeholder="输入文件名" class="w-full"
                     :disabled="localExportConfig.useRandomFileName" @update:value="updateExportConfig">
                     <template #suffix>
-                        <span class="text-sm dark:text-gray-400 text-gray-500 font-mono">.{{ localExportConfig.format }}</span>
+                        <span class="text-sm dark:text-gray-400 text-gray-500 font-mono">.{{ localExportConfig.format
+                            }}</span>
                     </template>
                 </n-input>
             </div>
@@ -84,7 +105,8 @@
                     <Icon icon="material-symbols:preview" class="text-lg" />
                     预览：
                 </div>
-                <div class="text-sm font-mono px-1 py-1 rounded dark:bg-gray-700 dark:text-gray-200 bg-gray-100 text-gray-800">
+                <div
+                    class="text-sm font-mono px-1 py-1 rounded dark:bg-gray-700 dark:text-gray-200 bg-gray-100 text-gray-800">
                     {{ localExportConfig.currentRandomFileName || '生成中...' }}.{{ localExportConfig.format }}
                 </div>
                 <n-button size="small" @click="generateAndCacheRandomFileName">
