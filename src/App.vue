@@ -3,143 +3,145 @@
   <LoadingScreen v-if="isLoading" />
 
   <n-config-provider v-else :theme="theme">
-    <div class="min-h-screen" :class="[
-      isDarkMode
-        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode'
-        : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50',
-    ]">
-      <!-- 顶部标题栏 -->
-      <HeaderPanel :title="siteInfo.name" :subtitle="siteInfo.description" @header-action="handleHeaderAction"
-        @theme-change="handleThemeChange" />
+    <n-message-provider>
+      <div class="min-h-screen" :class="[
+        isDarkMode
+          ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark-mode'
+          : 'bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50',
+      ]">
+        <!-- 顶部标题栏 -->
+        <HeaderPanel :title="siteInfo.name" :subtitle="siteInfo.description" @header-action="handleHeaderAction"
+          @theme-change="handleThemeChange" />
 
-      <div class="container mx-auto px-6 mt-8">
-        <!-- 预览区域 -->
-        <div :class="isDarkMode
-          ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50'
-          : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'
-          ">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold flex items-center gap-1"
-              :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
-              <Icon icon="material-symbols:preview" class="text-2xl"
-                :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
-              实时预览
-            </h2>
-            <div class="flex items-center gap-3">
-              <!-- 全局操作按钮 - 移到预览区域标题栏 -->
-               <n-button size="small" type="info" secondary class="flex items-center gap-1"
-                :class="isDarkMode ? 'hover:bg-cyan-700/50' : 'hover:bg-cyan-100'" @click="openThemeSelector">
-                <Icon icon="material-symbols:palette-outline" />
-                主题选择
-              </n-button>
-              <n-button size="small" type="primary" secondary class="flex items-center gap-1"
-                :class="isDarkMode ? 'hover:bg-blue-700/50' : 'hover:bg-blue-100'" @click="saveCurrentConfig">
-                <Icon icon="material-symbols:save-outline" />
-                保存配置
-              </n-button>
-              <n-button size="small" type="warning" secondary class="flex items-center gap-1"
-                :class="isDarkMode ? 'hover:bg-amber-700/50' : 'hover:bg-amber-100'" @click="showResetConfirm = true">
-                <Icon icon="material-symbols:restart-alt" />
-                重置配置
-              </n-button>
+        <div class="container mx-auto px-6 mt-8">
+          <!-- 预览区域 -->
+          <div :class="isDarkMode
+            ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50'
+            : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'
+            ">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-bold flex items-center gap-1"
+                :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
+                <Icon icon="material-symbols:preview" class="text-2xl"
+                  :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
+                实时预览
+              </h2>
+              <div class="flex items-center gap-3">
+                <!-- 全局操作按钮 - 移到预览区域标题栏 -->
+                <n-button size="small" type="info" secondary class="flex items-center gap-1"
+                  :class="isDarkMode ? 'hover:bg-cyan-700/50' : 'hover:bg-cyan-100'" @click="openThemeSelector">
+                  <Icon icon="material-symbols:palette-outline" />
+                  主题选择
+                </n-button>
+                <n-button size="small" type="primary" secondary class="flex items-center gap-1"
+                  :class="isDarkMode ? 'hover:bg-blue-700/50' : 'hover:bg-blue-100'" @click="saveCurrentConfig">
+                  <Icon icon="material-symbols:save-outline" />
+                  保存配置
+                </n-button>
+                <n-button size="small" type="warning" secondary class="flex items-center gap-1"
+                  :class="isDarkMode ? 'hover:bg-amber-700/50' : 'hover:bg-amber-100'" @click="showResetConfirm = true">
+                  <Icon icon="material-symbols:restart-alt" />
+                  重置配置
+                </n-button>
+              </div>
             </div>
+            <n-grid :x-gap="16" :y-gap="24" cols="1 s:1 m:1 l:5 xl:5 2xl:5" responsive="screen">
+              <!-- 操作面板 - 大屏幕左侧，小屏幕下方 -->
+              <n-gi span="24 m:24 l:2" class="order-2 lg:order-1">
+                <n-tabs type="segment" animated size="small" :tabs-padding="8">
+                  <n-tab-pane name="background-panel">
+                    <template #tab>
+                      <div class="flex items-center gap-0.5 min-w-0">
+                        <Icon icon="material-symbols:image" class="text-lg text-purple-600 flex-shrink-0" />
+                        <span class="font-medium text-sm truncate hidden sm:inline">背景设置</span>
+                        <span class="font-medium text-sm truncate sm:hidden">背景</span>
+                      </div>
+                    </template>
+                    <BackgroundPanel :backgroundConfig="backgroundConfig" @update:backgroundConfig="
+                      (newBackgroundConfig) => {
+                        Object.assign(backgroundConfig, newBackgroundConfig);
+                        updateCanvas();
+                      }
+                    " @image-upload="handleImageUpload" @canvas-update="updateCanvas" />
+                  </n-tab-pane>
+
+                  <n-tab-pane name="icon-panel">
+                    <template #tab>
+                      <div class="flex items-center gap-0.5 min-w-0">
+                        <Icon icon="material-symbols:star" class="text-lg text-yellow-600 flex-shrink-0" />
+                        <span class="font-medium text-sm truncate hidden sm:inline">图标设置</span>
+                        <span class="font-medium text-sm truncate sm:hidden">图标</span>
+                      </div>
+                    </template>
+                    <IconPanel :iconConfig="iconConfig" @update:iconConfig="
+                      (newIconConfig) => {
+                        Object.assign(iconConfig, newIconConfig);
+                        updateCanvas();
+                      }
+                    " @icon-load="loadIcon" @canvas-update="updateCanvas" />
+                  </n-tab-pane>
+
+                  <n-tab-pane name="title-panel">
+                    <template #tab>
+                      <div class="flex items-center gap-0.5 min-w-0">
+                        <Icon icon="material-symbols:title" class="text-lg text-green-600 flex-shrink-0" />
+                        <span class="font-medium text-sm truncate hidden sm:inline">标题设置</span>
+                        <span class="font-medium text-sm truncate sm:hidden">标题</span>
+                      </div>
+                    </template>
+                    <TitlePanel :titleConfig="titleConfig" @update:titleConfig="
+                      (newTitleConfig) => {
+                        Object.assign(titleConfig, newTitleConfig);
+                        updateCanvas();
+                      }
+                    " @canvas-update="updateCanvas" />
+                  </n-tab-pane>
+
+                  <n-tab-pane name="watermark-panel">
+                    <template #tab>
+                      <div class="flex items-center gap-0.5 min-w-0">
+                        <Icon icon="material-symbols:water-drop" class="text-lg text-blue-500 flex-shrink-0" />
+                        <span class="font-medium text-sm truncate hidden sm:inline">水印设置</span>
+                        <span class="font-medium text-sm truncate sm:hidden">水印</span>
+                      </div>
+                    </template>
+                    <WatermarkPanel :watermarkConfig="watermarkConfig" @update:watermarkConfig="
+                      (newWatermarkConfig) => {
+                        Object.assign(watermarkConfig, newWatermarkConfig);
+                        updateCanvas();
+                      }
+                    " @canvas-update="updateCanvas" />
+                  </n-tab-pane>
+
+                  <n-tab-pane name="export-panel">
+                    <template #tab>
+                      <div class="flex items-center gap-0.5 min-w-0">
+                        <Icon icon="material-symbols:download" class="text-lg text-blue-600 flex-shrink-0" />
+                        <span class="font-medium text-sm truncate hidden sm:inline">导出设置</span>
+                        <span class="font-medium text-sm truncate sm:hidden">导出</span>
+                      </div>
+                    </template>
+                    <ExportPanel :exportConfig="exportConfig" @update:exportConfig="
+                      (newExportConfig) => {
+                        Object.assign(exportConfig, newExportConfig);
+                      }
+                    " @export-image="exportImage" />
+                  </n-tab-pane>
+                </n-tabs>
+              </n-gi>
+              <!-- 预览区域 - 大屏幕右侧，小屏幕上方 -->
+              <n-gi span="24 m:24 l:3" class="order-1 lg:order-2">
+                <DefaultTheme ref="defaultThemeRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
+                  :titleConfig="titleConfig" :watermarkConfig="watermarkConfig" @canvas-update="onCanvasUpdate" />
+              </n-gi>
+            </n-grid>
           </div>
-          <n-grid :x-gap="16" :y-gap="24" cols="1 s:1 m:1 l:5 xl:5 2xl:5" responsive="screen">
-            <!-- 操作面板 - 大屏幕左侧，小屏幕下方 -->
-            <n-gi span="24 m:24 l:2" class="order-2 lg:order-1">
-              <n-tabs type="segment" animated size="small" :tabs-padding="8">
-                <n-tab-pane name="background-panel">
-                  <template #tab>
-                    <div class="flex items-center gap-0.5 min-w-0">
-                      <Icon icon="material-symbols:image" class="text-lg text-purple-600 flex-shrink-0" />
-                      <span class="font-medium text-sm truncate hidden sm:inline">背景设置</span>
-                      <span class="font-medium text-sm truncate sm:hidden">背景</span>
-                    </div>
-                  </template>
-                  <BackgroundPanel :backgroundConfig="backgroundConfig" @update:backgroundConfig="
-                    (newBackgroundConfig) => {
-                      Object.assign(backgroundConfig, newBackgroundConfig);
-                      updateCanvas();
-                    }
-                  " @image-upload="handleImageUpload" @canvas-update="updateCanvas" />
-                </n-tab-pane>
-
-                <n-tab-pane name="icon-panel">
-                  <template #tab>
-                    <div class="flex items-center gap-0.5 min-w-0">
-                      <Icon icon="material-symbols:star" class="text-lg text-yellow-600 flex-shrink-0" />
-                      <span class="font-medium text-sm truncate hidden sm:inline">图标设置</span>
-                      <span class="font-medium text-sm truncate sm:hidden">图标</span>
-                    </div>
-                  </template>
-                  <IconPanel :iconConfig="iconConfig" @update:iconConfig="
-                    (newIconConfig) => {
-                      Object.assign(iconConfig, newIconConfig);
-                      updateCanvas();
-                    }
-                  " @icon-load="loadIcon" @canvas-update="updateCanvas" />
-                </n-tab-pane>
-
-                <n-tab-pane name="title-panel">
-                  <template #tab>
-                    <div class="flex items-center gap-0.5 min-w-0">
-                      <Icon icon="material-symbols:title" class="text-lg text-green-600 flex-shrink-0" />
-                      <span class="font-medium text-sm truncate hidden sm:inline">标题设置</span>
-                      <span class="font-medium text-sm truncate sm:hidden">标题</span>
-                    </div>
-                  </template>
-                  <TitlePanel :titleConfig="titleConfig" @update:titleConfig="
-                    (newTitleConfig) => {
-                      Object.assign(titleConfig, newTitleConfig);
-                      updateCanvas();
-                    }
-                  " @canvas-update="updateCanvas" />
-                </n-tab-pane>
-
-                <n-tab-pane name="watermark-panel">
-                  <template #tab>
-                    <div class="flex items-center gap-0.5 min-w-0">
-                      <Icon icon="material-symbols:water-drop" class="text-lg text-blue-500 flex-shrink-0" />
-                      <span class="font-medium text-sm truncate hidden sm:inline">水印设置</span>
-                      <span class="font-medium text-sm truncate sm:hidden">水印</span>
-                    </div>
-                  </template>
-                  <WatermarkPanel :watermarkConfig="watermarkConfig" @update:watermarkConfig="
-                    (newWatermarkConfig) => {
-                      Object.assign(watermarkConfig, newWatermarkConfig);
-                      updateCanvas();
-                    }
-                  " @canvas-update="updateCanvas" />
-                </n-tab-pane>
-
-                <n-tab-pane name="export-panel">
-                  <template #tab>
-                    <div class="flex items-center gap-0.5 min-w-0">
-                      <Icon icon="material-symbols:download" class="text-lg text-blue-600 flex-shrink-0" />
-                      <span class="font-medium text-sm truncate hidden sm:inline">导出设置</span>
-                      <span class="font-medium text-sm truncate sm:hidden">导出</span>
-                    </div>
-                  </template>
-                  <ExportPanel :exportConfig="exportConfig" @update:exportConfig="
-                    (newExportConfig) => {
-                      Object.assign(exportConfig, newExportConfig);
-                    }
-                  " @export-image="exportImage" />
-                </n-tab-pane>
-              </n-tabs>
-            </n-gi>
-            <!-- 预览区域 - 大屏幕右侧，小屏幕上方 -->
-            <n-gi span="24 m:24 l:3" class="order-1 lg:order-2">
-              <DefaultTheme ref="defaultThemeRef" :backgroundConfig="backgroundConfig" :iconConfig="iconConfig"
-                :titleConfig="titleConfig" :watermarkConfig="watermarkConfig" @canvas-update="onCanvasUpdate" />
-            </n-gi>
-          </n-grid>
         </div>
-      </div>
 
-      <!-- 底部版权信息 -->
-      <FooterPanel />
-    </div>
+        <!-- 底部版权信息 -->
+        <FooterPanel />
+      </div>
+    </n-message-provider>
   </n-config-provider>
   <github-corner />
 
@@ -159,7 +161,7 @@
       </div>
     </template>
   </n-modal>
-  
+
   <!-- 主题选择器组件 -->
   <ThemeSelector ref="themeSelectorRef" @theme-selected="applyTheme" />
 </template>
@@ -167,7 +169,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useHead } from "@unhead/vue";
-import { NGrid,NGi, NConfigProvider, darkTheme, NButton, NModal, createDiscreteApi, type GlobalTheme, NTabs, NTabPane } from "naive-ui";
+import { NGrid, NGi, NConfigProvider, darkTheme, NButton, NModal, createDiscreteApi, type GlobalTheme, NTabs, NTabPane, NMessageProvider } from "naive-ui";
 import { ref, reactive, onMounted, nextTick } from "vue";
 
 import type { BackgroundConfig, IconConfig, TitleConfig, WatermarkConfig, ExportConfig } from "@/lib/type";
