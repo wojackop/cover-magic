@@ -142,6 +142,10 @@ import { reactive, watch, onMounted, ref, h } from 'vue'
 
 import type { ExportConfig, RandomFileNameOptions } from '@/lib/type'
 
+import jianshuSvg from '@/assets/images/jianshu.svg'
+import tencentcloudSvg from '@/assets/images/tencentcloud.svg'
+import toutiaoSvg from '@/assets/images/toutiao.svg'
+
 import { formatOptions } from '@/lib/constant'
 
 // 定义组件的 props
@@ -194,7 +198,7 @@ const platformOptions = [
     },
     {
         label: () => h('div', { class: 'flex items-center gap-1' }, [
-            h('img', { src: '/src/assets/images/tencentcloud.svg', class: 'w-5 h-5' }),
+            h('img', { src: tencentcloudSvg, class: 'w-5 h-5' }),
             '腾讯云开发者社区'
         ]),
         value: 'tencent'
@@ -208,14 +212,14 @@ const platformOptions = [
     },
     {
         label: () => h('div', { class: 'flex items-center gap-1' }, [
-            h('img', { src: '/src/assets/images/toutiao.svg', class: 'w-5 h-5' }),
+            h('img', { src: toutiaoSvg, class: 'w-5 h-5' }),
             '今日头条'
         ]),
         value: 'toutiao'
     },
     {
         label: () => h('div', { class: 'flex items-center gap-1' }, [
-            h('img', { src: '/src/assets/images/jianshu.svg', class: 'w-5 h-5' }),
+            h('img', { src: jianshuSvg, class: 'w-5 h-5' }),
             '简书'
         ]),
         value: 'jianshu'
