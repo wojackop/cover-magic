@@ -49,6 +49,21 @@
         </n-space>
       </div>
 
+      <div>
+        <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
+          <Icon icon="material-symbols:3d-rotation" class="text-lg" />
+          立体字效果
+        </label>
+        <n-slider
+          :value="titleConfig.effects.textShadow || 0"
+          :min="0"
+          :max="10"
+          :step="0.5"
+          @update:value="(value) => updateTitleEffect('textShadow', value)"
+        />
+        <span class="text-sm text-gray-500">{{ titleConfig.effects.textShadow || 0 }}</span>
+      </div>
+
       <n-grid cols="2" :x-gap="16">
         <n-grid-item>
           <label class="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
@@ -197,10 +212,10 @@ const updateTitlePosition = (axis: keyof Position, value: number) => {
  * 更新标题文本效果
  * 用于更新标题的粗体、斜体等文本效果
  *
- * @param {keyof TextEffects} effect - 效果类型，如'bold'表示粗体，'italic'表示斜体
- * @param {boolean} value - 效果状态，true表示启用，false表示禁用
+ * @param {keyof TextEffects} effect - 效果类型，如'bold'表示粗体，'italic'表示斜体，'textShadow'表示立体字效果
+ * @param {boolean | number} value - 效果状态或值，对于布尔效果(bold/italic/uppercase)为true/false，对于数值效果(textShadow)为数字
  */
-const updateTitleEffect = (effect: keyof TextEffects, value: boolean) => {
+const updateTitleEffect = (effect: keyof TextEffects, value: boolean | number) => {
   const newEffects = { ...props.titleConfig.effects, [effect]: value };
   const newTitleConfig = { ...props.titleConfig, effects: newEffects };
   emit("update:titleConfig", newTitleConfig);

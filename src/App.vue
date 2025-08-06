@@ -267,6 +267,7 @@ const titleConfig = reactive<TitleConfig>({
     bold: true, // 粗体：true表示使用粗体，false表示不使用
     italic: false, // 斜体：true表示使用斜体，false表示不使用
     uppercase: false, // 大写：true表示将英文转换为大写，false表示不转换
+    textShadow: 5, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
   },
 });
 
@@ -287,6 +288,7 @@ const watermarkConfig = reactive<WatermarkConfig>({
     bold: true, // 粗体：true表示使用粗体，false表示不使用
     italic: true, // 斜体：true表示使用斜体，false表示不使用
     uppercase: false, // 大写：true表示将英文转换为大写，false表示不转换
+    textShadow: 5, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
   },
 });
 
@@ -680,6 +682,7 @@ const resetAllConfig = () => {
         bold: true,
         italic: true,
         uppercase: false,
+        textShadow: 0,
       },
     });
 

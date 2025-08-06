@@ -543,6 +543,16 @@ const renderFrame = async (
     const titleFontFamily = getFontFamilyWithFallback(props.titleConfig.font);
     const titleFontWeight = props.titleConfig.effects.bold ? "bold" : "normal";
     ctx.font = `${titleFontWeight} ${props.titleConfig.size}px ${titleFontFamily}`;
+    
+    // 设置立体字效果（文字阴影）
+    if (props.titleConfig.effects.textShadow && props.titleConfig.effects.textShadow > 0) {
+      const shadowSize = props.titleConfig.effects.textShadow;
+      const shadowColor = props.titleConfig.color;
+      ctx.shadowColor = shadowColor;
+      ctx.shadowBlur = shadowSize * 2;
+      ctx.shadowOffsetX = shadowSize;
+      ctx.shadowOffsetY = shadowSize;
+    }
 
     // 测量文本宽度和高度
     const titleTextWidth = ctx.measureText(props.titleConfig.text).width;
@@ -974,6 +984,16 @@ const exportImage = async (exportConfig: ExportConfig) => {
     exportCtx.font = `${exportTitleFontWeight} ${titleSize}px ${exportFontFamily}`;
 
     exportCtx.save();
+    
+    // 设置立体字效果（文字阴影）
+    if (props.titleConfig.effects.textShadow && props.titleConfig.effects.textShadow > 0) {
+      const shadowSize = props.titleConfig.effects.textShadow * (exportCanvas.width / canvas.width); // 按比例缩放
+      const shadowColor = props.titleConfig.color;
+      exportCtx.shadowColor = shadowColor;
+      exportCtx.shadowBlur = shadowSize * 2;
+      exportCtx.shadowOffsetX = shadowSize;
+      exportCtx.shadowOffsetY = shadowSize;
+    }
     // 如果需要斜体，使用变换
     if (props.titleConfig.effects.italic) {
       exportCtx.translate(adjustedTitlePosX, adjustedTitlePosY);

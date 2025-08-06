@@ -45,6 +45,7 @@ export type TextEffects = {
   bold: boolean // 粗体：true表示使用粗体，false表示不使用
   italic: boolean // 斜体：true表示使用斜体，false表示不使用
   uppercase: boolean // 大写：true表示将英文转换为大写，false表示不转换
+  textShadow: number // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
 }
 
 // 标题设置
