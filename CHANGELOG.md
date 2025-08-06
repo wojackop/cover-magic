@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.4](https://github.com/baiwumm/cover-magic/compare/1.4.3...1.4.4) (2025-08-06)
+
+### ✨ Features | 新功能
+
+* 新增标题立体字选项 ([e2d7811](https://github.com/baiwumm/cover-magic/commit/e2d78114cdbdf5836b232abeb120a7602b48b7b6))
+
+### ⚡ Performance Improvements | 性能优化
+
+* 调整画布分辨率 ([e12fc74](https://github.com/baiwumm/cover-magic/commit/e12fc748b265a0617920176756ebce2d979930c4))
+* 优化图片上传渲染分辨率 ([a4356eb](https://github.com/baiwumm/cover-magic/commit/a4356eb466f6b58c8241b95db602288f3700a8e6))
+
+### 👷‍ Build System | 构建
+
+* 修复打包后图表不显示的问题 ([6496e5b](https://github.com/baiwumm/cover-magic/commit/6496e5bc68f57871980925cc352019cce0dc7820))
+
 ## [1.4.3](https://github.com/baiwumm/cover-magic/compare/1.4.2...1.4.3) (2025-08-05)
 
 ### ✨ Features | 新功能
