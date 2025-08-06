@@ -90,7 +90,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:four-leaf-clover',
-        size: 200,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#ffffff',
         position: { x: 50, y: 50 }
@@ -98,7 +98,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '默认  主题',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#ffffff',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -106,7 +106,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#ffffff',
         opacity: 80,
         position: { x: 98, y: 98 },
@@ -133,7 +133,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:blue-heart',
-        size: 200,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#ffffff',
         position: { x: 50, y: 50 }
@@ -141,7 +141,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '蓝色  渐变',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#ffffff',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -149,7 +149,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#ffffff',
         opacity: 80,
         position: { x: 98, y: 98 },
@@ -176,7 +176,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:sun',
-        size: 200,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#ffffff',
         position: { x: 50, y: 50 }
@@ -184,7 +184,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '暖阳  夕照',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#ffffff',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -192,7 +192,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#ffffff',
         opacity: 80,
         position: { x: 98, y: 98 },
@@ -227,7 +227,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '森林  绿意',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#ffffff',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -235,7 +235,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#ffffff',
         opacity: 80,
         position: { x: 98, y: 98 },
@@ -262,7 +262,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:crescent-moon',
-        size: 200,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#a78bfa',
         position: { x: 50, y: 50 }
@@ -270,7 +270,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '星空  夜景',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#e2e8f0',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -278,7 +278,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#a78bfa',
         opacity: 80,
         position: { x: 98, y: 98 },
@@ -305,7 +305,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:sparkles',
-        size: 200,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#ffffff',
         position: { x: 50, y: 50 }
@@ -313,7 +313,7 @@ const availableThemes = ref<Theme[]>([
       title: {
         text: '梦幻  粉彩',
         font: 'Maple Mono CN',
-        size: 140,
+        size: 180,
         color: '#ffffff',
         position: { x: 50, y: 50 },
         effects: { bold: true, italic: false, uppercase: false }
@@ -321,7 +321,7 @@ const availableThemes = ref<Theme[]>([
       watermark: {
         text: '@baiwumm',
         font: 'Maple Mono CN',
-        size: 40,
+        size: 50,
         color: '#ffffff',
         opacity: 80,
         position: { x: 98, y: 98 },

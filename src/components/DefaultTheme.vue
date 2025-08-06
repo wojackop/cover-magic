@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center">
-  <canvas ref="previewCanvas" class="border-2 border-gray-300 rounded-lg shadow-lg w-full max-w-4xl" :width="1600"
-    :height="900" style="width: 100%; height: auto"></canvas>
+  <canvas ref="previewCanvas" class="border-2 border-gray-300 rounded-lg shadow-lg w-full max-w-4xl" :width="1920"
+    :height="1080" style="width: 100%; height: auto"></canvas>
     </div>
 </template>
 
