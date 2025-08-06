@@ -69,7 +69,7 @@
             <Icon icon="material-symbols:photo-size-select-large" class="text-lg" />
             大小
           </label>
-          <n-slider :value="iconConfig.size" :min="20" :max="200" :step="1"
+          <n-slider :value="iconConfig.size" :min="20" :max="300" :step="1"
             @update:value="value => updateIconProperty('size', value)" />
           <span class="text-sm text-gray-500">{{ iconConfig.size }}px</span>
         </n-grid-item>

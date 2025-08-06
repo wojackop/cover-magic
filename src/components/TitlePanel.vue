@@ -73,7 +73,7 @@
           <n-slider
             :value="titleConfig.size"
             :min="16"
-            :max="120"
+            :max="200"
             :step="1"
             @update:value="(value) => updateTitleProperty('size', value)"
           />

@@ -240,7 +240,7 @@ const backgroundConfig = reactive<BackgroundConfig>({
 // 图标设置 - 用于控制封面中心图标的各项属性
 const iconConfig = reactive<IconConfig>({
   code: "fluent-emoji-flat:four-leaf-clover", // 图标代码：使用Iconify图标库的标识符，指定要显示的图标
-  size: 100, // 图标大小：控制图标的显示尺寸，单位为像素
+  size: 200, // 图标大小：控制图标的显示尺寸，单位为像素
   shadowSize: 100, // 阴影大小：控制图标阴影的模糊半径，值越大阴影越模糊扩散
   shadowColor: "#ffffff", // 阴影颜色：指定图标阴影的颜色，默认为白色
   position: {
@@ -255,7 +255,7 @@ const iconConfig = reactive<IconConfig>({
 const titleConfig = reactive<TitleConfig>({
   text: "封面  制作", // 标题文本：显示在封面上的文字内容
   font: "Maple Mono CN", // 字体名称：指定标题文本使用的字体
-  size: 80, // 字体大小：控制标题文本的显示尺寸，单位为像素
+  size: 140, // 字体大小：控制标题文本的显示尺寸，单位为像素
   color: "#ffffff", // 字体颜色：指定标题文本的颜色，默认为白色
   position: {
     // 标题位置：控制标题在画布中的位置
@@ -267,7 +267,7 @@ const titleConfig = reactive<TitleConfig>({
     bold: true, // 粗体：true表示使用粗体，false表示不使用
     italic: false, // 斜体：true表示使用斜体，false表示不使用
     uppercase: false, // 大写：true表示将英文转换为大写，false表示不转换
-    textShadow: 5, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
+    textShadow: 0, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
   },
 });
 
@@ -275,7 +275,7 @@ const titleConfig = reactive<TitleConfig>({
 const watermarkConfig = reactive<WatermarkConfig>({
   text: "@baiwumm", // 水印文本：显示在封面上的水印内容
   font: "Maple Mono CN", // 字体名称：指定水印文本使用的字体
-  size: 24, // 字体大小：控制水印文本的显示尺寸，单位为像素
+  size: 40, // 字体大小：控制水印文本的显示尺寸，单位为像素
   color: "#ffffff", // 字体颜色：指定水印文本的颜色，默认为白色
   opacity: 80, // 不透明度：控制水印的透明度，范围0-100，100表示完全不透明
   position: {
@@ -288,7 +288,7 @@ const watermarkConfig = reactive<WatermarkConfig>({
     bold: true, // 粗体：true表示使用粗体，false表示不使用
     italic: true, // 斜体：true表示使用斜体，false表示不使用
     uppercase: false, // 大写：true表示将英文转换为大写，false表示不转换
-    textShadow: 5, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
+    textShadow: 0, // 立体字效果：控制文字阴影深度，范围0-10，0表示无立体效果
   },
 });
 
@@ -655,7 +655,7 @@ const resetAllConfig = () => {
     // 重置图标配置
     Object.assign(iconConfig, {
       code: "fluent-emoji-flat:four-leaf-clover",
-      size: 100,
+      size: 200,
       shadowSize: 100,
       shadowColor: "#ffffff",
       position: {
@@ -672,7 +672,7 @@ const resetAllConfig = () => {
     Object.assign(titleConfig, {
       text: "封面  制作",
       font: "Maple Mono CN",
-      size: 80,
+      size: 140,
       color: "#ffffff",
       position: {
         x: 50,
@@ -680,7 +680,7 @@ const resetAllConfig = () => {
       },
       effects: {
         bold: true,
-        italic: true,
+        italic: false,
         uppercase: false,
         textShadow: 0,
       },
@@ -690,7 +690,7 @@ const resetAllConfig = () => {
     Object.assign(watermarkConfig, {
       text: "@baiwumm",
       font: "Maple Mono CN",
-      size: 24,
+      size: 40,
       color: "#ffffff",
       opacity: 80,
       position: {

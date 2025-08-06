@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center">
-  <canvas ref="previewCanvas" class="border-2 border-gray-300 rounded-lg shadow-lg w-full max-w-4xl" :width="800"
-    :height="450" style="width: 100%; height: auto"></canvas>
+  <canvas ref="previewCanvas" class="border-2 border-gray-300 rounded-lg shadow-lg w-full max-w-4xl" :width="1600"
+    :height="900" style="width: 100%; height: auto"></canvas>
     </div>
 </template>
 
@@ -490,8 +490,73 @@ const renderFrame = async (
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (props.backgroundConfig.imageObj) {
     // 绘制背景图片
-    ctx.filter = `blur(${props.backgroundConfig.blur}px)`;
-    ctx.drawImage(props.backgroundConfig.imageObj, 0, 0, canvas.width, canvas.height);
+    // 只有当模糊值大于0时才应用模糊滤镜
+    if (props.backgroundConfig.blur > 0) {
+      ctx.filter = `blur(${props.backgroundConfig.blur}px)`;
+    } else {
+      ctx.filter = "none";
+    }
+    
+    // 保持图片宽高比并保持清晰度
+    const img = props.backgroundConfig.imageObj;
+    const imgRatio = img.width / img.height;
+    const canvasRatio = canvas.width / canvas.height;
+    
+    // 创建离屏画布以保持图片质量
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d', { alpha: false });
+    
+    if (!offscreenCtx) {
+      // 如果离屏画布创建失败，回退到直接绘制
+      let drawWidth = canvas.width;
+      let drawHeight = canvas.height;
+      let offsetX = 0;
+      let offsetY = 0;
+      
+      // 根据宽高比决定如何填充画布
+      if (imgRatio > canvasRatio) {
+        drawHeight = canvas.height;
+        drawWidth = drawHeight * imgRatio;
+        offsetX = (canvas.width - drawWidth) / 2;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = drawWidth / imgRatio;
+        offsetY = (canvas.height - drawHeight) / 2;
+      }
+      
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    } else {
+      // 使用离屏画布处理图片，保持原始分辨率
+      offscreenCanvas.width = img.width;
+      offscreenCanvas.height = img.height;
+      
+      // 在离屏画布上绘制原始图片
+      offscreenCtx.drawImage(img, 0, 0, img.width, img.height);
+      
+      // 计算绘制参数
+      let drawWidth = canvas.width;
+      let drawHeight = canvas.height;
+      let offsetX = 0;
+      let offsetY = 0;
+      
+      // 根据宽高比决定如何填充画布
+      if (imgRatio > canvasRatio) {
+        drawHeight = canvas.height;
+        drawWidth = drawHeight * imgRatio;
+        offsetX = (canvas.width - drawWidth) / 2;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = drawWidth / imgRatio;
+        offsetY = (canvas.height - drawHeight) / 2;
+      }
+      
+      // 使用高质量的图像绘制方法
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      // 将离屏画布内容绘制到主画布
+      ctx.drawImage(offscreenCanvas, offsetX, offsetY, drawWidth, drawHeight);
+    }
     ctx.filter = "none";
   }
 
@@ -834,8 +899,73 @@ const exportImage = async (exportConfig: ExportConfig) => {
     exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
   } else if (props.backgroundConfig.imageObj) {
     // 绘制背景图片
-    exportCtx.filter = `blur(${props.backgroundConfig.blur}px)`;
-    exportCtx.drawImage(props.backgroundConfig.imageObj, 0, 0, exportCanvas.width, exportCanvas.height);
+    // 只有当模糊值大于0时才应用模糊滤镜
+    if (props.backgroundConfig.blur > 0) {
+      exportCtx.filter = `blur(${props.backgroundConfig.blur}px)`;
+    } else {
+      exportCtx.filter = "none";
+    }
+    
+    // 保持图片宽高比并保持清晰度
+    const img = props.backgroundConfig.imageObj;
+    const imgRatio = img.width / img.height;
+    const canvasRatio = exportCanvas.width / exportCanvas.height;
+    
+    // 创建离屏画布以保持图片质量
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d', { alpha: false });
+    
+    if (!offscreenCtx) {
+      // 如果离屏画布创建失败，回退到直接绘制
+      let drawWidth = exportCanvas.width;
+      let drawHeight = exportCanvas.height;
+      let offsetX = 0;
+      let offsetY = 0;
+      
+      // 根据宽高比决定如何填充画布
+      if (imgRatio > canvasRatio) {
+        drawHeight = exportCanvas.height;
+        drawWidth = drawHeight * imgRatio;
+        offsetX = (exportCanvas.width - drawWidth) / 2;
+      } else {
+        drawWidth = exportCanvas.width;
+        drawHeight = drawWidth / imgRatio;
+        offsetY = (exportCanvas.height - drawHeight) / 2;
+      }
+      
+      exportCtx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    } else {
+      // 使用离屏画布处理图片，保持原始分辨率
+      offscreenCanvas.width = img.width;
+      offscreenCanvas.height = img.height;
+      
+      // 在离屏画布上绘制原始图片
+      offscreenCtx.drawImage(img, 0, 0, img.width, img.height);
+      
+      // 计算绘制参数
+      let drawWidth = exportCanvas.width;
+      let drawHeight = exportCanvas.height;
+      let offsetX = 0;
+      let offsetY = 0;
+      
+      // 根据宽高比决定如何填充画布
+      if (imgRatio > canvasRatio) {
+        drawHeight = exportCanvas.height;
+        drawWidth = drawHeight * imgRatio;
+        offsetX = (exportCanvas.width - drawWidth) / 2;
+      } else {
+        drawWidth = exportCanvas.width;
+        drawHeight = drawWidth / imgRatio;
+        offsetY = (exportCanvas.height - drawHeight) / 2;
+      }
+      
+      // 使用高质量的图像绘制方法
+      exportCtx.imageSmoothingEnabled = true;
+      exportCtx.imageSmoothingQuality = 'high';
+      
+      // 将离屏画布内容绘制到导出画布
+      exportCtx.drawImage(offscreenCanvas, offsetX, offsetY, drawWidth, drawHeight);
+    }
     exportCtx.filter = "none";
   }
 

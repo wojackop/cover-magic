@@ -67,7 +67,7 @@
           <n-slider
             :value="watermarkConfig.size"
             :min="10"
-            :max="40"
+            :max="100"
             :step="1"
             @update:value="updateWatermarkProperty('size', $event)"
           />
