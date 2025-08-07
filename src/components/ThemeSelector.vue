@@ -219,7 +219,7 @@ const availableThemes = ref<Theme[]>([
       },
       icon: {
         code: 'fluent-emoji-flat:deciduous-tree',
-        size: 100,
+        size: 240,
         shadowSize: 100,
         shadowColor: '#ffffff',
         position: { x: 50, y: 50 }
