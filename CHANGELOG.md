@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.5](https://github.com/baiwumm/cover-magic/compare/1.4.4...1.4.5) (2025-08-08)
+
+### ✨ Features | 新功能
+
+* 主题图标大小调整 ([b7f5bb1](https://github.com/baiwumm/cover-magic/commit/b7f5bb1d742f2b94746d4b0a11e59d9f1f7003d4))
+
+### 💄 Styles | 风格
+
+* 调整标题默认字间距 ([83fdac7](https://github.com/baiwumm/cover-magic/commit/83fdac7dfa83ca1f1360f7cb97ed9b0d6c8b6415))
+
 ## [1.4.4](https://github.com/baiwumm/cover-magic/compare/1.4.3...1.4.4) (2025-08-06)
 
 ### ✨ Features | 新功能
