@@ -230,7 +230,7 @@ const platformOptions = [
 const platformSizes = {
     custom: { width: 1920, height: 1080 },
     wechat: { width: 900, height: 383 },
-    juejin: { width: 1000, height: 600 },
+    juejin: { width: 900, height: 600 },
     zhihu: { width: 1080, height: 607 },
     aliyun: { width: 1000, height: 600 },
     tencent: { width: 960, height: 540 },
