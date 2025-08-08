@@ -96,7 +96,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '默认  主题',
+        text: '默认   主题',
         font: 'Maple Mono CN',
         size: 180,
         color: '#ffffff',
@@ -139,7 +139,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '蓝色  渐变',
+        text: '蓝色   渐变',
         font: 'Maple Mono CN',
         size: 180,
         color: '#ffffff',
@@ -182,7 +182,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '暖阳  夕照',
+        text: '暖阳   夕照',
         font: 'Maple Mono CN',
         size: 180,
         color: '#ffffff',
@@ -225,7 +225,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '森林  绿意',
+        text: '森林   绿意',
         font: 'Maple Mono CN',
         size: 180,
         color: '#ffffff',
@@ -268,7 +268,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '星空  夜景',
+        text: '星空   夜景',
         font: 'Maple Mono CN',
         size: 180,
         color: '#e2e8f0',
@@ -311,7 +311,7 @@ const availableThemes = ref<Theme[]>([
         position: { x: 50, y: 50 }
       },
       title: {
-        text: '梦幻  粉彩',
+        text: '梦幻   粉彩',
         font: 'Maple Mono CN',
         size: 180,
         color: '#ffffff',

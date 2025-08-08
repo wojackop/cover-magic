@@ -253,7 +253,7 @@ const iconConfig = reactive<IconConfig>({
 
 // 标题设置 - 用于控制封面标题文本的各项属性
 const titleConfig = reactive<TitleConfig>({
-  text: "封面  制作", // 标题文本：显示在封面上的文字内容
+  text: "封面   制作", // 标题文本：显示在封面上的文字内容
   font: "Maple Mono CN", // 字体名称：指定标题文本使用的字体
   size: 180, // 字体大小：控制标题文本的显示尺寸，单位为像素
   color: "#ffffff", // 字体颜色：指定标题文本的颜色，默认为白色
@@ -670,7 +670,7 @@ const resetAllConfig = () => {
 
     // 重置标题配置
     Object.assign(titleConfig, {
-      text: "封面  制作",
+      text: "封面   制作",
       font: "Maple Mono CN",
       size: 180,
       color: "#ffffff",
