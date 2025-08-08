@@ -136,5 +136,5 @@ VITE_APP_SITE_KEYWORDS = "封面设计,封面,设计,cover,designer"
 <div align="center">
   <p>如果这个项目对你有帮助，请给它一个 ⭐️</p>
   <p>Made with ❤️ by <a href="https://github.com/baiwumm">@baiwumm</a></p>
-  <p>© 2025 今日热榜. All rights reserved.</p>
+  <p>© 2025 Cover Magic. All rights reserved.</p>
 </div>
