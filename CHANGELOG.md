@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.6](https://github.com/baiwumm/cover-magic/compare/1.4.5...1.4.6) (2025-08-11)
+
+### ✨ Features | 新功能
+
+* 修改掘金默认尺寸 ([6347584](https://github.com/baiwumm/cover-magic/commit/634758467e182bbcf769eef9eb8eb78cb9d0b91a))
+
+### 💄 Styles | 风格
+
+* 修复小屏幕内容溢出的问题 ([d4033e4](https://github.com/baiwumm/cover-magic/commit/d4033e437694202aae6ceecdfb45638e3a4c7393))
+
+### ⚡ Performance Improvements | 性能优化
+
+* 修复默认字体不生效的问题 ([0413178](https://github.com/baiwumm/cover-magic/commit/0413178020eea06b8bff2f7eb05054ae31b00dbc))
+
 ## [1.4.5](https://github.com/baiwumm/cover-magic/compare/1.4.4...1.4.5) (2025-08-08)
 
 ### ✨ Features | 新功能
