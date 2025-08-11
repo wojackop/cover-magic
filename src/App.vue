@@ -19,14 +19,15 @@
             ? 'bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-700/50'
             : 'bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200/50'
             ">
-            <div class="flex items-center justify-between mb-4">
+            <!-- 预览区域标题和操作按钮 - 在小屏幕上改为垂直排列 -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
               <h2 class="text-xl font-bold flex items-center gap-1"
                 :class="isDarkMode ? 'text-gray-100' : 'text-gray-800'">
                 <Icon icon="material-symbols:preview" class="text-2xl"
                   :class="isDarkMode ? 'text-blue-400' : 'text-blue-600'" />
                 实时预览
               </h2>
-              <div class="flex items-center gap-3">
+              <div class="flex flex-wrap items-center gap-2">
                 <!-- 全局操作按钮 - 移到预览区域标题栏 -->
                 <n-button size="small" type="info" secondary class="flex items-center gap-1"
                   :class="isDarkMode ? 'hover:bg-cyan-700/50' : 'hover:bg-cyan-100'" @click="openThemeSelector">
