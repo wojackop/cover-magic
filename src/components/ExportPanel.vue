@@ -240,16 +240,20 @@ const platformSizes = {
 }
 
 // 选中的平台
-const selectedPlatform = ref('custom')
+const selectedPlatform = ref(props.exportConfig.platform || 'custom')
 
 // 创建本地配置副本
-const localExportConfig = reactive<ExportConfig>({ ...props.exportConfig })
+const localExportConfig = reactive<ExportConfig>({ 
+    ...props.exportConfig,
+    platform: props.exportConfig.platform || 'custom'
+})
 
 // 处理平台变更
 const handlePlatformChange = (platform: string) => {
     const { width, height } = platformSizes[platform as keyof typeof platformSizes]
     localExportConfig.width = width
     localExportConfig.height = height
+    localExportConfig.platform = platform
     updateExportConfig()
 }
 
@@ -311,21 +315,17 @@ const handleExportImage = () => {
 
 // 监听配置变化
 watch(() => props.exportConfig, (newConfig) => {
-    // 更新本地配置
+    // 更新本地配置，但保留当前选中的平台
+    const currentPlatform = localExportConfig.platform || 'custom'
     Object.assign(localExportConfig, newConfig)
-
-    // 检查当前尺寸是否匹配某个平台
-    const currentSize = { width: localExportConfig.width, height: localExportConfig.height }
-    let matchedPlatform = 'custom'
-
-    for (const [platform, size] of Object.entries(platformSizes)) {
-        if (size.width === currentSize.width && size.height === currentSize.height) {
-            matchedPlatform = platform
-            break
-        }
+    
+    // 确保平台信息被保留
+    if (!localExportConfig.platform) {
+        localExportConfig.platform = currentPlatform
     }
-
-    selectedPlatform.value = matchedPlatform
+    
+    // 使用保存的平台值而不是通过尺寸匹配
+    selectedPlatform.value = localExportConfig.platform
 }, { deep: true })
 
 // 监听随机文件名相关配置变化
