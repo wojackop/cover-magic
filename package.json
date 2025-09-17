@@ -11,8 +11,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/baiwumm/cover-magic",
-    "issues": "https://github.com/baiwumm/cover-magic/issues"
+    "url": "https://github.com/wojackop/cover-magic",
+    "issues": "https://github.com/wojackop/cover-magic/issues"
   },
   "scripts": {
     "dev": "vite",

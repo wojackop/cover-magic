@@ -32,7 +32,7 @@
           rel="noopener noreferrer"
           class="font-semibold hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
         >
-          粤ICP备2023007649号
+          陕ICP备2024040076号-2
         </a>
         |
         <a
@@ -41,7 +41,7 @@
           rel="noopener noreferrer"
           class="font-semibold hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
         >
-          粤公网安备44030402006402号
+           陕公网安备61010302001194号
         </a>
       </div>
       <div>
